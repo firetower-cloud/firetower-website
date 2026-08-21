@@ -1,0 +1,33 @@
+import { docMeta } from "./_lib/nav"
+import { Lede } from "../_components/docs/Bits"
+import { DocsIndex } from "../_components/docs/DocsIndex"
+
+export const metadata = docMeta("")
+
+# Documentation
+
+<Lede>
+Firetower is a control plane for coding agents. Give it a machine you can SSH
+into and a repository, describe some work, and it cuts a branch, opens a
+worktree, starts tmux and keeps the agent running — then tells you the moment
+it stops being useful without you.
+</Lede>
+
+It runs on hardware you already have. There is no account, and nothing dials
+out that you did not point at something.
+
+<DocsIndex />
+
+## What you need
+
+Docker, and nothing else. One image holds the control plane, the interface and
+everything a session needs to run. A machine you add later needs an SSH account
+and the same worker container — there is no agent to install, no port to open,
+and no key inside the image.
+
+## Where to start
+
+[Install](/docs/install) gets you a running Firetower on one machine in about
+two minutes. Everything after that is optional: a domain when you want to reach
+it from a phone, more machines when one is not enough, and a GitHub app when you
+would rather pick repositories from a list than paste URLs.

@@ -5,7 +5,7 @@
   "targets": {
     "firetower-prod-506201": {
       "hosting": {
-        "prod": ["firetower-prod"]
+        "prod": ["usefiretower-prod"]
       }
     }
   }

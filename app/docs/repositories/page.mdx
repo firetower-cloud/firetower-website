@@ -1,0 +1,67 @@
+import { docMeta } from "../_lib/nav"
+import { Lede, Callout } from "../../_components/docs/Bits"
+
+export const metadata = docMeta("repositories")
+
+# Connect repositories
+
+<Lede>
+Pasting a URL or a path works with no setup: the worker uses whatever git
+credentials the machine already has. If `git ls-remote &lt;url&gt;` works in your
+terminal, it works here.
+</Lede>
+
+To authorize GitHub instead and pick from a list of your repositories, Firetower
+needs an application to authorize *as*. It asks you for one at the moment you
+need it — the setup wizard offers it, skippably, and the connect-a-repository
+screen offers it again when you press **Authorize GitHub** with none registered.
+
+What you paste is kept in the database and works immediately, with no restart
+and nothing in a file.
+
+## Register an OAuth app
+
+1. Go to [github.com/settings/applications/new](https://github.com/settings/applications/new)
+   — or your avatar → Settings → Developer settings → OAuth Apps → New OAuth App.
+
+2. Fill in the form:
+
+   | Field | What to put |
+   | --- | --- |
+   | Application name | `Firetower` — the name shown on the approval screen |
+   | Homepage URL | Anything, e.g. your repository |
+   | Authorization callback URL | Required by the form, unused by this flow. Put the homepage URL again. |
+
+3. Click **Register application**.
+
+4. Tick **Enable Device Flow**, then **Update application**.
+
+5. Copy the **Client ID** from the top of that page and paste it into Firetower.
+
+<Callout kind="warning">
+Do not skip step 4. Device flow is off by default, the checkbox is below the
+fold, and without it every authorization fails with the same error as a wrong
+identifier — because GitHub answers both with a 404.
+</Callout>
+
+Ignore the client secret. This flow does not use one, and it should not be
+pasted anywhere. A device-flow client ID is public by design — there is no
+paired secret, which is exactly why this flow suits a program that ships as
+source.
+
+## Why an OAuth app and not a GitHub app
+
+Both support the device flow, but this build asks for the `repo` scope and lists
+through `/user/repos`, which is the OAuth app model. It also assumes the token
+keeps working: GitHub app user tokens expire after eight hours, and refresh is
+not wired up yet.
+
+`repo` is what covers cloning a private repository and pushing the branch a
+session works on. If you only ever want public repositories, `public_repo` is
+narrower — change `scopes` in `providers.rs`.
+
+## Where the token goes
+
+Into the [secret store](/docs/secrets). Workers are handed it per operation and
+hold it in memory only, so a machine that runs your sessions never stores your
+git credentials.

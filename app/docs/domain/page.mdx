@@ -1,0 +1,76 @@
+import { docMeta } from "../_lib/nav"
+import { Lede, Callout } from "../../_components/docs/Bits"
+
+export const metadata = docMeta("domain")
+
+# Put it on a domain
+
+<Lede>
+With no `DOMAIN` set, Firetower serves plain HTTP on port 80 — right for
+something you only reach from that machine. Naming a domain is what turns on
+HTTPS, and Caddy does the rest: it gets a certificate, renews it, and redirects
+80 to 443.
+</Lede>
+
+## 1. Point a domain at the machine
+
+An `A` record for `firetower.example.com` to its public address, and `AAAA` if
+it has IPv6. Check it before starting anything:
+
+```sh
+dig +short firetower.example.com
+```
+
+That should print the machine's address. Propagation is minutes, not instant.
+
+## 2. Open 80 and 443
+
+Both. Port 80 is not optional even though nothing is served on it — it is how
+Let's Encrypt proves you own the name. On a VPS, the provider's firewall is the
+one people forget.
+
+## 3. Set the domain
+
+```sh
+DOMAIN=firetower.example.com
+FIRETOWER_PUBLIC_URL=https://firetower.example.com
+```
+
+## 4. Start it, then wait
+
+The first certificate takes 5–30 seconds. Until it arrives the browser shows a
+TLS error, which looks like a broken deployment and is not.
+
+```sh
+docker compose -f firetower.yml logs -f caddy
+```
+
+Wait for `certificate obtained successfully`.
+
+## If it doesn't work
+
+The log says which of four things happened:
+
+| In the caddy log | What it means |
+| --- | --- |
+| `no such host`, NXDOMAIN | DNS isn't pointing here yet |
+| timeout or refused on the challenge | Port 80 is blocked upstream |
+| `too many certificates already issued` | Rate limit — use the staging CA below |
+| `unauthorized` on the challenge | The name resolves somewhere else |
+
+<Callout kind="warning">
+Failed validations are limited to five per hostname per hour, and it is easy to
+burn that while DNS is still wrong. Add `acme_ca https://acme-staging-v02.api.letsencrypt.org/directory`
+to a global block in the `Caddyfile`, prove the pipeline works against
+untrusted certificates, then take it out.
+</Callout>
+
+## No public domain?
+
+Port 80 has to be reachable, so a machine behind CGNAT or a closed firewall
+cannot use this path. Caddy can prove ownership through your DNS provider's API
+instead, which needs a plugin compiled into it — open an issue and we will
+document it.
+
+To get warned before a renewal that has started failing, add
+`email you@example.com` to a global block at the top of the `Caddyfile`.

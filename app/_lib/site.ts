@@ -27,8 +27,3 @@ export const LICENSE = "AGPL-3.0-only";
 export const AUTHOR = "Westlabs LLC";
 
 /** Anchors used by the in-page nav; also the sitemap's only real sections. */
-/** Anchors the nav and the footer point at. */
-export const SECTIONS = [
-  { id: "inbox", label: "The screen" },
-  { id: "how", label: "How it works" },
-] as const;

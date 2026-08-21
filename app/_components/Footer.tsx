@@ -1,5 +1,8 @@
+import Link from "next/link";
 import { Wordmark } from "./Mark";
-import { AUTHOR, LICENSE, REPO_URL, SECTIONS, TAGLINE } from "../_lib/site";
+import { Octocat } from "./Octocat";
+import { AUTHOR, LICENSE, REPO_URL, TAGLINE } from "../_lib/site";
+import { DOCS, href } from "../docs/_lib/nav";
 
 /** The closing call, then the small print. */
 export function Footer() {
@@ -24,21 +27,21 @@ export function Footer() {
           {TAGLINE} It runs on your own machine, and there is no account.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href={`${REPO_URL}#running-it`}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="rounded-[5px] bg-bone px-4 py-2.5 text-[13.5px] font-medium text-ground transition-opacity hover:opacity-88"
+          <Link
+            href="/docs"
+            className="group flex items-center gap-2 rounded-[5px] bg-bone px-4 py-2.5 text-[13.5px] font-medium text-ground transition-opacity hover:opacity-88"
           >
-            Run it in one command
-          </a>
+            Read the documentation
+            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+          </Link>
           <a
             href={REPO_URL}
             target="_blank"
             rel="noreferrer noopener"
-            className="rounded-[5px] border border-line px-4 py-2.5 text-[13.5px] text-text transition-colors hover:bg-raise hover:text-bone"
+            className="flex items-center gap-2 rounded-[5px] border border-line px-4 py-2.5 text-[13.5px] text-text transition-colors hover:bg-raise hover:text-bone"
           >
-            Read the source
+            <Octocat />
+            GitHub
           </a>
         </div>
       </div>
@@ -54,14 +57,16 @@ export function Footer() {
           </div>
 
           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            {SECTIONS.map((s) => (
-              <a
-                key={s.id}
-                href={`#${s.id}`}
+            {/* The docs, not the page's own anchors: every page linking into
+                them is what stops each one being a dead end. */}
+            {DOCS.filter((d) => d.slug).map((d) => (
+              <Link
+                key={d.slug}
+                href={href(d.slug)}
                 className="text-[12.5px] text-mute transition-colors hover:text-bone"
               >
-                {s.label}
-              </a>
+                {d.title}
+              </Link>
             ))}
             <a
               href={REPO_URL}

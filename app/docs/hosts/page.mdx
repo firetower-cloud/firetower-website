@@ -1,0 +1,98 @@
+import { docMeta } from "../_lib/nav"
+import { Lede, Callout } from "../../_components/docs/Bits"
+
+export const metadata = docMeta("hosts")
+
+# Add a machine
+
+<Lede>
+A machine is a server you already have. Firetower reaches it over SSH with the
+key you already use, runs the worker there, and installs nothing you did not put
+there.
+</Lede>
+
+You need two things on it: an SSH account, and the worker container. Everything
+the worker uses is inside that container — git, tmux, Node and an agent — so
+there is nothing else to set up.
+
+## Start the worker
+
+On the machine:
+
+```sh
+docker run -d --name firetower-worker \
+  --restart unless-stopped \
+  -v firetower:/var/lib/firetower \
+  ghcr.io/firetower-cloud/firetower-worker:latest \
+  sleep infinity
+```
+
+The container does nothing on its own. Firetower SSHes to the machine and runs
+`docker exec` when it wants to talk, so there is no sshd in the image, no key
+inside it, and no port to open.
+
+Check that the account you will connect as can reach Docker, because Firetower
+will be that account:
+
+```sh
+docker ps
+```
+
+If that says permission denied, add the account to the `docker` group with
+`sudo usermod -aG docker $USER` and log back in.
+
+## Add it in Firetower
+
+**Compute → Add compute → A server**, then the address, the account to SSH as,
+the private key, and the container name — `firetower-worker`, already filled in.
+
+If it does not connect, the host is added anyway and says what to fix. Sort the
+machine out and press **Try now**; there is nothing to re-add.
+
+There are no secrets in that compose file, and there never will be. What an
+agent authenticates with is held by the control plane and handed to a session as
+it starts, so a fresh container needs no login and the file is safe to paste
+anywhere.
+
+<Callout>
+Some providers build a VM by naming a container image instead of an operating
+system. SSH in and run `docker ps`: if you see the worker running, copy that
+container's name into the field. If there is no `docker` command at all but git
+and tmux are there, you are inside the worker itself — leave the field empty.
+</Callout>
+
+## Upgrading a machine
+
+<Callout kind="warning">
+Drain the host first, and wait. **Compute → the host → Drain**, until nothing is
+running on it. Recreating the container takes the tmux server with it, and every
+session on that host goes too.
+</Callout>
+
+```sh
+docker pull ghcr.io/firetower-cloud/firetower-worker:latest
+docker rm -f firetower-worker
+docker run -d --name firetower-worker \
+  --restart unless-stopped \
+  -v firetower:/var/lib/firetower \
+  ghcr.io/firetower-cloud/firetower-worker:latest \
+  sleep infinity
+```
+
+Keep the volume exactly as it is. `firetower:/var/lib/firetower` holds
+everything worth keeping — repositories, worktrees, the event log, and the
+agent's own home. Removing the container is safe precisely because none of that
+is in it. Resume the host afterwards; the same button now says **Resume**.
+
+## Version drift
+
+`latest` is the newest release. Firetower compares its own version against each
+worker's on every connection and says when they have drifted, so name a version
+instead — `:0.3.0` — if you would rather decide when a worker moves.
+
+A worker that is behind still works, quietly. It runs sessions perfectly well;
+what it cannot do is anything added since it was built. A worker older than
+agent hooks will start an agent and never tell you it stopped — the session sits
+on *working* while the agent waits for you, and nothing reports an error. The
+version drift on the fleet screen is the thing to look at when a feature seems
+not to exist.

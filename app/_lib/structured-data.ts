@@ -10,6 +10,7 @@
  * rich results turned off for a whole domain.
  */
 import { AUTHOR, LICENSE, NAME, REPO_URL, SITE_URL, SUMMARY, TAGLINE } from "./site";
+import { findDoc, href } from "../docs/_lib/nav";
 
 export const ORG_ID = `${SITE_URL}/#organization`;
 export const SITE_ID = `${SITE_URL}/#website`;
@@ -77,6 +78,45 @@ export function softwareApplicationLd() {
       "Live agent terminal in the browser",
       "Encrypted credentials with envelope encryption",
       "Diff, push, and open a pull request",
+    ],
+  };
+}
+
+/**
+ * A documentation page: what it is, and where it sits.
+ *
+ * `TechArticle` rather than `Article` — these are instructions for operating
+ * software, and the distinction is the one search engines use to decide
+ * whether a page belongs in a how-to result. The breadcrumb is what puts
+ * "Docs › Install" under the link instead of a bare URL.
+ */
+export function docLd(slug: string) {
+  const doc = findDoc(slug);
+  const url = `${SITE_URL}${href(slug)}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "@id": `${url}#article`,
+        headline: doc.title,
+        description: doc.description,
+        url,
+        inLanguage: "en",
+        isPartOf: { "@id": SITE_ID },
+        about: { "@id": `${SITE_URL}/#software` },
+        publisher: { "@id": ORG_ID },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumbs`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: NAME, item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Documentation", item: `${SITE_URL}/docs` },
+          ...(slug ? [{ "@type": "ListItem", position: 3, name: doc.title, item: url }] : []),
+        ],
+      },
     ],
   };
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Wordmark } from "./Mark";
-import { REPO_URL, SECTIONS } from "../_lib/site";
+import { REPO_URL } from "../_lib/site";
 
 /**
  * A thin instrument bar rather than a header: hairline underneath, nothing
@@ -15,17 +15,6 @@ export function Nav() {
           <Wordmark size={20} />
         </Link>
 
-        <nav aria-label="Sections" className="hidden items-center gap-7 md:flex">
-          {SECTIONS.map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
-              className="text-[13px] text-dim transition-colors hover:text-bone"
-            >
-              {s.label}
-            </a>
-          ))}
-        </nav>
 
         <div className="flex items-center gap-2">
           <a
@@ -39,14 +28,12 @@ export function Nav() {
             </svg>
             <span className="hidden sm:inline">GitHub</span>
           </a>
-          <a
-            href={`${REPO_URL}#running-it`}
-            target="_blank"
-            rel="noreferrer noopener"
+          <Link
+            href="/docs"
             className="rounded-[5px] bg-bone px-3.5 py-[7px] text-[12.5px] font-medium text-ground transition-opacity hover:opacity-88"
           >
-            Run it
-          </a>
+            Docs
+          </Link>
         </div>
       </div>
     </header>

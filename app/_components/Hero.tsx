@@ -1,4 +1,6 @@
 import { BinaryField } from "./BinaryField";
+import Link from "next/link";
+import { Octocat } from "./Octocat";
 import { REPO_URL } from "../_lib/site";
 
 /**
@@ -65,22 +67,21 @@ export function Hero() {
             className="rise mt-7 flex flex-wrap items-center gap-3"
             style={{ animationDelay: "180ms" }}
           >
-            <a
-              href={`${REPO_URL}#running-it`}
-              target="_blank"
-              rel="noreferrer noopener"
+            <Link
+              href="/docs"
               className="group flex items-center gap-2 rounded-[5px] bg-bone px-4 py-2.5 text-[13.5px] font-medium text-ground transition-opacity hover:opacity-88"
             >
-              Run it in one command
+              Read the documentation
               <span className="transition-transform group-hover:translate-x-0.5">→</span>
-            </a>
+            </Link>
             <a
               href={REPO_URL}
               target="_blank"
               rel="noreferrer noopener"
-              className="rounded-[5px] border border-line px-4 py-2.5 text-[13.5px] text-text transition-colors hover:bg-raise hover:text-bone"
+              className="flex items-center gap-2 rounded-[5px] border border-line px-4 py-2.5 text-[13.5px] text-text transition-colors hover:bg-raise hover:text-bone"
             >
-              Read the source
+              <Octocat />
+              GitHub
             </a>
           </div>
         </div>
