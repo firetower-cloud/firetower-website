@@ -1,0 +1,353 @@
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────────────────────────────
+   The site borrows the product's palette rather than inventing one, so
+   the landing page and the thing it is selling read as the same object.
+   Values are lifted from web/app/globals.css; keep them in step.
+   ─────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Ground: warm ash, never neutral black. A touch deeper than the app's
+     so a full-bleed marketing page doesn't glare. */
+  --color-ground: #0a0908;
+  --color-panel: #131211;
+  --color-raise: #1a1816;
+  --color-line: #262320;
+  --color-line-soft: #1a1817;
+
+  /* Text */
+  --color-mute: #6b645d;
+  --color-dim: #948c83;
+  --color-text: #cfc8bf;
+  --color-bone: #f4f0e9;
+
+  /* Signals: only ember is allowed to be loud. */
+  --color-ember: #ff6b2c;
+  --color-ember-soft: #ff9a6b;
+  --color-ember-deep: #7a3417;
+  --color-slate: #7d8f99;
+  --color-sage: #8fae86;
+  --color-brick: #c9584b;
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-narrow: var(--font-archivo-narrow), var(--font-archivo), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-pixel: var(--font-pixel-face), var(--font-jetbrains), ui-monospace,
+    monospace;
+
+  --radius: 6px;
+}
+
+@layer base {
+  html {
+    background: var(--color-ground);
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    /* `clip`, not `hidden`: the decorative glows overhang the viewport on
+       purpose, and `hidden` here would also break the sticky header. */
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--color-ground);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv05" 1;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-ember) 32%, transparent);
+    color: var(--color-bone);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-ember);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #33302c;
+  }
+}
+
+@layer components {
+  /* The map-legend voice: every small label on the site is one of these. */
+  .eyebrow {
+    font-family: var(--font-narrow);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+
+  /* The display face. Condensed, tight, and shouting — the sign painted on
+     the side of the tower, not a web headline. */
+  .display {
+    font-family: var(--font-narrow);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.012em;
+    line-height: 0.86;
+    color: var(--color-bone);
+    text-wrap: balance;
+  }
+
+  /* The hero voice: a bitmap monospace, sentence case, tight. Pixel faces
+     have square terminals and no optical correction, so they need more
+     leading and less tracking than the condensed face does — and they fall
+     apart in all-caps at this size, which is why the hero is not shouting. */
+  .pixel {
+    font-family: var(--font-pixel);
+    /* A bitmap face has one weight by definition — the pixels are the
+       weight. Asking for 700 only invites a synthesised bold, which smears
+       the very squares that make it readable. */
+    font-weight: 400;
+    line-height: 1.24;
+    letter-spacing: 0.005em;
+    color: var(--color-bone);
+    text-wrap: balance;
+  }
+
+  .panel {
+    background: var(--color-panel);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+  }
+
+  /* Hairline rule that fades at both ends, so section breaks feel drawn
+     rather than boxed. */
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-line) 12%,
+      var(--color-line) 88%,
+      transparent
+    );
+  }
+}
+
+/* ── The grid the whole page sits on: a survey map, faintly ─────────── */
+.survey {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: center top;
+}
+
+/* ── The hero diagram ───────────────────────────────────────────────── */
+
+.blueprint {
+  --bp-lh: 1.5em;
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: var(--bp-lh);
+  white-space: pre;
+  /* A drawing, not a document: never let it hyphenate, wrap or select as
+     text, and never let it widen the page. */
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  user-select: none;
+  scrollbar-width: none;
+}
+.blueprint::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .blueprint {
+    font-size: 13px;
+  }
+}
+
+/* The stacked variant is narrower in columns, so it can afford to be bigger
+   in pixels — and needs to be, to stay readable on a phone. */
+.blueprint-tall {
+  font-size: 13px;
+}
+@media (min-width: 420px) {
+  .blueprint-tall {
+    font-size: 15px;
+  }
+}
+
+/* One character travelling a wire. `steps()` lands it on the dots rather
+   than sliding it between them, which is the difference between a spark and
+   a smear. */
+.spark {
+  position: absolute;
+  color: var(--color-ember);
+  animation: spark-go 3.2s steps(8) infinite;
+}
+
+@keyframes spark-go {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(8ch);
+  }
+}
+
+.spark-back {
+  animation-name: spark-back;
+}
+@keyframes spark-back {
+  from {
+    transform: translateX(8ch);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.spark-down {
+  animation-name: spark-fall;
+  animation-timing-function: steps(2);
+  animation-duration: 1.9s;
+}
+@keyframes spark-fall {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(2 * var(--bp-lh)));
+  }
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────── */
+
+@keyframes ember-pulse {
+  0%,
+  100% {
+    opacity: 0.34;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.06;
+    transform: translate(-50%, -50%) scale(2);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes stem-rise {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Smoke off the ridge: two slow, offset drifts so it never loops visibly. */
+@keyframes smoke {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.9);
+  }
+  22% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(26px, -70px) scale(1.7);
+  }
+}
+
+.ember-pulse {
+  animation: ember-pulse 3.2s ease-in-out infinite;
+}
+.breathe {
+  animation: breathe 2.6s ease-in-out infinite;
+}
+.stem-rise {
+  transform-origin: bottom;
+  animation: stem-rise 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.caret {
+  animation: caret 1.1s steps(1) infinite;
+}
+.rise {
+  animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.smoke {
+  animation: smoke 7s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .ember-pulse,
+  .breathe,
+  .stem-rise,
+  .caret,
+  .rise,
+  .smoke,
+  .spark {
+    animation: none !important;
+  }
+  .stem-rise {
+    transform: none;
+    opacity: 1;
+  }
+  .rise {
+    opacity: 1;
+    transform: none;
+  }
+}

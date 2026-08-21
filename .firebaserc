@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "firetower-prod-506201"
+  },
+  "targets": {
+    "firetower-prod-506201": {
+      "hosting": {
+        "prod": ["firetower-prod"]
+      }
+    }
+  }
+}

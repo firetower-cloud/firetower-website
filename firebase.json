@@ -1,0 +1,49 @@
+{
+  "hosting": {
+    "public": "out",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "headers": [
+      {
+        "//": "Next's metadata routes emit real PNGs with no file extension, so Hosting would serve them as application/octet-stream and every social preview would break. Set the type explicitly. The URLs carry a build hash, so they are safe to cache forever.",
+        "source": "/@(opengraph-image|apple-icon|icon)",
+        "headers": [
+          { "key": "Content-Type", "value": "image/png" },
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "//": "Next fingerprints everything under _next/static, so these URLs can never change contents.",
+        "source": "/_next/static/**",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "//": "Fonts and extension-bearing images are content-addressed by the build too.",
+        "source": "**/*.@(woff|woff2|ttf|otf|eot|png|jpg|jpeg|gif|webp|avif|ico)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "//": "HTML and the metadata text files must revalidate, or a deploy would not be visible until caches expire.",
+        "source": "**/*.@(html|xml|txt|webmanifest|svg)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        ]
+      },
+      {
+        "//": "Baseline hardening. The site loads nothing cross-origin, so these cost nothing.",
+        "source": "**",
+        "headers": [
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+          { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
+        ]
+      }
+    ]
+  }
+}
