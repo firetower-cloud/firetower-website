@@ -1,0 +1,61 @@
+import { docMeta } from "../../../_lib/nav"
+import { Lede, Callout, Where } from "../../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/machines/upgrade")
+
+# Upgrade the worker
+
+<Lede>
+Once per machine, and only after that machine has been drained.
+</Lede>
+
+## 1. Drain the host
+
+<Callout kind="warning">
+**Compute → the host → Drain**, and wait until nothing is running on it.
+Recreating the container takes the tmux server with it, and every session on
+that machine goes too. The CLI cannot check this for you — a worker machine
+holds no credential for the control plane — so it asks instead.
+</Callout>
+
+Draining stops new sessions being placed there. The ones already running carry
+on until they end.
+
+## 2. Recreate the container
+
+<Where>the machine that runs agents</Where>
+
+```sh
+firetower worker upgrade
+```
+
+Pulls the new image, removes the container and starts a fresh one on the same
+volume. `firetower:/var/lib/firetower` holds everything worth keeping —
+repositories, worktrees, the event log and the agent's own home — so removing
+the container loses nothing.
+
+Pass `--container <name>` if this machine runs more than one worker.
+
+## 3. Resume it
+
+Back in **Compute → the host**, the button now says **Resume**. Until you press
+it, no new session is placed there.
+
+```sh
+firetower worker status
+```
+
+says what the container ended up on.
+
+## Version drift
+
+Firetower compares its own version against each worker's on every connection and
+says when they have drifted. `firetower upgrade` on the app's machine also names
+every machine still running an older worker, and the command to fix each one.
+
+A worker that is behind still works, quietly. It runs sessions perfectly well;
+what it cannot do is anything added since it was built. A worker older than
+agent hooks will start an agent and never tell you it stopped — the session sits
+on *working* while the agent waits for you, and nothing reports an error. The
+version drift on the fleet screen is the thing to look at when a feature seems
+not to exist.

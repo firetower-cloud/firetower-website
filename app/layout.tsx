@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Westlabs LLC" }],
   creator: "Westlabs LLC",
   publisher: "Westlabs LLC",
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", types: { "text/markdown": "/llms.txt" } },
   openGraph: {
     type: "website",
     url: SITE_URL,

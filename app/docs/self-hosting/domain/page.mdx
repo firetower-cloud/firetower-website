@@ -1,7 +1,7 @@
-import { docMeta } from "../_lib/nav"
-import { Lede, Callout } from "../../_components/docs/Bits"
+import { docMeta } from "../../_lib/nav"
+import { Lede, Callout } from "../../../_components/docs/Bits"
 
-export const metadata = docMeta("domain")
+export const metadata = docMeta("self-hosting/domain")
 
 # Put it on a domain
 
@@ -31,18 +31,30 @@ one people forget.
 
 ## 3. Set the domain
 
+If you have not installed yet, `firetower install` asks for it — answer yes to
+"Will you reach this over a public domain?" and type the name. It checks the
+name resolves to this machine before it writes anything.
+
+On an install that is already running, edit `.env` in the deployment directory:
+
 ```sh
 DOMAIN=firetower.example.com
 FIRETOWER_PUBLIC_URL=https://firetower.example.com
 ```
 
-## 4. Start it, then wait
-
-The first certificate takes 5–30 seconds. Until it arrives the browser shows a
-TLS error, which looks like a broken deployment and is not.
+Then apply it:
 
 ```sh
-docker compose -f firetower.yml logs -f caddy
+firetower restart
+```
+
+## 4. Wait for the certificate
+
+The first one takes 5–30 seconds. Until it arrives the browser shows a TLS
+error, which looks like a broken deployment and is not.
+
+```sh
+firetower logs caddy -f
 ```
 
 Wait for `certificate obtained successfully`.
@@ -61,7 +73,7 @@ The log says which of four things happened:
 <Callout kind="warning">
 Failed validations are limited to five per hostname per hour, and it is easy to
 burn that while DNS is still wrong. Add `acme_ca https://acme-staging-v02.api.letsencrypt.org/directory`
-to a global block in the `Caddyfile`, prove the pipeline works against
+to a global block in the `Caddyfile` in the deployment directory, prove the pipeline works against
 untrusted certificates, then take it out.
 </Callout>
 
@@ -72,5 +84,5 @@ cannot use this path. Caddy can prove ownership through your DNS provider's API
 instead, which needs a plugin compiled into it — open an issue and we will
 document it.
 
-To get warned before a renewal that has started failing, add
-`email you@example.com` to a global block at the top of the `Caddyfile`.
+To get warned before a renewal that has started failing, set `ACME_EMAIL` in
+`.env` — or pass `--acme-email you@example.com` to `firetower install`.

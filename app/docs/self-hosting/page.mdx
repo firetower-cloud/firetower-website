@@ -1,0 +1,128 @@
+import { docMeta } from "../_lib/nav"
+import { Lede, Callout } from "../../_components/docs/Bits"
+import { Diagram, Methods } from "../../_components/docs/Diagram"
+
+export const metadata = docMeta("self-hosting")
+
+# How self-hosting works
+
+<Lede>
+You run two things: **the app**, once, and **a worker** on every machine that
+should run agents.
+</Lede>
+
+The app reaches your machines over SSH. The worker never opens a port and
+holds no credentials of its own.
+
+## Architecture
+
+<Diagram caption="The app is the only thing exposed. Everything below the ssh line is a machine you already own.">{`
+                      your browser or phone
+                               |
+                             https
+                               |
++-[x]- THE APP ---------------------------------------------+
+|                                                           |
+|   caddy          firetower              postgres          |
+|   :80 / :443     control plane          state and         |
+|   tls, proxy     + web interface        sealed secrets    |
+|                                                           |
+|   one compose file. the only thing you expose.            |
++-----------------------------------------------------------+
+             |                              |
+            ssh                            ssh
+             |                              |
++-[x]- A MACHINE ----------+   +-[x]- ANOTHER MACHINE ----+
+|  firetower-worker        |   |  firetower-worker        |
+|  git . tmux              |   |  git . tmux              |
+|  its own event log       |   |  its own event log       |
+|  no open port            |   |  no open port            |
+|                          |   |                          |
+|  * Claude Code           |   |  * Claude Code           |
+|  * Codex                 |   |  * Codex                 |
+|  * Open Code             |   |  * Open Code             |
++--------------------------+   +--------------------------+
+`}</Diagram>
+
+### The app
+
+Three containers, brought up by `firetower install`:
+
+- **firetower** — the control plane and the web interface, compiled into one
+  binary. It decides what should happen, holds your hosts, repositories and
+  credentials, and serves the screen you work in.
+- **postgres** — the entire state, with every credential sealed. See
+  [Secrets](/docs/secrets).
+- **caddy** — the reverse proxy, and the only service that publishes a port.
+  Naming a domain is what turns on HTTPS.
+
+The control plane publishes no port. Only Caddy is reachable from outside.
+
+### The worker
+
+One container per machine, `firetower-worker`, holding what a session needs:
+git, tmux and the agents themselves.
+
+It does nothing on its own — Firetower SSHes to the
+machine and runs `docker exec` when it wants to talk. No sshd in the image, no
+key inside it, no port to open.
+
+Each worker writes what happened to its own event log before reporting it, so a
+session survives the app being unreachable.
+
+<Callout>
+The machine running the app is also a host. The control plane starts a worker
+as a child process, so `localhost` appears in the fleet, runs sessions, and can
+be drained.
+</Callout>
+
+## What you actually have to do
+
+1. **Run the app.** One command on any machine that can reach the internet.
+   → [Install](/docs/self-hosting/app/install)
+2. **Give it a name**, if you want to reach it from a phone. → [Put it on a
+   domain](/docs/self-hosting/domain)
+3. **Run a worker** on every machine that should run agents, and add each one
+   in Compute. → [Add a machine](/docs/self-hosting/machines/install)
+
+Step 3 is optional. A new install already has one host — itself — and runs
+sessions there.
+
+## Shapes that work
+
+| Where the app runs | Where workers run | Good for |
+| --- | --- | --- |
+| One machine | The same machine | Trying it, and small teams. Nothing else to set up. |
+| A small VPS | Bigger machines you add over SSH | Keeping the thing you expose small and cheap, and the compute separate. |
+| Your laptop | Cloud VMs | Working locally while the agents run somewhere that stays awake. |
+
+The work happens on the workers. Size those; the app only holds state and
+serves the interface.
+
+<Callout kind="warning">
+Back the root key up separately from the database. A database backup on its
+own cannot be decrypted; stored beside the key, it can.
+</Callout>
+
+## Ways to deploy it
+
+<Methods
+  items={[
+    {
+      name: "The CLI",
+      state: "ready",
+      body: "npm i -g @firetower/cli, then firetower install for the app and firetower worker install on each machine. It checks the machine, writes the deployment, generates the secrets and upgrades in place. This is the supported path, and the one the rest of these docs describe.",
+      href: "/docs/self-hosting/app/install",
+    },
+    {
+      name: "Terraform modules",
+      state: "planned",
+      body: "A module for the app and a module for a worker, so a machine can be created and joined in one apply instead of a VM, then an install, then a form. Not available yet.",
+    },
+  ]}
+/>
+
+## Next
+
+[Install](/docs/self-hosting/app/install) takes about two minutes and leaves you with a running
+Firetower on one machine.

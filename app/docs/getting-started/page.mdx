@@ -1,0 +1,62 @@
+import { docMeta } from "../_lib/nav"
+import { Lede, Callout } from "../../_components/docs/Bits"
+import { Methods } from "../../_components/docs/Diagram"
+
+export const metadata = docMeta("getting-started")
+
+# Getting started
+
+<Lede>
+Two ways to run Firetower. Self-hosting works today; Firetower Cloud does not
+exist yet.
+</Lede>
+
+<Methods
+  items={[
+    {
+      name: "Host it yourself",
+      state: "ready",
+      body: "npm i -g @firetower/cli, then one command for the app and one on every machine that should run agents. About two minutes.",
+      href: "/docs/self-hosting",
+    },
+    {
+      name: "Firetower Cloud",
+      state: "planned",
+      body: "The app runs for you — nothing to install, nothing to upgrade. Connect your own machines as workers, or deploy them in our cloud in minutes.",
+    },
+  ]}
+/>
+
+## Host it yourself
+
+You run two things.
+
+- **The app**, once. Serves the interface and holds your hosts, repositories
+  and credentials. Put it on a laptop or a server.
+- **A worker**, on every machine that should run agents. Contains git, tmux and
+  the agent itself.
+
+A new install has one machine in its fleet — itself — so you can run sessions
+before adding any others.
+
+Requirements: Docker, the Compose plugin, and Node 20 or newer on each
+machine you install onto.
+
+- [How self-hosting works](/docs/self-hosting) — the architecture, and the
+  shapes that work.
+- [Install](/docs/self-hosting/app/install) — the two commands.
+
+## Firetower Cloud
+
+<Callout>Not available yet.</Callout>
+
+The app runs for you: the interface, the scheduling and the credential store.
+Nothing to install, nothing to upgrade.
+
+Agents run wherever you choose.
+
+- **Your own machines.** Connected the same way as today — the app reaches out
+  to them over SSH.
+- **Ours.** Machines in minutes, with nothing to provision.
+
+Same application either way.

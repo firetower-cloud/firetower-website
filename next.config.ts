@@ -10,6 +10,25 @@ const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   poweredByHeader: false,
   compress: true,
+
+  // The docs moved under /docs/self-hosting when the cloud option appeared.
+  // Cheap insurance: a redirect is one line, a 404 in a bookmark is not.
+  async redirects() {
+    const moved: Record<string, string> = {
+      "self-host": "self-hosting",
+      install: "self-hosting/app/install",
+      domain: "self-hosting/domain",
+      hosts: "self-hosting/machines/install",
+      operations: "self-hosting/operations",
+      "self-hosting/install": "self-hosting/app/install",
+      "self-hosting/machines": "self-hosting/machines/install",
+    };
+    return Object.entries(moved).map(([from, to]) => ({
+      source: `/docs/${from}`,
+      destination: `/docs/${to}`,
+      permanent: true,
+    }));
+  },
 };
 
 /**

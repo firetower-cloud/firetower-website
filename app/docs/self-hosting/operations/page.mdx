@@ -1,0 +1,103 @@
+import { docMeta } from "../../_lib/nav"
+import { Lede, Callout, Fields, Field, Where } from "../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/operations")
+
+# Daily operations
+
+<Lede>
+Backups, the day-to-day commands, running behind a proxy you already have, and
+deciding who is allowed in. Upgrading has [its own
+page](/docs/self-hosting/app/upgrade).
+</Lede>
+
+Everything here runs on the machine the app is on. The CLI remembers where you
+installed; pass `--dir <path>` if you have more than one deployment.
+
+## Backups
+
+<Where>the machine the app runs on</Where>
+
+```sh
+firetower backup
+```
+
+Writes two files into `backups/` in the deployment directory: a `pg_dump` of the
+database, and the root key beside it.
+
+The database holds every credential, sealed; the root key decrypts them. Lose
+the key and every credential has to be added again. A stolen dump without the
+key opens nothing — so when you copy these off the machine, put the key
+somewhere the dump is not.
+
+Use `--out <dir>` to write them elsewhere.
+
+The worker's repositories and worktrees are not a backup target — they rebuild.
+
+## Day to day
+
+<Where>the machine the app runs on</Where>
+
+```sh
+firetower status               version, health, hosts, and worker drift
+firetower doctor               diagnose a deployment that isn't answering
+firetower logs [service] [-f]  tail one service, or all of them
+firetower start
+firetower stop
+firetower restart
+firetower uninstall            tear it down, asking separately about volumes
+```
+
+`--json` works on any of these that answers a question, so `firetower status
+--json` is what to point a monitor at.
+
+## Already running a proxy?
+
+Delete the `caddy` service from `firetower.yml`, publish `4400` from the
+`firetower` service, and point your proxy at it. Two things it has to do that
+some proxies do not by default:
+
+- Forward the `Upgrade` and `Connection` headers, or the terminal will not
+  attach.
+- Not buffer responses, or the session list freezes until something else forces
+  a flush. On nginx that is `proxy_buffering off`.
+
+If you trust a header for identity, make sure 4400 is reachable from nothing but
+the proxy.
+
+<Callout>
+`firetower upgrade` notices when the compose file has changed upstream and asks
+before replacing yours. Answer no to keep your edits, and re-apply them by hand
+against the copy it leaves as `firetower.yml.backup`.
+</Callout>
+
+## Who may use it
+
+Firetower is not open to whoever reaches the port. There are two ways in and a
+deployment picks one.
+
+**Signing in.** The administrator is created before anything is listening, from
+`ADMIN_USERNAME` and `ADMIN_INITIAL_PASSWORD` — which `firetower install` writes
+for you and prints once. You are asked to replace that password on first
+sign-in, and until you do the account can do nothing else. Changing a password
+signs out every browser, including the one that changed it.
+
+**Or a header from a proxy that already authenticates** — Cloudflare Access,
+Authelia, oauth2-proxy, Caddy's `forward_auth`. It has to name somebody who
+exists here, so a misconfigured proxy cannot admit a stranger as themselves.
+
+Add these to `.env` in the deployment directory, then `firetower restart`:
+
+<Fields>
+  <Field name="FIRETOWER_TRUSTED_PROXY_HEADER" hint="e.g. X-Forwarded-Email">
+    The header carrying the identity your proxy has already checked.
+  </Field>
+  <Field name="FIRETOWER_TRUSTED_PROXY" hint="e.g. 172.16.0.0/12">
+    The addresses that header is believed from. Setting one without the other
+    stops start-up — a deployment that thinks it is authenticated and is not
+    would test perfectly, because the tester sets the header too.
+  </Field>
+</Fields>
+
+Firetower refuses to listen on anything but loopback with authentication turned
+off.

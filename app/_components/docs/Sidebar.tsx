@@ -36,7 +36,7 @@ export function Sidebar() {
                           on ? "bg-raise text-bone" : "text-dim hover:bg-raise/60 hover:text-text"
                         }`}
                       >
-                        {d.title}
+                        {d.navTitle ?? d.title}
                       </Link>
                     </li>
                   );
@@ -47,5 +47,40 @@ export function Sidebar() {
         })}
       </nav>
     </aside>
+  );
+}
+
+/**
+ * The same list on a phone, where there is no room for a column.
+ *
+ * A scrolling row rather than a menu behind a button: eleven pages fit, and a
+ * navigation you have to open is a navigation most people do not know is
+ * there. Titles rather than sidebar labels — there is no section heading here
+ * to tell two "Application" chips apart.
+ */
+export function DocsRail() {
+  const path = usePathname();
+
+  return (
+    <nav
+      aria-label="Documentation"
+      className="-mx-5 mb-8 flex gap-1.5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden"
+    >
+      {DOCS.map((d) => {
+        const to = href(d.slug);
+        const on = path === to;
+        return (
+          <Link
+            key={d.slug}
+            href={to}
+            className={`shrink-0 rounded-[5px] border px-2.5 py-1.5 text-[12.5px] whitespace-nowrap transition-colors ${
+              on ? "border-ember-deep bg-raise text-bone" : "border-line text-dim hover:text-text"
+            }`}
+          >
+            {d.slug ? d.title : "Overview"}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }

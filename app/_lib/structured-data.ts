@@ -10,7 +10,7 @@
  * rich results turned off for a whole domain.
  */
 import { AUTHOR, LICENSE, NAME, REPO_URL, SITE_URL, SUMMARY, TAGLINE } from "./site";
-import { findDoc, href } from "../docs/_lib/nav";
+import { findDoc, href, trail } from "../docs/_lib/nav";
 
 export const ORG_ID = `${SITE_URL}/#organization`;
 export const SITE_ID = `${SITE_URL}/#website`;
@@ -111,11 +111,12 @@ export function docLd(slug: string) {
       {
         "@type": "BreadcrumbList",
         "@id": `${url}#breadcrumbs`,
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: NAME, item: SITE_URL },
-          { "@type": "ListItem", position: 2, name: "Documentation", item: `${SITE_URL}/docs` },
-          ...(slug ? [{ "@type": "ListItem", position: 3, name: doc.title, item: url }] : []),
-        ],
+        itemListElement: trail(slug).map((step, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: step.name,
+          item: step.url,
+        })),
       },
     ],
   };

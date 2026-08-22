@@ -65,7 +65,37 @@ export function Field({
   );
 }
 
-/** The lede under an h1: one paragraph, larger, that says what the page is. */
+/**
+ * The lede under an h1: one paragraph, larger, that says what the page is.
+ *
+ * A `div`, not a `p`. MDX parses the text inside a JSX block as markdown and
+ * wraps it in its own paragraph, so a `p` here nests a `p` inside a `p` — the
+ * browser silently un-nests it, the server does not, and React throws a
+ * hydration mismatch on every docs page.
+ */
 export function Lede({ children }: { children: ReactNode }) {
-  return <p className="-mt-1 mb-2 text-[16px] leading-[1.65] text-text">{children}</p>;
+  return (
+    <div className="-mt-1 mb-2 [&>p]:mt-0 [&>p]:text-[16px] [&>p]:leading-[1.65] [&>p]:text-text">
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Which machine a block of commands belongs on.
+ *
+ * The single most common way to get lost in self-hosting instructions is not
+ * knowing whether the terminal in front of you is the right one, so every
+ * command on the install page sits under one of these.
+ */
+export function Where({ children }: { children: ReactNode }) {
+  return (
+    <p className="mt-6 flex items-center gap-2.5 rounded-[5px] border border-line-soft bg-raise/40 px-3 py-2">
+      <span className="font-mono text-[11px] text-ember">▶</span>
+      <span className="font-narrow text-[10px] font-semibold tracking-[0.16em] text-mute uppercase">
+        Run this on
+      </span>
+      <span className="text-[13px] text-bone">{children}</span>
+    </p>
+  );
 }

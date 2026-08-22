@@ -1,0 +1,103 @@
+import { docMeta } from "../../../_lib/nav"
+import { Lede, Callout, Output, Fields, Field, Where } from "../../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/app/install")
+
+# Install the app
+
+<Lede>
+One command on the machine that runs the app. It checks the machine, writes the
+deployment, generates the secrets and brings it up.
+</Lede>
+
+This page installs the app. Machines that run agents are a separate install
+with a separate command, on [their own
+page](/docs/self-hosting/machines/install).
+
+| | The app | A machine for agents |
+| --- | --- | --- |
+| Command | `firetower install` | `firetower worker install` |
+| Runs on | one machine — the one you open in a browser | every machine that should run agents |
+| Brings up | the control plane, Postgres and Caddy | one worker container |
+| Needed? | Yes | No — a new install already runs agents on itself |
+
+## Requirements
+
+Docker, the Compose plugin, and Node 20 or newer — on each machine you install
+onto. Node comes with npm, which is what installs the CLI.
+
+## 1. Decide where the app runs
+
+The app is the part you open in a browser. It is not where agents run.
+
+| | On your laptop | On a server |
+| --- | --- | --- |
+| Who reaches it | Only you, at `localhost` | You, from anything — including a phone |
+| Domain | Not needed | Needed for HTTPS |
+| Certificate | None | Caddy gets one, automatically |
+
+Both drive workers on other machines the same way: the app reaches out over
+SSH, so those machines never need a public address.
+
+## 2. Install the app
+
+This is the control plane and the web interface. It does not run agents.
+
+<Where>the machine the app will run on — your laptop, or your server</Where>
+
+```sh
+npm i -g @firetower/cli
+firetower install
+```
+
+It asks four questions:
+
+<Fields>
+  <Field name="Will you reach this over a public domain?">
+    Yes, and the domain — Caddy then gets a certificate and redirects 80 to
+    443. No, and it serves plain HTTP on port 80, which is what you want on a
+    laptop.
+  </Field>
+  <Field name="Where should Firetower live?">
+    A directory for the compose file, the `Caddyfile` and `.env`. Defaults to
+    `~/firetower`, or `/opt/firetower` as root.
+  </Field>
+  <Field name="Administrator username">
+    Defaults to `admin`.
+  </Field>
+  <Field name="Administrator password">
+    Generate one, or type your own.
+  </Field>
+</Fields>
+
+Before writing anything it checks the machine — Docker, the Compose plugin,
+ports 80 and 443, architecture, disk, whether `ghcr.io` is reachable, and
+whether the domain you gave resolves here. Then it fetches the compose file
+from the latest Firetower release, generates `POSTGRES_PASSWORD` and
+`FIRETOWER_ROOT_KEY`, writes `.env`, shows you what it is about to do, and
+brings the stack up.
+
+<Output>{`  Firetower is running.
+
+    https://firetower.example.com
+
+    username  admin
+    password  velvet-timber-harbor-332`}</Output>
+
+That password is printed once. You are asked to replace it when you sign in,
+and then to delete `ADMIN_INITIAL_PASSWORD` from `.env`.
+
+<Callout kind="warning">
+The root key is the only unrecoverable thing here. Every stored credential is
+sealed with it, and the installer makes you acknowledge it for that reason.
+Back it up somewhere that is not your database backup — see
+[Secrets](/docs/secrets).
+</Callout>
+
+## Next
+
+- [Upgrade the app](/docs/self-hosting/app/upgrade) when a new release lands.
+- On a server, and want to reach it from a phone? → [Put it on a
+  domain](/docs/self-hosting/domain)
+- Want agents running on other machines? → [Add a
+  machine](/docs/self-hosting/machines/install)

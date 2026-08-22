@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "../_components/Nav";
 import { Footer } from "../_components/Footer";
-import { Sidebar } from "../_components/docs/Sidebar";
+import { Sidebar, DocsRail } from "../_components/docs/Sidebar";
 import { PrevNext } from "../_components/docs/PrevNext";
 import { DocSchema } from "../_components/docs/DocSchema";
 
@@ -25,6 +25,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
         <Sidebar />
         <main className="min-w-0 flex-1">
           <DocSchema />
+          <DocsRail />
           <article className="max-w-[74ch]">{children}</article>
           <PrevNext />
         </main>

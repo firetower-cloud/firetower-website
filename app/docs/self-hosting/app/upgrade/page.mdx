@@ -1,0 +1,64 @@
+import { docMeta } from "../../../_lib/nav"
+import { Lede, Callout, Where } from "../../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/app/upgrade")
+
+# Upgrade the app
+
+<Lede>
+One command. It backs the database up first, and finishes by naming every
+machine left running an older worker.
+</Lede>
+
+<Where>the machine the app runs on</Where>
+
+```sh
+firetower upgrade
+```
+
+In order, it:
+
+1. Backs up the database and copies the root key beside the dump, into
+   `backups/` in the deployment directory. Pass `--no-backup` to skip it.
+2. Pulls the new images and recreates the containers. Migrations run at
+   start-up.
+3. Waits for the app to report healthy, and says which version you are on.
+4. Lists the machines whose worker is now behind, with the command to run on
+   each.
+
+The CLI upgrades itself first — `npm i -g @firetower/cli` — if the release
+needs a newer one than you have. `--skip-version-check` opts out.
+
+## If the deployment file changed
+
+Some releases change `firetower.yml`. When that happens the CLI says so and
+asks before replacing yours, keeping the old one as `firetower.yml.backup`.
+
+Answer no if you have edited it — to drop Caddy for a proxy you already run,
+say — then re-apply your changes against the copy it kept.
+
+## Then the workers
+
+`firetower upgrade` does not touch them. They are separate machines, and each
+one has to be drained before its container is recreated → [Upgrade the
+worker](/docs/self-hosting/machines/upgrade).
+
+<Callout>
+`firetower status` says the same thing at any time: the version you are on, the
+health of each service, and which hosts have drifted. `--json` makes it
+something to point a monitor at.
+</Callout>
+
+## If it does not come back
+
+```sh
+firetower doctor
+firetower logs -f
+```
+
+`doctor` re-runs the machine checks from install and reads the deployment for
+the mistakes that stop it starting. `logs` takes a service name — `firetower`,
+`postgres`, `caddy` — or tails all three.
+
+The database backup from step 1 is in `backups/`, with the root key it needs to
+be worth anything.

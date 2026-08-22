@@ -1,0 +1,84 @@
+import { docMeta } from "../../../_lib/nav"
+import { Lede, Callout, Where } from "../../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/machines/install")
+
+# Add a machine
+
+<Lede>
+A machine is a server you already have. Firetower reaches it over SSH with the
+key you already use, runs the worker there, and installs nothing you did not put
+there.
+</Lede>
+
+You need two things on it: an SSH account, and the worker container. Everything
+the worker uses is inside that container — git, tmux, Node and an agent — so
+there is nothing else to set up.
+
+Requirements: Docker and Node 20 or newer.
+
+## Start the worker
+
+<Where>the machine that should run agents</Where>
+
+```sh
+npm i -g @firetower/cli
+firetower worker install
+```
+
+Pulls `ghcr.io/firetower-cloud/firetower-worker:latest`, starts it as
+`firetower-worker` with `--restart unless-stopped`, and keeps its state on a
+Docker volume called `firetower`. Pass `--container <name>` to run more than one
+on the same machine.
+
+The container does nothing on its own. Firetower SSHes to the machine and runs
+`docker exec` when it wants to talk, so there is no sshd in the image, no key
+inside it, and no port to open.
+
+Check that the account you will connect as can reach Docker, because Firetower
+will be that account. Run this as that account, not as root:
+
+```sh
+docker ps
+```
+
+If that says permission denied, add the account to the `docker` group with
+`sudo usermod -aG docker $USER` and log back in.
+
+## Add it in Firetower
+
+<Where>Firetower, in a browser</Where>
+
+**Compute → Add compute → A server**, then the address, the account to SSH as,
+the private key, and the container name — `firetower-worker`, already filled in.
+
+If it does not connect, the host is added anyway and says what to fix. Sort the
+machine out and press **Try now**; there is nothing to re-add.
+
+Nothing on this machine holds a credential. What an agent authenticates with is
+held by the control plane and handed to a session as it starts, so a fresh
+worker needs no login.
+
+<Callout>
+Some providers build a VM by naming a container image instead of an operating
+system. SSH in and run `docker ps`: if you see the worker running, copy that
+container's name into the field. If there is no `docker` command at all but git
+and tmux are there, you are inside the worker itself — leave the field empty.
+</Callout>
+
+## Check what it is running
+
+<Where>the machine that should run agents</Where>
+
+```sh
+firetower worker status
+```
+
+<Callout>
+Add `--json` to any command that answers a question, including this one.
+</Callout>
+
+## Next
+
+Upgrade it when the app moves on → [Upgrade the
+worker](/docs/self-hosting/machines/upgrade).

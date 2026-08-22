@@ -237,6 +237,54 @@ illustrations rather than documentation.
 matching the repository's README. That is a deliberate constraint, not an
 oversight.
 
+**The docs are MDX, and the manifest is the source of truth.**
+`app/docs/_lib/nav.ts` drives the sidebar, the mobile rail, the index cards,
+the previous/next links, the breadcrumbs, the per-page metadata and the
+sitemap. Adding a page is one entry plus one `page.mdx`; there is no way to
+ship a page that the sitemap does not know about. Slugs may nest
+(`self-hosting/install`) and `trail()` turns a nested slug into breadcrumbs by
+keeping only the segments that are real pages.
+
+**Install instructions say which machine each command is for.** `<Where>`
+labels every block on the install page, because the commonest way to get lost
+in self-hosting docs is not knowing whether the terminal in front of you is
+the right one. `<Tabs>` carries Compose-versus-Docker without doubling the
+page; every panel stays in the DOM and inactive ones are hidden, so both
+versions are in the HTML a crawler reads.
+
+**Compose is always the first tab**, and any command shown for one tool is
+shown for both. A step that only works with Compose is a step that strands
+everyone who chose the other tab.
+
+**A `.env` file is read literally.** `POSTGRES_PASSWORD=$(openssl rand ...)`
+in one is stored as that string — the substitution never happens. Docs that
+show a `.env` must show pasted values; only the shell blocks may generate
+them inline. Shipped that bug once here already.
+
+**The shape is Start → Self-hosting → Using Firetower**, because there will be
+a second way to run this. `/docs/getting-started` is the fork: host it
+yourself, or Firetower Cloud when it exists. When cloud arrives it becomes a
+third section beside Self-hosting, and nothing else has to move — which is why
+the operational pages live under `/docs/self-hosting/` rather than at the root.
+Old flat URLs redirect in `next.config.ts`.
+
+**Turbopack limits the MDX pipeline.** remark/rehype plugins must be named as
+strings with serializable options — a JavaScript function cannot be handed to
+Rust. That is why `rehype-pretty-code` is configured with nothing but a theme
+name, and why the copy button's raw text is recovered by walking the rendered
+children in `CodeBlock` instead of by a plugin that stashes it on the node.
+
+**A component that renders a `p` cannot wrap MDX prose.** MDX parses the text
+inside a JSX block as markdown and gives it its own paragraph, so a `p` there
+nests a `p` in a `p` — the browser un-nests it, the server does not, and every
+docs page throws a hydration mismatch. `Lede` is a `div` for this reason.
+
+**Do not colour a diagram character by character.** `-` is a frame in `+---+`
+and a hyphen in "firetower-worker"; `v` is a letter in "event". `Diagram`
+matches *runs* — a pipe, a plus, or two or more dashes — so a label can
+contain any of them without being repainted. Same trap as the landing page's
+ASCII, caught twice now.
+
 **Do not cap a display heading with `ch`.** `ch` is the width of "0", which
 in a condensed uppercase face is nothing like the average letter — a
 `max-w-[22ch]` reads as roughly half the room it sounds like, and both section
