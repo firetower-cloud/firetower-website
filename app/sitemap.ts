@@ -8,6 +8,9 @@ import { DOCS, href } from "./docs/_lib/nav";
  * claims the page changed on every deploy, and search engines discount a
  * lastmod they catch being wrong. No date beats a guessed one.
  */
+/** `output: "export"` has no server to run this at request time. */
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {

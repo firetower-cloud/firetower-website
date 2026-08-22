@@ -56,6 +56,16 @@ jobs:
             [ -s "$f" ] || { echo "missing or empty: $f"; exit 1; }
           done
           grep -q 'usefiretower.com' out/sitemap.xml || { echo "sitemap has the wrong host"; exit 1; }
+
+          # Every page the sitemap advertises has to be a file that exists.
+          # This is the check that would have caught the docs shipping as a
+          # sitemap full of 404s.
+          grep -o '<loc>[^<]*</loc>' out/sitemap.xml \
+            | sed -e 's|<loc>||' -e 's|</loc>||' -e 's|https://usefiretower.com||' \
+            | while read -r path; do
+                file="out${path:-/index}.html"
+                [ -s "$file" ] || { echo "sitemap lists $path but $file is missing"; exit 1; }
+              done
           echo "export looks complete"
 
       - uses: google-github-actions/auth@v2

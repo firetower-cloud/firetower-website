@@ -5,30 +5,31 @@ import createMDX from "@next/mdx";
  * Every route here is static. Nothing on the site reads a request, so the whole
  * thing is prerendered at build time and served as files — which is also what
  * makes it cheap to host anywhere the project ends up.
+ *
+ * `output: "export"` makes that literal: the build emits plain HTML, CSS and
+ * JS into `out/`, with no Node server at all, which is what Firebase Hosting
+ * uploads to its CDN. The moment any route needs a request — middleware, a
+ * route handler, `cookies()`, ISR — this line has to go and the site needs a
+ * real runtime behind it.
+ *
+ * The docs' redirects live in `firebase.json` rather than here, for the same
+ * reason: `redirects()` is served by a Node server this deployment does not
+ * have, and Next drops it from an export with a warning rather than an error.
  */
 const nextConfig: NextConfig = {
+  output: "export",
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   poweredByHeader: false,
   compress: true,
 
-  // The docs moved under /docs/self-hosting when the cloud option appeared.
-  // Cheap insurance: a redirect is one line, a 404 in a bookmark is not.
-  async redirects() {
-    const moved: Record<string, string> = {
-      "self-host": "self-hosting",
-      install: "self-hosting/app/install",
-      domain: "self-hosting/domain",
-      hosts: "self-hosting/machines/install",
-      operations: "self-hosting/operations",
-      "self-hosting/install": "self-hosting/app/install",
-      "self-hosting/machines": "self-hosting/machines/install",
-    };
-    return Object.entries(moved).map(([from, to]) => ({
-      source: `/docs/${from}`,
-      destination: `/docs/${to}`,
-      permanent: true,
-    }));
-  },
+  // Without this, Turbopack walks up looking for a lockfile, finds the one in
+  // the home directory, and infers a workspace root containing everything the
+  // user owns. Pin the root to this project.
+  turbopack: { root: import.meta.dirname },
+
+  // Static export has no image optimisation server. The site ships its own
+  // assets at the sizes it needs, so this only disables a feature nothing uses.
+  images: { unoptimized: true },
 };
 
 /**
