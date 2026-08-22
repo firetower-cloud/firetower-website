@@ -1,5 +1,7 @@
 {
   "hosting": {
+    "//": "The deploy names a target rather than a site: `firebase deploy --only hosting:prod`. Without this key that target resolves to nothing and the deploy stops with \"Hosting site or target prod not detected\". `.firebaserc` maps prod to the usefiretower-prod site.",
+    "target": "prod",
     "public": "out",
     "ignore": [
       "firebase.json",
