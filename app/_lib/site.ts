@@ -26,4 +26,13 @@ export const REPO_RAW = "https://raw.githubusercontent.com/firetower-cloud/firet
 export const LICENSE = "AGPL-3.0-only";
 export const AUTHOR = "Westlabs LLC";
 
-/** Anchors used by the in-page nav; also the sitemap's only real sections. */
+/**
+ * The GA4 property. Public by design — it ships in the page source of every
+ * static build, so there is nothing to hide in an environment variable and a
+ * missing one would silently turn measurement off.
+ *
+ * This is mounted on every deploy, previews included, so PR channel traffic
+ * lands in the same property as production. Filter it in GA4 by hostname if
+ * it ever gets loud.
+ */
+export const GA_MEASUREMENT_ID = "G-4MV57HMRFX";

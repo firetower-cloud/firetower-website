@@ -46,27 +46,14 @@ jobs:
       - name: build
         run: npm run build
 
-      - name: assert the export is complete
+      - name: assert the export is complete and indexable
         # `output: export` fails open in one specific way: if a route quietly
         # stops being static, the build can still succeed while emitting no
-        # file for it. Check the artifacts the site's metadata actually links to.
-        run: |
-          set -e
-          for f in out/index.html out/robots.txt out/sitemap.xml out/opengraph-image out/apple-icon; do
-            [ -s "$f" ] || { echo "missing or empty: $f"; exit 1; }
-          done
-          grep -q 'usefiretower.com' out/sitemap.xml || { echo "sitemap has the wrong host"; exit 1; }
-
-          # Every page the sitemap advertises has to be a file that exists.
-          # This is the check that would have caught the docs shipping as a
-          # sitemap full of 404s.
-          grep -o '<loc>[^<]*</loc>' out/sitemap.xml \
-            | sed -e 's|<loc>||' -e 's|</loc>||' -e 's|https://usefiretower.com||' \
-            | while read -r path; do
-                file="out${path:-/index}.html"
-                [ -s "$file" ] || { echo "sitemap lists $path but $file is missing"; exit 1; }
-              done
-          echo "export looks complete"
+        # file for it. And nothing in a build fails when a page loses its
+        # canonical, its description, or its JSON-LD — those fail silently,
+        # weeks later, in Search Console. scripts/check-seo.mjs turns both
+        # back into build errors. Run it locally with `npm run check:seo`.
+        run: npm run check:seo
 
       - uses: google-github-actions/auth@v2
         with:

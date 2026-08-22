@@ -1,5 +1,6 @@
 import { Blueprint } from "./Blueprint";
 import { Copy } from "./Copy";
+import { LIFECYCLE, LIFECYCLE_PROMPT } from "../_lib/lifecycle";
 
 /* The architecture gets a section of its own, centred, because the diagram is
    the explanation and everything here is a caption for it.
@@ -8,19 +9,6 @@ import { Copy } from "./Copy";
    fold down and had no room for a word of context. Two boxes labelled
    "Firetower" and "Worker" also used to live here, saying the same thing in
    less detail — the drawing replaced them rather than joining them. */
-
-const STEPS = [
-  { k: "picks a host", v: "from the fleet, or the one you named" },
-  { k: "cuts a branch", v: "off the mirror it already keeps warm" },
-  { k: "makes a worktree", v: "so two sessions never share a checkout" },
-  { k: "starts tmux", v: "and the session outlives every connection to it" },
-  // Before the launch, not after it: the agent needs the variables to work
-  // and the install to have finished. The control plane's own step order is
-  // Setup then Launch, and the demo further up the page shows it that way.
-  { k: "copies your variables", v: "and runs the repository's init scripts" },
-  { k: "launches the agent", v: "with credentials handed over at start, in memory only" },
-  { k: "keeps it running", v: "and records what happened before reporting it" },
-];
 
 const LEGEND: { mark: string; tone: string; text: string }[] = [
   { mark: "*", tone: "text-ember", text: "a session that has stopped and needs you" },
@@ -94,13 +82,13 @@ export function How() {
             <div className="flex items-center gap-2 border-b border-line bg-raise/40 px-4 py-3">
               <span className="font-mono text-[12px] text-mute">$</span>
               <span className="min-w-0 flex-1 truncate font-mono text-[12.5px] text-bone">
-                rate-limit the webhook receiver, 100/min per key
+                {LIFECYCLE_PROMPT}
               </span>
-              <Copy text="rate-limit the webhook receiver, 100/min per key" label="Copy" />
+              <Copy text={LIFECYCLE_PROMPT} label="Copy" />
             </div>
 
             <ol className="divide-y divide-line-soft">
-              {STEPS.map((s, i) => (
+              {LIFECYCLE.map((s, i) => (
                 <li key={s.k} className="flex items-baseline gap-3 px-4 py-2.5">
                   <span className="w-5 shrink-0 font-mono text-[10.5px] text-ember-deep">
                     {String(i + 1).padStart(2, "0")}

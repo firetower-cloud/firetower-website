@@ -4,6 +4,8 @@ import { Hero } from "./_components/Hero";
 import { Inbox } from "./_components/Inbox";
 import { How } from "./_components/How";
 import { Footer } from "./_components/Footer";
+import { JsonLd } from "./_components/JsonLd";
+import { howToLd, webPageLd } from "./_lib/structured-data";
 import { META_DESCRIPTION, NAME, TAGLINE } from "./_lib/site";
 
 /**
@@ -23,6 +25,10 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
+      {/* The sitewide graph is in the root layout. These two are about this
+          page specifically: the document itself, and the procedure it shows. */}
+      <JsonLd data={webPageLd()} />
+      <JsonLd data={howToLd()} />
       <Nav />
       <main>
         <Hero />

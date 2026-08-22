@@ -94,7 +94,7 @@
         ]
       },
       {
-        "//": "Baseline hardening. The site loads nothing cross-origin, so these cost nothing.",
+        "//": "Baseline hardening. Google Analytics is the only cross-origin thing the site loads, and none of these headers touch it — there is deliberately no CSP here, because adding one that forgets googletagmanager.com breaks measurement silently.",
         "source": "**",
         "headers": [
           {

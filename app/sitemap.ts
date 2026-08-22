@@ -22,8 +22,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...DOCS.map((d) => ({
       url: `${SITE_URL}${href(d.slug)}`,
       changeFrequency: "monthly" as const,
-      // The index sits above the pages it links to, and install above the rest.
-      priority: d.slug === "" ? 0.9 : d.slug === "install" ? 0.8 : 0.7,
+      // The index sits above the pages it links to, and the two install
+      // pages above the rest — they are the ones somebody arrives needing.
+      priority: d.slug === "" ? 0.9 : d.slug.endsWith("/install") ? 0.8 : 0.7,
     })),
   ];
 }

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { DotGothic16 } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "./_components/JsonLd";
+import { Analytics } from "./_components/Analytics";
 import { organizationLd, softwareApplicationLd, webSiteLd } from "./_lib/structured-data";
 import { META_DESCRIPTION, NAME, SITE_URL, TAGLINE } from "./_lib/site";
 
@@ -111,6 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={webSiteLd()} />
         <JsonLd data={softwareApplicationLd()} />
         {children}
+        <Analytics />
       </body>
     </html>
   );
