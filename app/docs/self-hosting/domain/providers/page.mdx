@@ -1,0 +1,288 @@
+import { docMeta } from "../../../_lib/nav"
+import { Lede, Callout, Output } from "../../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/domain/providers")
+
+# DNS providers
+
+<Lede>
+Every module under [github.com/caddy-dns](https://github.com/caddy-dns) works —
+ninety-six of them — because Firetower compiles the one you name into Caddy.
+This page covers the ones it offers by name, then the ones that need a block
+written by hand, then the rest.
+</Lede>
+
+Whichever you use, the credential only ever needs permission to **edit DNS
+records in the one zone your domain is in**. It never needs access to anything
+else you own, and Caddy only ever writes a short-lived `_acme-challenge` TXT
+record with it.
+
+<Callout kind="warning">
+The provider name is compiled in, so a typo is not caught at start-up — it
+fails several minutes into a Go build. The CLI checks the name against all
+ninety-six before anything runs, and suggests the closest:
+
+<Output>{`  $ firetower domain ft.example.com --dns-provider cloudflares
+  error: no caddy-dns module called cloudflares — did you mean cloudflare?`}</Output>
+</Callout>
+
+## One API token
+
+These are offered in the menu. They take a single credential, which is what the
+Caddyfile's one-line form carries, so there is nothing to edit by hand:
+
+```
+tls {
+	dns {$DNS_PROVIDER} {env.DNS_API_TOKEN}
+}
+```
+
+### Cloudflare
+
+```sh
+firetower domain ft.example.com --dns-provider cloudflare --dns-token "$TOKEN"
+```
+
+Create an **API token** (not a Global API Key) with `Zone → DNS → Edit`,
+scoped to the one zone. The module also accepts separate zone and DNS tokens,
+which its README marks deprecated — a single `api_token` is the current shape.
+
+### DigitalOcean
+
+```sh
+firetower domain ft.example.com --dns-provider digitalocean --dns-token "$TOKEN"
+```
+
+A personal access token with write scope. DigitalOcean tokens are shown once.
+
+### Hetzner
+
+```sh
+firetower domain ft.example.com --dns-provider hetzner --dns-token "$TOKEN"
+```
+
+From the Hetzner **DNS Console** — not Cloud. The two have separate APIs and
+the Cloud token will not work here.
+
+### Vercel
+
+```sh
+firetower domain ft.example.com --dns-provider vercel --dns-token "$TOKEN"
+```
+
+A Vercel access token from Account Settings → Tokens.
+
+<Callout kind="warning">
+`caddy-dns/vercel` has only ever tagged v0.0.2, which pins a `libdns/vercel`
+from before the v1 `Record` interface — it does not compile against a current
+Caddy. Firetower applies the fix for you, writing this into `.env`:
+
+<Output>{`  DNS_MODULE_REPLACE=github.com/libdns/vercel=github.com/libdns/vercel@v0.1.0`}</Output>
+
+Delete that line once the module's maintainer tags a release; after that it
+pins an older dependency than the module itself asks for.
+</Callout>
+
+### GoDaddy
+
+```sh
+firetower domain ft.example.com --dns-provider godaddy --dns-token "KEY:SECRET"
+```
+
+**The token is the key and the secret joined by a colon.** That is one string
+to the module, but two values from GoDaddy, and pasting the key alone is
+accepted by every prompt and every file — it fails only at issuance, with an
+authentication error that says nothing about the format. The CLI's prompt says
+so:
+
+<Output>{`  ◆  API token for godaddy — your key and secret joined by a colon — KEY:SECRET`}</Output>
+
+### deSEC
+
+```sh
+firetower domain ft.example.com --dns-provider desec --dns-token "$TOKEN"
+```
+
+From desec.io → Token Management.
+
+### Gandi
+
+```sh
+firetower domain ft.example.com --dns-provider gandi --dns-token "$TOKEN"
+```
+
+A **Personal Access Token**. Gandi's older API Key is no longer supported by
+the module.
+
+### Linode
+
+```sh
+firetower domain ft.example.com --dns-provider linode --dns-token "$TOKEN"
+```
+
+A Personal Access Token with read/write on **Domains**.
+
+### Vultr
+
+```sh
+firetower domain ft.example.com --dns-provider vultr --dns-token "$TOKEN"
+```
+
+An API key from the Vultr customer portal. Vultr restricts the API to allowed
+source addresses — this machine has to be one of them.
+
+### DuckDNS
+
+```sh
+firetower domain ft.example.com --dns-provider duckdns --dns-token "$TOKEN"
+```
+
+The token on your DuckDNS account page. Note that DuckDNS gives you a
+subdomain of `duckdns.org`, so the wildcard record is theirs to support.
+
+## Several values
+
+These cannot be expressed by a single token. **Choose them anyway** — the right
+module is compiled in, and Firetower writes the block into your `Caddyfile`
+with a pointer, for you to fill in:
+
+```sh
+firetower domain ft.example.com --dns-provider route53
+```
+
+No token is asked for and none is written. `firetower upgrade` rewrites
+`firetower.yml` and never touches the `Caddyfile`, so your edit survives every
+upgrade.
+
+<Callout>
+An empty block is a real configuration for the cloud providers below — their
+SDKs read their own environment variables. Add those to the `caddy` service in
+`firetower.yml` and leave the block as it is.
+</Callout>
+
+### Amazon Route 53
+
+```
+tls {
+	dns route53 {
+		access_key_id "AKI..."       # or $AWS_ACCESS_KEY_ID
+		secret_access_key "wJa..."   # or $AWS_SECRET_ACCESS_KEY
+		region "us-east-1"           # or $AWS_REGION
+	}
+}
+```
+
+All three are optional if the environment supplies them, or if the machine has
+an instance role. The IAM policy needs `route53:ChangeResourceRecordSets` and
+`route53:ListHostedZonesByName` on the hosted zone.
+
+### Azure DNS
+
+```
+tls {
+	dns azure {
+		subscription_id {$AZURE_SUBSCRIPTION_ID}
+		resource_group_name {$AZURE_RESOURCE_GROUP_NAME}
+		tenant_id {$AZURE_TENANT_ID}
+		client_id {$AZURE_CLIENT_ID}
+		client_secret {$AZURE_CLIENT_SECRET}
+	}
+}
+```
+
+A service principal with **DNS Zone Contributor** on the zone. The module also
+supports a managed identity, in which case the block can be empty.
+
+### Google Cloud DNS
+
+```
+tls {
+	dns googleclouddns {
+		gcp_project {$GCP_PROJECT}
+	}
+}
+```
+
+Credentials come from Application Default Credentials — mount the service
+account JSON into the `caddy` service and set `GOOGLE_APPLICATION_CREDENTIALS`.
+The role is **DNS Administrator** on the project.
+
+### Namecheap
+
+```
+tls {
+	dns namecheap {
+		api_key {env.NAMECHEAP_API_KEY}
+		user {env.NAMECHEAP_API_USER}
+		api_endpoint https://api.namecheap.com/xml.response
+		client_ip <client_ip>
+	}
+}
+```
+
+Namecheap requires the calling address to be allow-listed in your account, and
+`client_ip` has to match it.
+
+### Porkbun
+
+```
+tls {
+	dns porkbun {
+		api_key {env.PORKBUN_API_KEY}
+		api_secret_key {env.PORKBUN_API_SECRET_KEY}
+	}
+}
+```
+
+API access has to be switched on per-domain in the Porkbun control panel.
+
+### OVH
+
+```
+tls {
+	dns ovh {
+		endpoint {$OVH_ENDPOINT}
+		application_key {$OVH_APPLICATION_KEY}
+		application_secret {$OVH_APPLICATION_SECRET}
+		consumer_key {$OVH_CONSUMER_KEY}
+	}
+}
+```
+
+`endpoint` is the region — `ovh-eu`, `ovh-ca`, `ovh-us`.
+
+## Everything else
+
+The other eighty are typed rather than picked. Choose **"Let's Encrypt, through
+another DNS provider…"** and give the module name; the CLI accepts any of the
+ninety-six and rejects anything that is not one.
+
+```sh
+firetower domain ft.example.com --dns-provider bunny --dns-token "$TOKEN"
+```
+
+If the module takes more than one value, Firetower writes its block into the
+`Caddyfile` the same way as the ones above — the shape is the same, only the
+subdirectives differ. Its own README at `github.com/caddy-dns/<name>` lists
+them.
+
+A module that is not under `caddy-dns` at all, or one added since your CLI was
+published, works as a full module path:
+
+```sh
+firetower domain ft.example.com --dns-provider github.com/libdns/something
+```
+
+<Callout kind="warning">
+The CLI validates provider **names**, not that a module currently compiles.
+Building from source means one can be held back by something it depends on —
+as Vercel is. If a build fails with `go: module ... not found` or a type error
+inside a `libdns` package, set `DNS_MODULE_REPLACE=old=new@version` in `.env`;
+it is passed to `xcaddy --replace`.
+</Callout>
+
+## No DNS provider at all
+
+For a corporate CA, a provider with no Caddy module, or a machine that cannot
+reach a Go module proxy, answer **"I already have a certificate"**. See
+[bringing your own certificate](/docs/self-hosting/domain#bringing-your-own-certificate).

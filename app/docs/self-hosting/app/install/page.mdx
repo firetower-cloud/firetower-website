@@ -32,9 +32,14 @@ The app is the part you open in a browser. It is not where agents run.
 
 | | On your laptop | On a server |
 | --- | --- | --- |
-| Who reaches it | Only you, at `localhost` | You, from anything — including a phone |
-| Domain | Not needed | Needed for HTTPS |
-| Certificate | None | Caddy gets one, automatically |
+| Who reaches it | Only you, at `localhost` | You, over an ssh tunnel — or several people, on a name |
+| Domain | Not needed | Only if more than one person uses it |
+| Certificate | None | Caddy obtains and renews one, over DNS-01 |
+
+Neither publishes the control plane to the internet. It holds every git token,
+every agent credential and the root key, so the default is loopback and an ssh
+tunnel — and the domain shape gets its certificate without being reachable
+either. See [Put it on a domain](/docs/self-hosting/domain).
 
 Both drive workers on other machines the same way: the app reaches out over
 SSH, so those machines never need a public address.
@@ -53,10 +58,13 @@ firetower install
 It asks four questions:
 
 <Fields>
-  <Field name="Will you reach this over a public domain?">
-    Yes, and the domain — Caddy then gets a certificate and redirects 80 to
-    443. No, and it serves plain HTTP on port 80, which is what you want on a
-    laptop.
+  <Field name="How will people reach this Firetower?">
+    Three answers. **Only from this machine** publishes on `127.0.0.1` and you
+    reach it with `firetower tunnel` — the default, and the one to want. **On a
+    name, over HTTPS** turns Caddy on and asks which DNS provider your domain is
+    behind, so it can obtain a certificate over DNS-01 without this machine
+    being reachable. **Behind a reverse proxy I already run** serves plain HTTP
+    on loopback for your proxy to pass through to.
   </Field>
   <Field name="Where should Firetower live?">
     A directory for the compose file, the `Caddyfile` and `.env`. Defaults to
@@ -70,16 +78,26 @@ It asks four questions:
   </Field>
 </Fields>
 
-Before writing anything it checks the machine — Docker, the Compose plugin,
-ports 80 and 443, architecture, disk, whether `ghcr.io` is reachable, and
-whether the domain you gave resolves here. Then it fetches the compose file
-from the latest Firetower release, generates `POSTGRES_PASSWORD` and
+Before writing anything it checks the machine — Docker, the Compose plugin, the
+ports it is about to publish, architecture, disk, whether `ghcr.io` is
+reachable, and, when you named one, whether the domain and its wildcard resolve
+to an address this machine answers on. Then it fetches the compose file from
+the latest Firetower release, generates `POSTGRES_PASSWORD` and
 `FIRETOWER_ROOT_KEY`, writes `.env`, shows you what it is about to do, and
 brings the stack up.
 
+With a domain it also builds Caddy with your DNS provider compiled in, which
+takes a few minutes the first time.
+
 <Output>{`  Firetower is running.
 
-    https://firetower.example.com
+  It is on loopback, so reach it from your own machine with a tunnel:
+
+    ssh -N -L 8080:127.0.0.1:8080 -o ServerAliveInterval=20 you@this-machine
+
+  Then open
+
+    http://localhost:8080
 
     username  admin
     password  velvet-timber-harbor-332`}</Output>
@@ -97,7 +115,8 @@ Back it up somewhere that is not your database backup — see
 ## Next
 
 - [Upgrade the app](/docs/self-hosting/app/upgrade) when a new release lands.
-- On a server, and want to reach it from a phone? → [Put it on a
-  domain](/docs/self-hosting/domain)
+- More than one person, and a tunnel each is not reasonable? → [Put it on a
+  domain](/docs/self-hosting/domain). You can do this later — `firetower
+  domain` changes an install that is already running.
 - Want agents running on other machines? → [Add a
   machine](/docs/self-hosting/machines/install)

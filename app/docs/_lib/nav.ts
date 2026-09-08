@@ -68,7 +68,14 @@ export const DOCS: Doc[] = [
     slug: "self-hosting/domain",
     title: "Put it on a domain",
     description:
-      "Point a domain at the machine and Firetower serves HTTPS. What to set, which ports to open, and what each certificate failure means.",
+      "Firetower obtains and renews a certificate over DNS-01, without the machine being reachable from the internet. Which records to add, which DNS providers work, and what each failure means.",
+    section: "Install",
+  },
+  {
+    slug: "self-hosting/domain/providers",
+    title: "DNS providers",
+    description:
+      "Every DNS provider Firetower can obtain a certificate through: which credential each one needs, which take a single token, and which need a block written into the Caddyfile.",
     section: "Install",
   },
   {
