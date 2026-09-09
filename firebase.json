@@ -23,8 +23,20 @@
         "type": 301
       },
       {
+        "//": "Put it on a domain was folded into the custom-domain install page: it explained the same records, prompts and certificate twice. Pointed at the final destination rather than chained through the old slug, which no longer exists.",
         "source": "/docs/domain",
-        "destination": "/docs/self-hosting/domain",
+        "destination": "/docs/self-hosting/app/install/server-with-custom-domain",
+        "type": 301
+      },
+      {
+        "source": "/docs/self-hosting/domain",
+        "destination": "/docs/self-hosting/app/install/server-with-custom-domain",
+        "type": 301
+      },
+      {
+        "//": "The three install walkthroughs were renamed after the setup they describe, so the chooser page and the sidebar read the same way.",
+        "source": "/docs/self-hosting/app/install/domain",
+        "destination": "/docs/self-hosting/app/install/server-with-custom-domain",
         "type": 301
       },
       {

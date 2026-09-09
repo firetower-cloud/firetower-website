@@ -3,24 +3,23 @@ import { Lede, Callout, Output, Fields, Field, Where } from "../../../../../_com
 
 export const metadata = docMeta("self-hosting/app/install/localhost")
 
-# Install on localhost
+# Install on your computer
 
 <Lede>
-Firetower publishes on `127.0.0.1` and nothing else. Open it in a browser on
-that machine, or forward the port from your laptop with `firetower tunnel`.
-Nothing else to configure — no domain, no certificate, no VPN.
+Both pieces on the machine in front of you. Firetower publishes on `127.0.0.1`
+and nothing else, so you open it in a browser on that same machine. Nothing
+else to configure — no domain, no certificate, no VPN.
 </Lede>
 
-Not sure this is the right one? See [Which config is good for
-you?](/docs/self-hosting/app/install) — and note that you can add a domain
-later without reinstalling.
+Not sure this is the right one? See the
+[Overview](/docs/self-hosting/app/install) — and note that you can move to a
+server or add a domain later without reinstalling.
 
 ## Before you start
 
-Docker, the Compose plugin, and Node 20 or newer, on the machine the app will
-run on.
+Docker, the Compose plugin, and Node 20 or newer.
 
-<Where>the machine the app will run on</Where>
+<Where>your own computer</Where>
 
 ```sh
 npm i -g @firetower/cli
@@ -47,9 +46,9 @@ says so.
 
 ## 3. It asks which port to publish on
 
-It checks which ports are free on the machine first, and recommends 8080. Ports
-below 1024 are a poor choice here: an SSH tunnel forwards this port, and
-forwarding onto a low port requires root on your laptop.
+It checks which ports are free first, and recommends 8080. Ports below 1024 are
+a poor choice: if you ever forward this port over SSH, forwarding onto a low
+port requires root at the other end.
 
 <Output>{`  ◆  Which port should Firetower publish?
   │  ● 8080 — free  (recommended)
@@ -146,45 +145,10 @@ it up somewhere separate from your database backup — see
 The admin password is printed once. You are asked to replace it when you sign
 in, and then to delete `ADMIN_INITIAL_PASSWORD` from `.env`.
 
-## Reaching a server from your laptop
-
-<Where>your own laptop — this is the one command that does not run on the server</Where>
-
-```sh
-firetower tunnel you@this-machine
-```
-
-It reads the port from the remote `.env` over the same SSH connection it
-forwards, brings up `http://localhost:8080`, and holds until Ctrl-C. The server
-needs only ssh — no Firetower CLI.
-
-### When the default ports do not work
-
-```sh
-firetower tunnel you@this-machine --remote-port 8080 --local-port 9090
-```
-
-<Fields>
-  <Field name="--remote-port">
-    The port Firetower publishes on the server. Given, it skips the lookup —
-    use it when your account cannot read the remote `.env`, or when the CLI
-    warns that it found no `HTTP_PORT` there and is assuming 8080.
-  </Field>
-  <Field name="--local-port">
-    The port to listen on here. Defaults to the remote port. Use it when
-    something on your laptop already answers on that number: the tunnel exits
-    with `something may already answer on 8080 here` rather than connecting and
-    forwarding nothing. A port under 1024 needs root on your laptop, so the
-    error suggests `--local-port 8080` in that case.
-  </Field>
-</Fields>
-
-<Callout>
-Keep both ports the same where you can. `FIRETOWER_PUBLIC_URL` is
-`http://localhost:8080`, and preview and notification links are built from it —
-with a different `--local-port`, the address in your browser no longer matches
-the links Firetower generates.
-</Callout>
+The installer always prints that tunnel line, because it cannot tell whether
+the machine it just ran on is the one in front of you. Here it is not needed —
+open `http://localhost:8080` and sign in. The tunnel is [setup
+2](/docs/self-hosting/app/install/serve-through-ssh).
 
 ## What it wrote
 
@@ -198,7 +162,8 @@ the links Firetower generates.
   </Field>
   <Field name="Caddyfile, certs/">
     Written but unused with this option — no Caddy container is created. They
-    matter once you [add a domain](/docs/self-hosting/domain).
+    matter once you [add a
+    domain](/docs/self-hosting/app/install/server-with-custom-domain).
   </Field>
 </Fields>
 
@@ -208,9 +173,12 @@ reached, and `firetower upgrade` to move it to a newer release.
 
 ## Next
 
+- Want it on a machine that stays awake? → [On your server, over
+  SSH](/docs/self-hosting/app/install/serve-through-ssh)
 - Want it on a domain, reachable from your phone and your team? → [Custom
-  domain + Tailscale](/docs/self-hosting/app/install/domain), or [`firetower
-  domain`](/docs/self-hosting/domain) on the install you just made.
+  domain + Tailscale](/docs/self-hosting/app/install/server-with-custom-domain).
+  `firetower domain` adds one to the install you just made, without
+  reinstalling.
 - Want agents running on other machines? → [Add a
   machine](/docs/self-hosting/machines/install)
 - [Upgrade the app](/docs/self-hosting/app/upgrade) when a new release lands.
