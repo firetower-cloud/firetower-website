@@ -19,10 +19,11 @@ export type Doc = {
   /**
    * What the sidebar calls it, when that differs from the title.
    *
-   * Two pages are "Application" — one under Install, one under Upgrade — and
-   * the section above them says which. A page title has no section beside it:
-   * it is a browser tab, a breadcrumb and a search result, so those stay
-   * "Install the app" and "Upgrade the app".
+   * "Control plane" appears twice — as the heading over the install
+   * walkthroughs, and as the Upgrade page beside "Worker" — and the section
+   * above each says which. A page title has no section beside it: it is a
+   * browser tab, a breadcrumb and a search result, so that one stays "Upgrade
+   * the app".
    */
   navTitle?: string;
   /**
@@ -61,42 +62,44 @@ export const DOCS: Doc[] = [
   },
   {
     slug: "self-hosting/app/install",
-    title: "Which config is good for you?",
+    title: "Overview",
     description:
-      "The first question firetower install asks: reachable only from this machine, or on your own domain over a mesh VPN. What each one costs you.",
+      "Three setups — on your computer, on a server over SSH, or on a server with a custom domain — with a drawing of each, and what the control plane and the worker each do.",
     section: "Install",
-    group: "Application",
+    group: "Control plane",
   },
   {
     slug: "self-hosting/app/install/localhost",
-    title: "Install on localhost",
-    navTitle: "Localhost",
+    title: "Install on your computer",
+    navTitle: "On your computer",
     description:
-      "Install the app on loopback: every question firetower install asks, what it writes, and how to reach a server from your laptop with firetower tunnel.",
+      "Install the app on the machine in front of you: every question firetower install asks, what it writes, and what it leaves on loopback.",
     section: "Install",
-    group: "Application",
+    group: "Control plane",
   },
   {
-    slug: "self-hosting/app/install/domain",
-    title: "Install with a custom domain",
+    slug: "self-hosting/app/install/serve-through-ssh",
+    title: "Install on your server, through SSH",
+    navTitle: "On your server, over SSH",
+    description:
+      "The same loopback install, on a machine that stays awake, reached from your laptop with firetower tunnel. Which port to pick, and what the tunnel does and does not carry.",
+    section: "Install",
+    group: "Control plane",
+  },
+  {
+    slug: "self-hosting/app/install/server-with-custom-domain",
+    title: "Install on your server, with a custom domain",
     navTitle: "Custom domain + Tailscale",
     description:
-      "Install the app on your own domain over Tailscale: which address to serve on, the two DNS records, the certificate, and what the CLI waits for.",
+      "A real name and a real certificate over Tailscale, with nothing reachable from the internet: how DNS-01 does that, the two DNS records, the certificate wait, and every failure it can hit.",
     section: "Install",
-    group: "Application",
+    group: "Control plane",
   },
   {
     slug: "self-hosting/machines/install",
     title: "Add a machine",
     description:
       "Run sessions on a server you already own: install the worker with the CLI, then add the host over SSH.",
-    section: "Install",
-  },
-  {
-    slug: "self-hosting/domain",
-    title: "Put it on a domain",
-    description:
-      "Firetower obtains and renews a certificate over DNS-01, without the machine being reachable from the internet. Which records to add, which DNS providers work, and what each failure means.",
     section: "Install",
   },
   {
@@ -109,7 +112,7 @@ export const DOCS: Doc[] = [
   {
     slug: "self-hosting/app/upgrade",
     title: "Upgrade the app",
-    navTitle: "Application",
+    navTitle: "Control plane",
     description:
       "firetower upgrade backs up the database, pulls the new release, and names every machine left running an older worker.",
     section: "Upgrade",

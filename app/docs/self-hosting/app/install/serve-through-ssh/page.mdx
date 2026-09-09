@@ -1,0 +1,191 @@
+import { docMeta } from "../../../../_lib/nav"
+import { Lede, Callout, Output, Fields, Field, Where } from "../../../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/app/install/serve-through-ssh")
+
+# Install on your server, through SSH
+
+<Lede>
+The same install as on your own computer, run on a machine that stays awake.
+Firetower still publishes on `127.0.0.1` and nothing else, so you reach it by
+forwarding that port to your laptop with `firetower tunnel`. No domain, no
+certificate, no VPN.
+</Lede>
+
+Not sure this is the right one? See the
+[Overview](/docs/self-hosting/app/install) — and note that you can add a domain
+later without reinstalling.
+
+Both pieces go on the server: the control plane and the worker that runs the
+agents. That is the point of this setup — the work is not on your laptop, so
+closing the lid does not stop it.
+
+## Before you start
+
+<Fields>
+  <Field name="On the server">
+    Docker, the Compose plugin, and Node 20 or newer.
+  </Field>
+  <Field name="From your laptop">
+    SSH access to that server, with the key you already use. The tunnel needs
+    nothing else — no port opened, no Firetower CLI on the server's side of it.
+  </Field>
+</Fields>
+
+## Install on the server
+
+<Where>the server</Where>
+
+```sh
+npm i -g @firetower/cli
+firetower install
+```
+
+### 1. Answer `Only from this machine`
+
+The same answer as installing on your own computer. "This machine" is the
+server: Firetower binds loopback there, and the tunnel is what brings it to you.
+
+<Output>{`  Firetower
+
+  ◆  How will people reach this Firetower?
+  │  ● Only from this machine (simplest to start — directly, or with \`firetower tunnel\` from your laptop)
+  │  ○ Your own domain, over Tailscale or another mesh VPN
+  │  ○ Behind a reverse proxy I already run
+  └`}</Output>
+
+### 2. Choose the port with the tunnel in mind
+
+It checks which ports are free and recommends 8080. This is the one answer
+worth thinking about here, because the tunnel forwards this port: **stay above
+1024**. Forwarding onto a low port requires root on your laptop.
+
+<Output>{`  ◆  Which port should Firetower publish?
+  │  ● 8080 — free  (recommended)
+  │  ○ Let me choose
+  └`}</Output>
+
+### 3. Everything else is the ordinary install
+
+In order: it fetches the deployment files from the latest release, checks the
+machine (Docker, the Compose plugin, the port, architecture, disk, and whether
+`ghcr.io` is reachable), then asks where Firetower should live, an
+administrator username and a password. It shows the whole plan before writing
+anything, and answering **No** writes nothing.
+
+No Caddy container is created with this option — there is no certificate to
+terminate, and the control plane serves its own interface, API and preview
+routing.
+
+### 4. Save the root key
+
+<Output>{`  ──────────────────────────────────────────────────────────────
+  Save this. It is not stored anywhere you can read it back.
+
+    FIRETOWER_ROOT_KEY  q1Zk8mWv2r7XcN0pT4sYbA6dJhLgE3uF9nRxKtVwQmc=
+
+  Every credential Firetower holds is sealed with it. Back it up
+  somewhere that is not your database backup — a stolen database
+  opens nothing on its own, and losing this key means adding every
+  credential again.
+  ──────────────────────────────────────────────────────────────
+
+  ◆  I have saved the root key
+  │  ○ Yes / ● No
+  └`}</Output>
+
+<Callout kind="warning">
+The root key is the only unrecoverable thing here. Every stored credential is
+sealed with it, which is why the installer requires you to acknowledge it. Back
+it up somewhere separate from your database backup — see
+[Secrets](/docs/secrets).
+</Callout>
+
+### 5. Done — and it tells you how to get to it
+
+<Output>{`  Firetower is running.
+
+    http://localhost:8080
+
+  That works on this machine. From your laptop, bring up a tunnel first:
+
+    firetower tunnel you@this-machine --remote-port 8080
+
+    username  admin
+    password  velvet-timber-harbor-332
+
+  You will be asked to replace that password when you sign in,
+  and then to delete ADMIN_INITIAL_PASSWORD from .env.`}</Output>
+
+The admin password is printed once. Note it down — you sign in with it through
+the tunnel in a moment.
+
+It writes the same files as any loopback install: `firetower.yml`, an `.env`
+that is `chmod 600`, and a `Caddyfile` that goes unused until you add a domain.
+
+## Bring up the tunnel
+
+This is the one command that does not run on the server.
+
+<Where>your own laptop</Where>
+
+```sh
+npm i -g @firetower/cli
+firetower tunnel you@your-server
+```
+
+It reads the port from the remote `.env` over the same SSH connection it
+forwards, brings up `http://localhost:8080`, and holds until Ctrl-C. The server
+needs only ssh — no Firetower CLI there.
+
+Open `http://localhost:8080` and sign in with the password the installer
+printed. You are asked to replace it, and then to delete
+`ADMIN_INITIAL_PASSWORD` from `.env` on the server.
+
+### When the default ports do not work
+
+```sh
+firetower tunnel you@your-server --remote-port 8080 --local-port 9090
+```
+
+<Fields>
+  <Field name="--remote-port">
+    The port Firetower publishes on the server. Given, it skips the lookup —
+    use it when your account cannot read the remote `.env`, or when the CLI
+    warns that it found no `HTTP_PORT` there and is assuming 8080.
+  </Field>
+  <Field name="--local-port">
+    The port to listen on here. Defaults to the remote port. Use it when
+    something on your laptop already answers on that number: the tunnel exits
+    with `something may already answer on 8080 here` rather than connecting and
+    forwarding nothing. A port under 1024 needs root on your laptop, so the
+    error suggests `--local-port 8080` in that case.
+  </Field>
+</Fields>
+
+<Callout>
+Keep both ports the same where you can. `FIRETOWER_PUBLIC_URL` is
+`http://localhost:8080`, and preview and notification links are built from it —
+with a different `--local-port`, the address in your browser no longer matches
+the links Firetower generates.
+</Callout>
+
+## The tunnel is only your view
+
+Ctrl-C closes the window you are looking through, not the deployment. The
+control plane and the worker are both on the server, so agents carry on, the
+event log keeps filling, and everything is where you left it the next time you
+bring the tunnel up.
+
+What the tunnel does cost you is everyone else: it forwards to your laptop
+only. No phone, and nothing for your team. That is the reason to move to a
+domain.
+
+## Next
+
+- Want it reachable from your phone and your team, with no tunnel? → [Custom
+  domain + Tailscale](/docs/self-hosting/app/install/server-with-custom-domain).
+  `firetower domain` adds one to the install you just made, without reinstalling.
+- Want agents running on other machines too? → [Add a
+  machine](/docs/self-hosting/machines/install)
+- [Upgrade the app](/docs/self-hosting/app/upgrade) when a new release lands.

@@ -1,9 +1,10 @@
 import { docMeta } from "../../../../_lib/nav"
 import { Lede, Callout, Output, Fields, Field, Where } from "../../../../../_components/docs/Bits"
+import { Diagram } from "../../../../../_components/docs/Diagram"
 
-export const metadata = docMeta("self-hosting/app/install/domain")
+export const metadata = docMeta("self-hosting/app/install/server-with-custom-domain")
 
-# Install with a custom domain
+# Install on your server, with a custom domain
 
 <Lede>
 The domain is registered in **public DNS**, so browsers and Let's Encrypt can
@@ -12,8 +13,56 @@ your mesh network can connect to it. The result is a real name and a real
 certificate, reachable from any device you have on the mesh, with no tunnel.
 </Lede>
 
-Not sure this is the right one? See [Which config is good for
-you?](/docs/self-hosting/app/install).
+Not sure this is the right one? See the
+[Overview](/docs/self-hosting/app/install). The server side is the same as [over
+SSH](/docs/self-hosting/app/install/serve-through-ssh) — same control plane,
+same worker. What changes is the front door.
+
+## How it gets a certificate without being reachable
+
+This is the part people expect to be impossible, so it is worth a minute before
+you start.
+
+The control plane holds every git token, every agent credential and the root
+key, so anyone who reaches it can erase the codebase of the company that
+installed it. It does not go on the internet to get a padlock.
+
+The usual ACME challenges — HTTP-01 and TLS-ALPN-01 — work by having Let's
+Encrypt open a connection **to you**. A machine Let's Encrypt can reach is a
+machine anyone can reach.
+
+DNS-01 proves control the other way round. Caddy writes a TXT record through
+your DNS provider's API, and the authority reads it back out of DNS. Every
+connection Caddy makes is outbound.
+
+<Diagram caption="Nothing connects in. The name can resolve to a private address and answer nobody outside your network.">{`
+  +-- YOUR SERVER --------------+
+  |                             |    (1) "I want *.ft.example.com"
+  |   caddy  ------------------------------------------>  Let's Encrypt
+  |     |                       |    (2) "prove it: TXT = abc123"
+  |     | <-----------------------------------------------      |
+  |     |                       |                               |
+  |     | (3) write the record  |                               |
+  +-----|-----------------------+                               |
+        v                                                       |
+   your DNS provider's API                                      |
+        |                                                       |
+        v                                                       |
+   public DNS  <-------- (4) the authority reads the record ----+
+
+   (5) one wildcard certificate, renewed automatically
+`}</Diagram>
+
+DNS-01 is also the only challenge that can issue a **wildcard**, which this
+needs twice over: previews are served on subdomains, and one wildcard keeps
+every preview hostname out of the public Certificate Transparency logs — where
+a hostname that *is* the credential for that preview does not belong.
+
+<Callout kind="warning">
+There is nothing to open in a firewall. Port 80 is published only to redirect
+to 443, and no challenge is answered on it — drop it if you would rather
+nothing answered there at all.
+</Callout>
 
 ## Before you start
 
@@ -35,9 +84,7 @@ you?](/docs/self-hosting/app/install).
 
 <Callout>
 Only the DNS challenge record is written through that API — Firetower never
-publishes anything to the internet. The certificate is obtained over DNS-01,
-which needs no inbound connection. [How that works
-→](/docs/self-hosting/domain)
+publishes anything to the internet.
 </Callout>
 
 ## Install Tailscale first
@@ -295,18 +342,113 @@ lifetime. There is nothing to run.
 deployment. Use `firetower domain` to change how an existing deployment is
 reached, and `firetower upgrade` to move it to a newer release.
 
-## If the certificate does not arrive
+## Adding a domain to an install you already have
+
+Nothing above needs a reinstall. On a deployment that is already running,
+`firetower domain` asks the same questions and changes the same values:
+
+```sh
+firetower domain ft.example.com
+```
+
+Or with no argument at all, to be asked everything. It opens with what the
+deployment is today, prints the two DNS records as soon as it has the name, and
+shows every `.env` change before writing any of them — with the token masked,
+because that block is what people paste into an issue:
+
+<Output>{`  Here is what I will do:
+
+  reached by    ft.example.com, over HTTPS
+  published     127.0.0.1:8080 — and Caddy on 443 and 80, for everyone else
+  certificate   Let's Encrypt, over DNS-01 through cloudflare — renewed by Caddy
+  url           https://ft.example.com
+
+  .env:
+
+    COMPOSE_PROFILES         unset → tls
+    DNS_API_TOKEN            unset → ••••••••
+    DNS_PROVIDER             unset → cloudflare
+    DOMAIN                   empty → ft.example.com
+    FIRETOWER_PREVIEW_DOMAIN unset → ft.example.com
+    FIRETOWER_PUBLIC_URL     http://localhost:8080 → https://ft.example.com
+    HTTPS_PORT               unset → 443
+
+  ◆  Continue?
+  │  ● Yes / ○ No`}</Output>
+
+Answering **No** writes nothing. Nothing about the release moves either way: no
+images are pulled, no migrations run, no database is touched.
+
+Every answer has a flag, for a scripted change:
+
+```sh
+firetower domain ft.example.com \
+  --dns-provider cloudflare --dns-token "$CLOUDFLARE_TOKEN"
+```
+
+`--dns-token` on its own rotates the credential and keeps the rest.
+`--dns-provider` on its own moves zones. `firetower domain --none` takes the
+domain away again and puts the deployment back on loopback — removing the Caddy
+container with it, which a plain `docker compose up -d` would not.
+
+## If it doesn't work
 
 ```sh
 firetower logs caddy -f
 firetower doctor
 ```
 
-Every provider, every credential format, and what each error in those logs
-means is on [Put it on a domain](/docs/self-hosting/domain).
+`firetower doctor` reports what it can see:
+
+<Output>{`  ✓ domain               ft.example.com → 10.0.0.5, an address on this machine, and *.ft.example.com resolves
+  ✓ certificate          Caddy renews it, over DNS-01 through cloudflare — none issued yet`}</Output>
+
+| In `firetower logs caddy` | What it means |
+| --- | --- |
+| `module not registered: dns.providers.x` | `DNS_PROVIDER` changed without a rebuild — `firetower domain` again, or `up -d --build` |
+| `wrong argument count ... {env.DNS_API_TOKEN}` | That provider takes several values; its block needs writing in the `Caddyfile` |
+| `401`, `403`, `authentication failed` | `DNS_API_TOKEN` is wrong, or scoped to the wrong zone |
+| `no such host` on the challenge | The record is not there yet — propagation is minutes |
+| `too many certificates already issued` | Rate limit. Five duplicate certificates a week; keep the `caddy_data` volume across restarts |
+| `go: module ... not found` during the build | The provider module or one of its dependencies will not compile — see below |
+
+The CLI rejects a provider name that is not one of the ninety-six and suggests
+the closest, because the name is compiled in: an unchecked typo fails several
+minutes into a Go build, not at start-up.
+
+<Output>{`  $ firetower domain ft.example.com --dns-provider cloudflares
+  error: no caddy-dns module called cloudflares — did you mean cloudflare?`}</Output>
+
+To get warned before a renewal that has started failing, set `ACME_EMAIL` in
+`.env`, or pass `--acme-email you@example.com` to `firetower install`.
+
+<Callout kind="warning">
+Building from source means a provider module can be held back by something it
+depends on rather than by anything in it — `caddy-dns/vercel` is, today, and
+Firetower applies the fix for you. If you hit one it does not know about, set
+`DNS_MODULE_REPLACE=old=new@version` in `.env`; it is passed to
+`xcaddy --replace`. Delete it once the module's maintainer tags a release.
+</Callout>
+
+## Bringing your own certificate
+
+For a corporate CA, a provider with no Caddy module, or a machine that cannot
+reach a Go module proxy. Answer **"I already have a certificate"**, or install
+with `--domain` and no `--dns-provider`:
+
+```sh
+firetower install --domain ft.example.com
+```
+
+Put `fullchain.pem` and `privkey.pem` in `certs/` beside `firetower.yml`,
+covering both the name and `*.the-name`, and uncomment the `tls` line in the
+`Caddyfile`. Renewal is yours again, and `firetower doctor` warns when there
+are under three weeks left.
 
 ## Next
 
 - Want agents running on other machines? → [Add a
   machine](/docs/self-hosting/machines/install)
+- Which credential every DNS provider needs → [DNS
+  providers](/docs/self-hosting/domain/providers)
 - [Upgrade the app](/docs/self-hosting/app/upgrade) when a new release lands.

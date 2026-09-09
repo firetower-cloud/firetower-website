@@ -4,70 +4,112 @@ import { Diagram } from "../../../../_components/docs/Diagram"
 
 export const metadata = docMeta("self-hosting/app/install")
 
-# Which config is good for you?
+# Overview
 
 <Lede>
-The control plane is the part you open in a browser, and it runs on one
-machine. There are two ways to install it. `firetower install` asks which one
-you want as its first question — everything after that follows from the answer.
+Firetower is two pieces: a **control plane** you open in a browser, and a
+**worker** that runs the agents. There are three ways to put them on machines,
+and `firetower install` asks which one you want as its first question.
 </Lede>
 
-## From localhost
+## The two pieces
 
-Firetower publishes on `127.0.0.1` and nothing else. Two ways to use that.
+| | |
+| --- | --- |
+| **Control plane** | The screen you work in, and everything it remembers — your machines, repositories and credentials. You run **one**, on one machine. |
+| **Worker** | Where an agent actually runs: one container holding git, tmux and the agents themselves. You run **one per machine** that should do work. |
 
-**On your own computer.** Open it in a browser. Nothing else to set up.
+The control plane never does the work. It decides what should happen and tells a
+worker to do it — so the machine it runs on can stay small, while the machines
+that run agents can be as big as you like.
 
-<Diagram caption="Nothing is published to the network.">{`
-  +-- YOUR MAC -------------------------+
-  |                                     |
-  |   browser  -->  localhost:8080      |
-  |                      |              |
-  |                 firetower           |
-  |                 postgres            |
-  |                                     |
-  +-------------------------------------+
-`}</Diagram>
+Every install starts a worker next to the control plane, so a fresh Firetower
+already has somewhere to run: itself. The three setups below differ in **how you
+reach the control plane**, not in what a worker does.
 
-**On a remote server.** Forward the port over SSH, then open it on your laptop.
+## 1. On your computer
 
-<Diagram caption="firetower tunnel you@server — open for as long as you are using it.">{`
-  +-- YOUR MAC --------------+           +-- YOUR SERVER --------------+
-  |                          |           |                             |
-  |   browser                |    ssh    |   firetower                 |
-  |      |                   |   tunnel  |   postgres                  |
-  |      v                   |           |      ^                      |
-  |   localhost:8080 ---------------------------+                      |
-  |                          |           |   127.0.0.1:8080            |
-  +--------------------------+           +-----------------------------+
+Both pieces on your laptop. Firetower publishes on `127.0.0.1` and nothing else
+— you open it in a browser on that same machine.
+
+<Diagram caption="Nothing is published to the network. The agents run on the machine in front of you.">{`
+  +-- YOUR COMPUTER ---------------------------------------+
+  |                                                        |
+  |   browser                                              |
+  |     |   localhost:8080                                 |
+  |     v                                                  |
+  |   +-- CONTROL PLANE -+        +-- WORKER --------+     |
+  |   |  the interface   |        |  git . tmux      |     |
+  |   |  firetower       | -----> |  * Claude Code   |     |
+  |   |  postgres        | starts |  * Codex         |     |
+  |   +------------------+        +------------------+     |
+  |                                                        |
+  +--------------------------------------------------------+
 `}</Diagram>
 
 | | |
 | --- | --- |
-| **Pros** | Nothing to configure — no domain, no certificate, no VPN. The fastest way to see Firetower running. |
-| **Cons** | No custom domain. From a server, a tunnel has to be open. No access from a phone, and none for your team. |
+| **Pros** | Nothing to configure — no domain, no certificate, no VPN. The fastest way to see Firetower running, and agents work on the machine you already have set up. |
+| **Cons** | Close the lid and the work stops. Only you can reach it. |
 
-**[Install on localhost →](/docs/self-hosting/app/install/localhost)**
+**[Install on your computer →](/docs/self-hosting/app/install/localhost)**
 
-## With a custom domain
+## 2. On your server, through SSH
 
-Firetower gets a domain name and a certificate, and everyone on your mesh
-network reaches it from any device.
+The same install, on a machine that stays awake. It still publishes on
+`127.0.0.1` only, so you forward that port to your laptop with `firetower
+tunnel` and open it there.
+
+<Diagram caption="firetower tunnel you@server — open for as long as you are looking at it. The agents keep running either way.">{`
+  +-- YOUR LAPTOP ----+                  +-- YOUR SERVER ---------------+
+  |  browser          |                  |                              |
+  |  localhost:8080   | --- ssh -------> |   +-- CONTROL PLANE -+       |
+  +-------------------+     tunnel       |   |  the interface   |       |
+                                         |   |  firetower       |       |
+                                         |   |  postgres        |       |
+                                         |   +------------------+       |
+                                         |     |  starts                |
+                                         |     v                        |
+                                         |   +-- WORKER --------+       |
+                                         |   |  git . tmux      |       |
+                                         |   |  * Claude Code   |       |
+                                         |   +------------------+       |
+                                         +------------------------------+
+`}</Diagram>
+
+| | |
+| --- | --- |
+| **Pros** | Still nothing to configure. Sessions carry on when you close the laptop, because the worker is on the server, not on you. |
+| **Cons** | A tunnel has to be open to look at it. No access from a phone, and none for your team. |
+
+**[Install on your server, over SSH →](/docs/self-hosting/app/install/serve-through-ssh)**
+
+## 3. On your server, with a custom domain
+
+The server side is identical to setup 2 — same control plane, same worker. What
+changes is the front door: Firetower gets a domain name and a certificate, and
+every device on your mesh network reaches it directly.
 
 <Diagram caption="The domain is in public DNS. The address it resolves to is private, so only devices on the tailnet can connect.">{`
-   your mac        your phone        a teammate
-       |               |                 |
-       +------- TAILSCALE TAILNET -------+
-                       |
-                       |  https://firetower.example.com
-                       |  A record  -->  100.92.14.7
-                       v
-       +-- YOUR SERVER ----------------------+
-       |                                     |
-       |   caddy  -->  firetower             |
-       |   443         on 127.0.0.1:8080     |
-       |                                     |
-       +-------------------------------------+
+    your mac      your phone      a teammate
+        |             |               |
+        +----- TAILSCALE TAILNET -----+
+                      |
+                      |  https://firetower.example.com
+                      v
+  +-- YOUR SERVER ------------------------+
+  |   caddy  -->  +-- CONTROL PLANE -+    |
+  |   443         |  the interface   |    |
+  |   tls         |  firetower       |    |
+  |               |  postgres        |    |
+  |               +------------------+    |
+  |                 |  starts             |
+  |                 v                     |
+  |               +-- WORKER --------+    |
+  |               |  git . tmux      |    |
+  |               |  * Claude Code   |    |
+  |               +------------------+    |
+  +---------------------------------------+
 `}</Diagram>
 
 <Callout>
@@ -82,10 +124,42 @@ connection.
 | **Pros** | Reachable from every device on the tailnet, with no tunnel to open. Real HTTPS. Working preview URLs. Usable by your team. |
 | **Cons** | More setup: Tailscale, two DNS A records, and an API token for your DNS provider. The first install waits while the certificate is issued. |
 
-**[Install with a custom domain →](/docs/self-hosting/app/install/domain)**
+**[Install with a custom domain →](/docs/self-hosting/app/install/server-with-custom-domain)**
+
+## More workers, later
+
+All three setups start with one worker. Adding machines is the same job in each
+of them, and it does not touch the control plane: install the worker on the
+machine, then add it in **Compute**. Firetower reaches it over SSH — the worker
+opens no port and holds no credentials.
+
+<Diagram caption="The control plane is wherever you put it. Workers are anything you can SSH into.">{`
+           +-- CONTROL PLANE --+
+           |  wherever it runs |
+           +-------------------+
+                     |
+     +---------------+---------------+
+     |               |               |
+    ssh             ssh             ssh
+     |               |               |
+   +-- WORKER --+  +-- WORKER --+  +-- WORKER --+
+   |  this      |  |  a big     |  |  a cloud   |
+   |  server    |  |  machine   |  |  vm        |
+   +------------+  +------------+  +------------+
+`}</Diagram>
+
+**[Add a machine →](/docs/self-hosting/machines/install)**
 
 ## You can switch later
 
-Neither choice is permanent and neither needs a reinstall. `firetower domain`
+None of the three is permanent, and none needs a reinstall. `firetower domain`
 adds a domain to a running deployment; `firetower domain --none` removes it and
-puts the deployment back on loopback.
+puts the deployment back on loopback. Moving between setups 1 and 2 is just
+where you ran the install.
+
+<Callout>
+There is one more answer to that first question — **behind a reverse proxy I
+already run** — for when you have nginx, Traefik or Caddy in front of everything
+already. See [Already running a
+proxy?](/docs/self-hosting/operations#already-running-a-proxy).
+</Callout>

@@ -90,7 +90,7 @@ export function Sidebar() {
  * A scrolling row rather than a menu behind a button: eleven pages fit, and a
  * navigation you have to open is a navigation most people do not know is
  * there. Titles rather than sidebar labels — there is no section heading here
- * to tell two "Application" chips apart.
+ * to tell two "Control plane" chips apart.
  */
 export function DocsRail() {
   const path = usePathname();
