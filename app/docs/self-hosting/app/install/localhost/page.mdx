@@ -1,0 +1,216 @@
+import { docMeta } from "../../../../_lib/nav"
+import { Lede, Callout, Output, Fields, Field, Where } from "../../../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/app/install/localhost")
+
+# Install on localhost
+
+<Lede>
+Firetower publishes on `127.0.0.1` and nothing else. Open it in a browser on
+that machine, or forward the port from your laptop with `firetower tunnel`.
+Nothing else to configure — no domain, no certificate, no VPN.
+</Lede>
+
+Not sure this is the right one? See [Which config is good for
+you?](/docs/self-hosting/app/install) — and note that you can add a domain
+later without reinstalling.
+
+## Before you start
+
+Docker, the Compose plugin, and Node 20 or newer, on the machine the app will
+run on.
+
+<Where>the machine the app will run on</Where>
+
+```sh
+npm i -g @firetower/cli
+firetower install
+```
+
+## 1. Answer `Only from this machine`
+
+<Output>{`  Firetower
+
+  ◆  How will people reach this Firetower?
+  │  ● Only from this machine (simplest to start — directly, or with \`firetower tunnel\` from your laptop)
+  │  ○ Your own domain, over Tailscale or another mesh VPN
+  │  ○ Behind a reverse proxy I already run
+  └`}</Output>
+
+Nothing else is asked about how it is reached.
+
+## 2. It fetches the deployment files
+
+`firetower.yml`, the `Caddyfile` and `Caddyfile.dockerfile`, from the latest
+Firetower release. If GitHub is unreachable it falls back to bundled copies and
+says so.
+
+## 3. It asks which port to publish on
+
+It checks which ports are free on the machine first, and recommends 8080. Ports
+below 1024 are a poor choice here: an SSH tunnel forwards this port, and
+forwarding onto a low port requires root on your laptop.
+
+<Output>{`  ◆  Which port should Firetower publish?
+  │  ● 8080 — free  (recommended)
+  │  ○ Let me choose
+  └`}</Output>
+
+## 4. It checks the machine
+
+Docker, the Compose plugin, the port it is about to publish, architecture,
+disk, and whether `ghcr.io` is reachable. A failed check asks whether to
+continue rather than stopping.
+
+## 5. Then the remaining questions
+
+<Fields>
+  <Field name="Where should Firetower live?">
+    A directory for the compose file, the `Caddyfile` and `.env`. Defaults to
+    `~/firetower`, or `/opt/firetower` as root.
+  </Field>
+  <Field name="Administrator username">
+    Defaults to `admin`.
+  </Field>
+  <Field name="Administrator password">
+    Generate one, or type your own.
+  </Field>
+</Fields>
+
+## 6. It generates the secrets, then shows the plan
+
+`POSTGRES_PASSWORD` and `FIRETOWER_ROOT_KEY`, then:
+
+<Output>{`  Here is what I will do:
+
+  directory     /opt/firetower
+  url           http://localhost:8080
+  published     127.0.0.1:8080
+  certificate   none — plain HTTP, on loopback only
+  admin         admin, with the password shown once below
+  root key      generated, written to /opt/firetower/.env
+
+  ◆  Continue?
+  │  ● Yes / ○ No
+  └`}</Output>
+
+Answering **No** writes nothing.
+
+## 7. It writes, pulls and starts
+
+`.env` is written `chmod 600`. It then waits for Postgres and the control plane
+to report healthy. No Caddy container is created with this option: there is no
+certificate to terminate, and the control plane serves its own interface, API
+and preview routing.
+
+## 8. It requires you to acknowledge the root key
+
+<Output>{`  ──────────────────────────────────────────────────────────────
+  Save this. It is not stored anywhere you can read it back.
+
+    FIRETOWER_ROOT_KEY  q1Zk8mWv2r7XcN0pT4sYbA6dJhLgE3uF9nRxKtVwQmc=
+
+  Every credential Firetower holds is sealed with it. Back it up
+  somewhere that is not your database backup — a stolen database
+  opens nothing on its own, and losing this key means adding every
+  credential again.
+  ──────────────────────────────────────────────────────────────
+
+  ◆  I have saved the root key
+  │  ○ Yes / ● No
+  └`}</Output>
+
+<Callout kind="warning">
+The root key is the only unrecoverable thing here. Every stored credential is
+sealed with it, which is why the installer requires you to acknowledge it. Back
+it up somewhere separate from your database backup — see
+[Secrets](/docs/secrets).
+</Callout>
+
+## 9. Done
+
+<Output>{`  Firetower is running.
+
+    http://localhost:8080
+
+  That works on this machine. From your laptop, bring up a tunnel first:
+
+    firetower tunnel you@this-machine --remote-port 8080
+
+    username  admin
+    password  velvet-timber-harbor-332
+
+  You will be asked to replace that password when you sign in,
+  and then to delete ADMIN_INITIAL_PASSWORD from .env.`}</Output>
+
+The admin password is printed once. You are asked to replace it when you sign
+in, and then to delete `ADMIN_INITIAL_PASSWORD` from `.env`.
+
+## Reaching a server from your laptop
+
+<Where>your own laptop — this is the one command that does not run on the server</Where>
+
+```sh
+firetower tunnel you@this-machine
+```
+
+It reads the port from the remote `.env` over the same SSH connection it
+forwards, brings up `http://localhost:8080`, and holds until Ctrl-C. The server
+needs only ssh — no Firetower CLI.
+
+### When the default ports do not work
+
+```sh
+firetower tunnel you@this-machine --remote-port 8080 --local-port 9090
+```
+
+<Fields>
+  <Field name="--remote-port">
+    The port Firetower publishes on the server. Given, it skips the lookup —
+    use it when your account cannot read the remote `.env`, or when the CLI
+    warns that it found no `HTTP_PORT` there and is assuming 8080.
+  </Field>
+  <Field name="--local-port">
+    The port to listen on here. Defaults to the remote port. Use it when
+    something on your laptop already answers on that number: the tunnel exits
+    with `something may already answer on 8080 here` rather than connecting and
+    forwarding nothing. A port under 1024 needs root on your laptop, so the
+    error suggests `--local-port 8080` in that case.
+  </Field>
+</Fields>
+
+<Callout>
+Keep both ports the same where you can. `FIRETOWER_PUBLIC_URL` is
+`http://localhost:8080`, and preview and notification links are built from it —
+with a different `--local-port`, the address in your browser no longer matches
+the links Firetower generates.
+</Callout>
+
+## What it wrote
+
+<Fields>
+  <Field name="firetower.yml">
+    The compose file, from the release. Replaced in full by `firetower upgrade`.
+  </Field>
+  <Field name=".env">
+    `chmod 600`. Port, URL, and the two generated secrets. An existing `.env`
+    keeps every value already in it — nothing here regenerates a secret.
+  </Field>
+  <Field name="Caddyfile, certs/">
+    Written but unused with this option — no Caddy container is created. They
+    matter once you [add a domain](/docs/self-hosting/domain).
+  </Field>
+</Fields>
+
+`firetower install` refuses to run in a directory that already holds a
+deployment. Use `firetower domain` to change how an existing deployment is
+reached, and `firetower upgrade` to move it to a newer release.
+
+## Next
+
+- Want it on a domain, reachable from your phone and your team? → [Custom
+  domain + Tailscale](/docs/self-hosting/app/install/domain), or [`firetower
+  domain`](/docs/self-hosting/domain) on the install you just made.
+- Want agents running on other machines? → [Add a
+  machine](/docs/self-hosting/machines/install)
+- [Upgrade the app](/docs/self-hosting/app/upgrade) when a new release lands.

@@ -25,6 +25,16 @@ export type Doc = {
    * "Install the app" and "Upgrade the app".
    */
   navTitle?: string;
+  /**
+   * A heading above this page in the sidebar, shared with the pages beside it.
+   *
+   * The section is the top level and stays flat; this is the one level under
+   * it, for a set of pages that are one subject split up — choosing an install,
+   * and the two walkthroughs it sends you to. Consecutive entries with the same
+   * group are drawn under one heading, so order in this list is what groups
+   * them.
+   */
+  group?: string;
 };
 
 export const DOCS: Doc[] = [
@@ -51,11 +61,29 @@ export const DOCS: Doc[] = [
   },
   {
     slug: "self-hosting/app/install",
-    title: "Install the app",
-    navTitle: "Application",
+    title: "Which config is good for you?",
     description:
-      "Install the Firetower app with the CLI: what it asks, what it checks, and what it writes.",
+      "The first question firetower install asks: reachable only from this machine, or on your own domain over a mesh VPN. What each one costs you.",
     section: "Install",
+    group: "Application",
+  },
+  {
+    slug: "self-hosting/app/install/localhost",
+    title: "Install on localhost",
+    navTitle: "Localhost",
+    description:
+      "Install the app on loopback: every question firetower install asks, what it writes, and how to reach a server from your laptop with firetower tunnel.",
+    section: "Install",
+    group: "Application",
+  },
+  {
+    slug: "self-hosting/app/install/domain",
+    title: "Install with a custom domain",
+    navTitle: "Custom domain + Tailscale",
+    description:
+      "Install the app on your own domain over Tailscale: which address to serve on, the two DNS records, the certificate, and what the CLI waits for.",
+    section: "Install",
+    group: "Application",
   },
   {
     slug: "self-hosting/machines/install",
