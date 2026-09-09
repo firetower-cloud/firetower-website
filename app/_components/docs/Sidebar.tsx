@@ -2,7 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { DOCS, SECTION_ORDER, href } from "../../docs/_lib/nav";
+import { DOCS, SECTION_ORDER, href, type Doc } from "../../docs/_lib/nav";
+
+/**
+ * A section's pages, split into runs that share a `group`.
+ *
+ * Runs rather than a lookup, so the order in `nav.ts` is the only thing that
+ * decides what sits under a heading — a page moved out of the run leaves the
+ * group, with nothing else to keep in step.
+ */
+function blocks(items: Doc[]): { group?: string; items: Doc[] }[] {
+  const out: { group?: string; items: Doc[] }[] = [];
+
+  for (const doc of items) {
+    const last = out[out.length - 1];
+    if (last && last.group === doc.group) last.items.push(doc);
+    else out.push({ group: doc.group, items: [doc] });
+  }
+
+  return out;
+}
 
 /**
  * The docs index, grouped. Sticky, because the thing you want while reading
@@ -23,25 +42,40 @@ export function Sidebar() {
           return (
             <div key={section}>
               <p className="eyebrow mb-2">{section}</p>
-              <ul className="flex flex-col gap-px">
-                {items.map((d) => {
-                  const to = href(d.slug);
-                  const on = path === to;
-                  return (
-                    <li key={d.slug}>
-                      <Link
-                        href={to}
-                        title={d.description}
-                        className={`block rounded-[5px] px-2.5 py-[6px] text-[13px] transition-colors ${
-                          on ? "bg-raise text-bone" : "text-dim hover:bg-raise/60 hover:text-text"
-                        }`}
-                      >
-                        {d.navTitle ?? d.title}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
+              <div className="flex flex-col gap-px">
+                {blocks(items).map((block, i) => (
+                  <div key={block.group ?? i} className={block.group ? "mt-1.5 mb-1" : undefined}>
+                    {block.group && (
+                      <p className="px-2.5 py-[3px] text-[12.5px] text-mute">{block.group}</p>
+                    )}
+                    <ul
+                      className={`flex flex-col gap-px ${
+                        block.group ? "ml-2.5 border-l border-line pl-1.5" : ""
+                      }`}
+                    >
+                      {block.items.map((d) => {
+                        const to = href(d.slug);
+                        const on = path === to;
+                        return (
+                          <li key={d.slug}>
+                            <Link
+                              href={to}
+                              title={d.description}
+                              className={`block rounded-[5px] px-2.5 py-[6px] text-[13px] transition-colors ${
+                                on
+                                  ? "bg-raise text-bone"
+                                  : "text-dim hover:bg-raise/60 hover:text-text"
+                              }`}
+                            >
+                              {d.navTitle ?? d.title}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           );
         })}

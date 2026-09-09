@@ -1,122 +1,91 @@
 import { docMeta } from "../../../_lib/nav"
-import { Lede, Callout, Output, Fields, Field, Where } from "../../../../_components/docs/Bits"
+import { Lede, Callout } from "../../../../_components/docs/Bits"
+import { Diagram } from "../../../../_components/docs/Diagram"
 
 export const metadata = docMeta("self-hosting/app/install")
 
-# Install the app
+# Which config is good for you?
 
 <Lede>
-One command on the machine that runs the app. It checks the machine, writes the
-deployment, generates the secrets and brings it up.
+The control plane is the part you open in a browser, and it runs on one
+machine. There are two ways to install it. `firetower install` asks which one
+you want as its first question — everything after that follows from the answer.
 </Lede>
 
-This page installs the app. Machines that run agents are a separate install
-with a separate command, on [their own
-page](/docs/self-hosting/machines/install).
+## From localhost
 
-| | The app | A machine for agents |
-| --- | --- | --- |
-| Command | `firetower install` | `firetower worker install` |
-| Runs on | one machine — the one you open in a browser | every machine that should run agents |
-| Brings up | the control plane, Postgres and Caddy | one worker container |
-| Needed? | Yes | No — a new install already runs agents on itself |
+Firetower publishes on `127.0.0.1` and nothing else. Two ways to use that.
 
-## Requirements
+**On your own computer.** Open it in a browser. Nothing else to set up.
 
-Docker, the Compose plugin, and Node 20 or newer — on each machine you install
-onto. Node comes with npm, which is what installs the CLI.
+<Diagram caption="Nothing is published to the network.">{`
+  +-- YOUR MAC -------------------------+
+  |                                     |
+  |   browser  -->  localhost:8080      |
+  |                      |              |
+  |                 firetower           |
+  |                 postgres            |
+  |                                     |
+  +-------------------------------------+
+`}</Diagram>
 
-## 1. Decide where the app runs
+**On a remote server.** Forward the port over SSH, then open it on your laptop.
 
-The app is the part you open in a browser. It is not where agents run.
+<Diagram caption="firetower tunnel you@server — open for as long as you are using it.">{`
+  +-- YOUR MAC --------------+           +-- YOUR SERVER --------------+
+  |                          |           |                             |
+  |   browser                |    ssh    |   firetower                 |
+  |      |                   |   tunnel  |   postgres                  |
+  |      v                   |           |      ^                      |
+  |   localhost:8080 ---------------------------+                      |
+  |                          |           |   127.0.0.1:8080            |
+  +--------------------------+           +-----------------------------+
+`}</Diagram>
 
-| | On your laptop | On a server |
-| --- | --- | --- |
-| Who reaches it | Only you, at `localhost` | You, over an ssh tunnel — or several people, on a name |
-| Domain | Not needed | Only if more than one person uses it |
-| Certificate | None | Caddy obtains and renews one, over DNS-01 |
+| | |
+| --- | --- |
+| **Pros** | Nothing to configure — no domain, no certificate, no VPN. The fastest way to see Firetower running. |
+| **Cons** | No custom domain. From a server, a tunnel has to be open. No access from a phone, and none for your team. |
 
-Neither publishes the control plane to the internet. It holds every git token,
-every agent credential and the root key, so the default is loopback and an ssh
-tunnel — and the domain shape gets its certificate without being reachable
-either. See [Put it on a domain](/docs/self-hosting/domain).
+**[Install on localhost →](/docs/self-hosting/app/install/localhost)**
 
-Both drive workers on other machines the same way: the app reaches out over
-SSH, so those machines never need a public address.
+## With a custom domain
 
-## 2. Install the app
+Firetower gets a domain name and a certificate, and everyone on your mesh
+network reaches it from any device.
 
-This is the control plane and the web interface. It does not run agents.
+<Diagram caption="The domain is in public DNS. The address it resolves to is private, so only devices on the tailnet can connect.">{`
+   your mac        your phone        a teammate
+       |               |                 |
+       +------- TAILSCALE TAILNET -------+
+                       |
+                       |  https://firetower.example.com
+                       |  A record  -->  100.92.14.7
+                       v
+       +-- YOUR SERVER ----------------------+
+       |                                     |
+       |   caddy  -->  firetower             |
+       |   443         on 127.0.0.1:8080     |
+       |                                     |
+       +-------------------------------------+
+`}</Diagram>
 
-<Where>the machine the app will run on — your laptop, or your server</Where>
-
-```sh
-npm i -g @firetower/cli
-firetower install
-```
-
-It asks four questions:
-
-<Fields>
-  <Field name="How will people reach this Firetower?">
-    Three answers. **Only from this machine** publishes on `127.0.0.1` and you
-    reach it with `firetower tunnel` — the default, and the one to want. **On a
-    name, over HTTPS** turns Caddy on and asks which DNS provider your domain is
-    behind, so it can obtain a certificate over DNS-01 without this machine
-    being reachable. **Behind a reverse proxy I already run** serves plain HTTP
-    on loopback for your proxy to pass through to.
-  </Field>
-  <Field name="Where should Firetower live?">
-    A directory for the compose file, the `Caddyfile` and `.env`. Defaults to
-    `~/firetower`, or `/opt/firetower` as root.
-  </Field>
-  <Field name="Administrator username">
-    Defaults to `admin`.
-  </Field>
-  <Field name="Administrator password">
-    Generate one, or type your own.
-  </Field>
-</Fields>
-
-Before writing anything it checks the machine — Docker, the Compose plugin, the
-ports it is about to publish, architecture, disk, whether `ghcr.io` is
-reachable, and, when you named one, whether the domain and its wildcard resolve
-to an address this machine answers on. Then it fetches the compose file from
-the latest Firetower release, generates `POSTGRES_PASSWORD` and
-`FIRETOWER_ROOT_KEY`, writes `.env`, shows you what it is about to do, and
-brings the stack up.
-
-With a domain it also builds Caddy with your DNS provider compiled in, which
-takes a few minutes the first time.
-
-<Output>{`  Firetower is running.
-
-  It is on loopback, so reach it from your own machine with a tunnel:
-
-    ssh -N -L 8080:127.0.0.1:8080 -o ServerAliveInterval=20 you@this-machine
-
-  Then open
-
-    http://localhost:8080
-
-    username  admin
-    password  velvet-timber-harbor-332`}</Output>
-
-That password is printed once. You are asked to replace it when you sign in,
-and then to delete `ADMIN_INITIAL_PASSWORD` from `.env`.
-
-<Callout kind="warning">
-The root key is the only unrecoverable thing here. Every stored credential is
-sealed with it, and the installer makes you acknowledge it for that reason.
-Back it up somewhere that is not your database backup — see
-[Secrets](/docs/secrets).
+<Callout>
+A custom domain does not mean public access. The A records point at a private
+address, so Tailscale — or another mesh VPN — is required on the server and on
+each device. The certificate is obtained over DNS-01, which needs no inbound
+connection.
 </Callout>
 
-## Next
+| | |
+| --- | --- |
+| **Pros** | Reachable from every device on the tailnet, with no tunnel to open. Real HTTPS. Working preview URLs. Usable by your team. |
+| **Cons** | More setup: Tailscale, two DNS A records, and an API token for your DNS provider. The first install waits while the certificate is issued. |
 
-- [Upgrade the app](/docs/self-hosting/app/upgrade) when a new release lands.
-- More than one person, and a tunnel each is not reasonable? → [Put it on a
-  domain](/docs/self-hosting/domain). You can do this later — `firetower
-  domain` changes an install that is already running.
-- Want agents running on other machines? → [Add a
-  machine](/docs/self-hosting/machines/install)
+**[Install with a custom domain →](/docs/self-hosting/app/install/domain)**
+
+## You can switch later
+
+Neither choice is permanent and neither needs a reinstall. `firetower domain`
+adds a domain to a running deployment; `firetower domain --none` removes it and
+puts the deployment back on loopback.

@@ -1,0 +1,312 @@
+import { docMeta } from "../../../../_lib/nav"
+import { Lede, Callout, Output, Fields, Field, Where } from "../../../../../_components/docs/Bits"
+
+export const metadata = docMeta("self-hosting/app/install/domain")
+
+# Install with a custom domain
+
+<Lede>
+The domain is registered in **public DNS**, so browsers and Let's Encrypt can
+resolve it. Its A records point at a **private address**, so only devices on
+your mesh network can connect to it. The result is a real name and a real
+certificate, reachable from any device you have on the mesh, with no tunnel.
+</Lede>
+
+Not sure this is the right one? See [Which config is good for
+you?](/docs/self-hosting/app/install).
+
+## Before you start
+
+<Fields>
+  <Field name="A domain you control">
+    Its DNS must be hosted at a provider Caddy has a module for. Cloudflare,
+    DigitalOcean, Hetzner, Vercel, GoDaddy, deSEC, Gandi, Linode, Vultr and
+    DuckDNS need only an API token; [ninety-six
+    others](/docs/self-hosting/domain/providers) work too.
+  </Field>
+  <Field name="An API token for that provider">
+    Caddy writes the ACME challenge record with it. The prompt links the page
+    where you create one.
+  </Field>
+  <Field name="Docker, Compose, Node 20+">
+    On the machine the app will run on, as with any install.
+  </Field>
+</Fields>
+
+<Callout>
+Only the DNS challenge record is written through that API — Firetower never
+publishes anything to the internet. The certificate is obtained over DNS-01,
+which needs no inbound connection. [How that works
+→](/docs/self-hosting/domain)
+</Callout>
+
+## Install Tailscale first
+
+Required, not optional. Firetower is served on a private address, and the
+installer stops if the machine has no address your team can reach.
+
+<Where>the machine the app will run on</Where>
+
+```sh
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+tailscale ip -4
+```
+
+`tailscale ip -4` prints the machine's tailnet address:
+
+<Output>{`  100.92.14.7`}</Output>
+
+That is the address the two DNS records will point at, and the one the
+installer should offer you in step 2. Note it down now.
+
+Then every device that will open Firetower — your laptop, your phone — joins
+the same tailnet.
+
+## Install the CLI
+
+<Where>the machine the app will run on</Where>
+
+```sh
+npm i -g @firetower/cli
+firetower install
+```
+
+## 1. Answer `Your own domain, over Tailscale or another mesh VPN`
+
+<Output>{`  Firetower
+
+  ◆  How will people reach this Firetower?
+  │  ○ Only from this machine (simplest to start — directly, or with \`firetower tunnel\` from your laptop)
+  │  ● Your own domain, over Tailscale or another mesh VPN
+  │  ○ Behind a reverse proxy I already run
+  └`}</Output>
+
+## 2. Point your Tailscale address
+
+Asked before the domain name. The installer reads the machine's network
+interfaces and offers anything that looks like a mesh VPN first:
+
+<Output>{`  ✓ Mesh network detected      100.92.14.7 (tailscale0)
+
+  ◆  Reach Firetower on 100.92.14.7?
+  │  ● Yes
+  │  ○ No — show me the others
+  └`}</Output>
+
+Make sure it is the same address `tailscale ip -4` printed. If it offers a
+different one, choose **No** and pick the tailnet address from the list.
+
+## 3. Then the domain name
+
+<Output>{`  ◇  Domain
+  │  firetower.example.com`}</Output>
+
+## 4. Then where the certificate comes from
+
+Ten providers that take a single API token are listed by name. Anything else is
+typed in as its [caddy-dns](https://github.com/caddy-dns) module name, which is
+checked against all ninety-six. The last option is for a certificate you
+already hold.
+
+<Output>{`  ◆  Where should the certificate come from?
+  │  ● Let's Encrypt, through Cloudflare
+  │  ○ Let's Encrypt, through DigitalOcean
+  │  ○ Let's Encrypt, through Hetzner
+  │  ○ …
+  │  ○ Let's Encrypt, through another DNS provider…
+  │  ○ I already have a certificate
+  └`}</Output>
+
+It then states the requirement for issuance to work — **the domain's DNS must
+be hosted at the provider whose token you are about to paste** — links the page
+where you create the key, and reads the token masked:
+
+<Output>{`  Firetower gets the certificate by writing a record through
+  Cloudflare's API, so firetower.example.com has to be hosted there. If its
+  DNS lives somewhere else the write succeeds and the record never appears.
+
+  Create a key:
+
+    https://dash.cloudflare.com/profile/api-tokens
+
+  ◇  API token for cloudflare
+  │  ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪`}</Output>
+
+Providers that need more than one value — Route 53, Azure, Google Cloud and
+about forty others — take no token here. The module is compiled in and a block
+is written into your `Caddyfile` to fill in. [Which credential each provider
+needs →](/docs/self-hosting/domain/providers)
+
+## 5. It prints the two DNS records and waits
+
+Still before anything is written:
+
+<Output>{`  Create these DNS records in Cloudflare:
+
+    firetower.example.com      A   100.92.14.7
+    *.firetower.example.com    A   100.92.14.7
+
+  The wildcard is not optional — previews are served on subdomains, and
+  without it you get an interface that works and previews that do not.
+
+  ◆  Done?
+  │  ● Yes, continue
+  │  ○ Not yet — stop, and I will run this again
+  └`}</Output>
+
+Neither record is needed for the *certificate*. DNS-01 proves control with a
+TXT record at `_acme-challenge`, and a certificate will be issued for a name
+with no A record at all. The A records are what make the deployment reachable.
+
+## 6. It fetches the deployment files, then checks the machine
+
+The same checks as any install, plus a DNS check that resolves both the domain
+and a random label under it. The second lookup is the only way to distinguish a
+wildcard record from a single subdomain record that happens to exist.
+
+## 7. No port question with this option
+
+Caddy takes 443, and 80 for the redirect. The control plane stays behind it on
+8080, published on loopback only.
+
+## 8. Directory, admin username, admin password
+
+<Fields>
+  <Field name="Where should Firetower live?">
+    Defaults to `~/firetower`, or `/opt/firetower` as root.
+  </Field>
+  <Field name="Administrator username">
+    Defaults to `admin`.
+  </Field>
+  <Field name="Administrator password">
+    Generate one, or type your own.
+  </Field>
+</Fields>
+
+Then the plan, with the provider named and the token withheld:
+
+<Output>{`  Here is what I will do:
+
+  directory     /opt/firetower
+  url           https://firetower.example.com
+  published     127.0.0.1:8080 — and Caddy on 100.92.14.7, ports 443 and 80
+  certificate   Let's Encrypt, over DNS-01 through cloudflare — renewed by Caddy
+  dns           cloudflare, with the token you gave (not shown)
+  admin         admin, with the password shown once below
+  root key      generated, written to /opt/firetower/.env
+
+  ◆  Continue?
+  │  ● Yes / ○ No
+  └`}</Output>
+
+Answering **No** writes nothing.
+
+## 9. It builds Caddy
+
+Caddy loads DNS providers as compiled-in modules, so the first start pulls a Go
+toolchain and compiles a Caddy with your provider in it. This takes a few
+minutes, once — later starts use the cached image. The build output is streamed
+so you can see it progressing.
+
+## 10. It requires you to acknowledge the root key
+
+<Output>{`  ──────────────────────────────────────────────────────────────
+  Save this. It is not stored anywhere you can read it back.
+
+    FIRETOWER_ROOT_KEY  q1Zk8mWv2r7XcN0pT4sYbA6dJhLgE3uF9nRxKtVwQmc=
+
+  Every credential Firetower holds is sealed with it. Back it up
+  somewhere that is not your database backup — a stolen database
+  opens nothing on its own, and losing this key means adding every
+  credential again.
+  ──────────────────────────────────────────────────────────────
+
+  ◆  I have saved the root key
+  │  ○ Yes / ● No
+  └`}</Output>
+
+<Callout kind="warning">
+The root key is the only unrecoverable thing here. Every stored credential is
+sealed with it, which is why the installer requires you to acknowledge it. Back
+it up somewhere separate from your database backup — see
+[Secrets](/docs/secrets).
+</Callout>
+
+## 11. It waits for the certificate
+
+The containers report healthy well before Let's Encrypt has answered, and
+opening the URL in that window returns `ERR_SSL_PROTOCOL_ERROR`. So the
+installer requests the bare name first, reloads Caddy with the wildcard, then
+waits for both:
+
+<Output>{`  ◐  Waiting for certificates (2m14s) — *.firetower.example.com — both
+     prove themselves at the same DNS record, so one often needs a retry`}</Output>
+
+After five minutes the message changes to `still retrying. Safe to Ctrl-C;
+Caddy carries on without you`.
+
+This takes seconds on Cloudflare. On a provider whose API replaces the records
+at a name rather than adding to them — GoDaddy does — the two challenges
+overwrite each other, and the second certificate is retried a minute later and
+succeeds on its own. This is expected on a first install there, not a failure.
+The wait times out after fifteen minutes and reports what is outstanding; Caddy
+keeps retrying either way.
+
+## 12. Done
+
+Reachable from any device on your tailnet:
+
+<Output>{`  Firetower is running.
+
+    https://firetower.example.com
+
+    username  admin
+    password  velvet-timber-harbor-332`}</Output>
+
+The admin password is printed once. You are asked to replace it when you sign
+in, and then to delete `ADMIN_INITIAL_PASSWORD` from `.env`.
+
+Caddy renews the certificate automatically, at about two-thirds of its
+lifetime. There is nothing to run.
+
+## What it wrote
+
+<Fields>
+  <Field name="firetower.yml">
+    The compose file, from the release. Replaced in full by `firetower upgrade`.
+  </Field>
+  <Field name="Caddyfile">
+    With your DNS provider in it. Yours to edit — `firetower upgrade` never
+    touches this file.
+  </Field>
+  <Field name=".env">
+    `chmod 600`. Domain, ports, URL, DNS provider and token, and the two
+    generated secrets. An existing `.env` keeps every value already in it —
+    nothing here regenerates a secret.
+  </Field>
+  <Field name="certs/">
+    Empty unless you supply your own certificate. Created up front so that
+    Docker does not create it as root later.
+  </Field>
+</Fields>
+
+`firetower install` refuses to run in a directory that already holds a
+deployment. Use `firetower domain` to change how an existing deployment is
+reached, and `firetower upgrade` to move it to a newer release.
+
+## If the certificate does not arrive
+
+```sh
+firetower logs caddy -f
+firetower doctor
+```
+
+Every provider, every credential format, and what each error in those logs
+means is on [Put it on a domain](/docs/self-hosting/domain).
+
+## Next
+
+- Want agents running on other machines? → [Add a
+  machine](/docs/self-hosting/machines/install)
+- [Upgrade the app](/docs/self-hosting/app/upgrade) when a new release lands.

@@ -89,6 +89,15 @@ pins an older dependency than the module itself asks for.
 firetower domain ft.example.com --dns-provider godaddy --dns-token "KEY:SECRET"
 ```
 
+<Callout kind="warning">
+**Create the key on the classic developer portal, not the current one:**
+[classic-developer.godaddy.com/keys](https://classic-developer.godaddy.com/keys).
+A key issued by GoDaddy's newer developer portal will not work here. Nothing
+rejects it up front — it fails at issuance, with an authentication error that
+says nothing about the key being the wrong kind. The CLI links the classic page
+from the token prompt for this reason.
+</Callout>
+
 **The token is the key and the secret joined by a colon.** That is one string
 to the module, but two values from GoDaddy, and pasting the key alone is
 accepted by every prompt and every file — it fails only at issuance, with an
