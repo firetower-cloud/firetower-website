@@ -4,35 +4,42 @@ import { Diagram, Methods } from "../../_components/docs/Diagram"
 
 export const metadata = docMeta("self-hosting")
 
-# How self-hosting works
+# Key concepts
 
 <Lede>
-You run two things: **the app**, once, and **a worker** on every machine that
-should run agents.
+You run two things: **the Firetower**, once, and **a worker** on every machine
+that should run agents.
 </Lede>
 
-The app reaches your machines over SSH. The worker never opens a port and
-holds no credentials of its own.
+The Firetower reaches your machines over SSH. The worker never opens a port and
+holds no credentials of its own. You connect to it from a native client — and
+because neither it nor the agents live on your laptop, closing that changes
+nothing.
 
 ## Architecture
 
-<Diagram caption="The app is the only thing exposed. Everything below the ssh line is a machine you already own.">{`
-                      your browser or phone
-                               |
-                             https
-                               |
-+-[x]- THE APP ---------------------------------------------+
+<Diagram caption="Clients come and go. The Firetower is the thing that stays up, and everything below the ssh line is a machine you already own.">{`
+       +- Desktop ---------+         +- Mobile ----------+     
+       |  macOS / Windows  |         |  iOS / Android    |     
+       +-------------------+         +-------------------+     
+                 \\                             /               
+                  +-------------+-------------+                
+                                |                              
+                         https, on your                        
+                       tailnet or your LAN                     
+                                |                              
++-[x]- Your Firetower --------------------------------------+
 |                                                           |
 |   caddy          firetower              postgres          |
-|   :80 / :443     control plane          state and         |
-|   tls, proxy     + web interface        sealed secrets    |
+|   :443           control plane          state and         |
+|   tls, proxy     answers the clients    sealed secrets    |
 |                                                           |
-|   one compose file. the only thing you expose.            |
+|   one compose file. one address. never the internet.      |
 +-----------------------------------------------------------+
              |                              |
             ssh                            ssh
              |                              |
-+-[x]- A MACHINE ----------+   +-[x]- ANOTHER MACHINE ----+
++-[x]- A worker -----------+   +-[x]- Another worker -----+
 |  firetower-worker        |   |  firetower-worker        |
 |  git . tmux              |   |  git . tmux              |
 |  its own event log       |   |  its own event log       |
@@ -44,19 +51,46 @@ holds no credentials of its own.
 +--------------------------+   +--------------------------+
 `}</Diagram>
 
-### The app
+### The client
+
+A native app: **Firetower for macOS**, **for Windows**, and for **iOS and
+Android**.
+It is where you read a session, talk to an agent, open a shell and look at a
+preview.
+
+It holds a URL and a token per server, so one app can sit in front of several
+Firetowers at once and read across them. Nothing about a session lives in it.
+
+That is the point of the split. **The agents are not running on the machine you
+are looking at them from** — they are running in a worker, in tmux, on a
+machine that does not sleep. Close the laptop, quit the app, run out of
+battery: the work carries on, and the app catches up on the way back in.
+
+### The Firetower
+
+**What it is for.** You describe a piece of work. It decides which machine runs
+it, gets it running, and keeps it running after you have stopped watching.
+
+Concretely: it picks a host, cuts a branch, makes a worktree, starts tmux and
+launches the agent on your own subscription — then stays with the session.
+It notices when a turn ends, when the agent is stuck waiting on an answer, and
+when it is asking for permission. That is the inbox you come back to.
+
+It is also the only thing that remembers. Your machines, your repositories,
+your git tokens and agent credentials, every session and everything each one
+said — all of it lives here. Which is why there is one per team rather than one
+per person, and why it is the part that has to stay up.
 
 Three containers, brought up by `firetower install`:
 
-- **firetower** — the control plane and the web interface, compiled into one
-  binary. It decides what should happen, holds your hosts, repositories and
-  credentials, and serves the screen you work in.
-- **postgres** — the entire state, with every credential sealed. See
-  [Secrets](/docs/secrets).
-- **caddy** — the reverse proxy, and the only service that publishes a port.
-  Naming a domain is what turns on HTTPS.
+- **firetower** — all of that, compiled into one binary.
+- **postgres** — the entire state, with every credential sealed.
+- **caddy** — the reverse proxy, and the only service that publishes a port. It
+  terminates TLS for the name every deployment has, on one address and nowhere
+  else.
 
-The control plane publishes no port. Only Caddy is reachable from outside.
+The control plane publishes no port. Only Caddy is reachable, on the one
+address you chose — a tailnet address, usually.
 
 ### The worker
 
@@ -68,36 +102,35 @@ machine and runs `docker exec` when it wants to talk. No sshd in the image, no
 key inside it, no port to open.
 
 Each worker writes what happened to its own event log before reporting it, so a
-session survives the app being unreachable.
+session survives the Firetower being unreachable.
 
 <Callout>
-The machine running the app is also a host. The control plane starts a worker
+The machine running the Firetower is also a host. The control plane starts a worker
 as a child process, so `localhost` appears in the fleet, runs sessions, and can
 be drained.
 </Callout>
 
 ## What you actually have to do
 
-1. **Run the app.** One command on any machine that can reach the internet.
-   → [Install](/docs/self-hosting/app/install)
-2. **Give it a name**, if you want to reach it from a phone. → [Put it on a
-   domain](/docs/self-hosting/domain)
-3. **Run a worker** on every machine that should run agents, and add each one
-   in Compute. → [Add a machine](/docs/self-hosting/machines/install)
+1. **Run the Firetower.** One command on any machine that can reach the
+   internet. → [Install](/docs/self-hosting/app/install)
+2. **Run a worker** on every machine that should run agents, and add each one
+   in Configuration → Machines. → [Add a
+   worker](/docs/self-hosting/machines/install)
 
-Step 3 is optional. A new install already has one host — itself — and runs
+Step 2 is optional. A new install already has one host — itself — and runs
 sessions there.
 
 ## Shapes that work
 
-| Where the app runs | Where workers run | Good for |
+| Where the Firetower runs | Where workers run | Good for |
 | --- | --- | --- |
 | One machine | The same machine | Trying it, and small teams. Nothing else to set up. |
 | A small VPS | Bigger machines you add over SSH | Keeping the thing you expose small and cheap, and the compute separate. |
 | Your laptop | Cloud VMs | Working locally while the agents run somewhere that stays awake. |
 
-The work happens on the workers. Size those; the app only holds state and
-serves the interface.
+The work happens on the workers. Size those; the Firetower only holds state and
+answers the clients.
 
 <Callout kind="warning">
 Back the root key up separately from the database. A database backup on its
@@ -111,13 +144,13 @@ own cannot be decrypted; stored beside the key, it can.
     {
       name: "The CLI",
       state: "ready",
-      body: "npm i -g @firetower/cli, then firetower install for the app and firetower worker install on each machine. It checks the machine, writes the deployment, generates the secrets and upgrades in place. This is the supported path, and the one the rest of these docs describe.",
+      body: "npm i -g @firetower/cli, then firetower install for the Firetower and firetower worker install on each machine that should run agents. It checks the machine, writes the deployment, generates the secrets and upgrades in place. This is the supported path, and the one the rest of these docs describe.",
       href: "/docs/self-hosting/app/install",
     },
     {
       name: "Terraform modules",
       state: "planned",
-      body: "A module for the app and a module for a worker, so a machine can be created and joined in one apply instead of a VM, then an install, then a form. Not available yet.",
+      body: "A module for the Firetower and a module for a worker, so a machine can be created and joined in one apply instead of a VM, then an install, then a form. Not available yet.",
     },
   ]}
 />

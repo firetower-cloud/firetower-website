@@ -49,9 +49,10 @@ says what the container ended up on.
 
 ## Version drift
 
-Firetower compares its own version against each worker's on every connection and
-says when they have drifted. `firetower upgrade` on the app's machine also names
-every machine still running an older worker, and the command to fix each one.
+The Firetower compares its own version against each worker's on every connection
+and says when they have drifted. `firetower upgrade` on the Firetower's own
+machine also names every machine still running an older worker, and the command
+to fix each one.
 
 A worker that is behind still works, quietly. It runs sessions perfectly well;
 what it cannot do is anything added since it was built. A worker older than

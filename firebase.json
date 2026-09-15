@@ -23,8 +23,14 @@
         "type": 301
       },
       {
+        "//": "The domain page is gone: the certificate, the records and the two ways to be reached are all on the install page now, which is where somebody following /docs/domain wanted to end up anyway.",
         "source": "/docs/domain",
-        "destination": "/docs/self-hosting/domain",
+        "destination": "/docs/self-hosting/app/install",
+        "type": 301
+      },
+      {
+        "source": "/docs/self-hosting/domain",
+        "destination": "/docs/self-hosting/app/install",
         "type": 301
       },
       {
@@ -33,8 +39,24 @@
         "type": 301
       },
       {
+        "//": "Daily operations, Connect repositories and Secrets were all removed. Nothing replaces them one-for-one, so these land on the page that explains the parts rather than on a 404.",
         "source": "/docs/operations",
-        "destination": "/docs/self-hosting/operations",
+        "destination": "/docs/self-hosting",
+        "type": 301
+      },
+      {
+        "source": "/docs/self-hosting/operations",
+        "destination": "/docs/self-hosting",
+        "type": 301
+      },
+      {
+        "source": "/docs/repositories",
+        "destination": "/docs/self-hosting",
+        "type": 301
+      },
+      {
+        "source": "/docs/secrets",
+        "destination": "/docs/self-hosting",
         "type": 301
       },
       {

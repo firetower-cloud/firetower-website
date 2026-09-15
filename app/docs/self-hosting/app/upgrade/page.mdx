@@ -3,14 +3,14 @@ import { Lede, Callout, Where } from "../../../../_components/docs/Bits"
 
 export const metadata = docMeta("self-hosting/app/upgrade")
 
-# Upgrade the app
+# Upgrade the Firetower
 
 <Lede>
 One command. It backs the database up first, and finishes by naming every
 machine left running an older worker.
 </Lede>
 
-<Where>the machine the app runs on</Where>
+<Where>the server the Firetower runs on</Where>
 
 ```sh
 firetower upgrade
@@ -22,7 +22,7 @@ In order, it:
    `backups/` in the deployment directory. Pass `--no-backup` to skip it.
 2. Pulls the new images and recreates the containers. Migrations run at
    start-up.
-3. Waits for the app to report healthy, and says which version you are on.
+3. Waits for it to report healthy, and says which version you are on.
 4. Lists the machines whose worker is now behind, with the command to run on
    each.
 

@@ -19,10 +19,10 @@ export type Doc = {
   /**
    * What the sidebar calls it, when that differs from the title.
    *
-   * Two pages are "Application" — one under Install, one under Upgrade — and
+   * Two pages are "The Firetower" — one under Install, one under Upgrade — and
    * the section above them says which. A page title has no section beside it:
    * it is a browser tab, a breadcrumb and a search result, so those stay
-   * "Install the app" and "Upgrade the app".
+   * "Install the Firetower" and "Upgrade the Firetower".
    */
   navTitle?: string;
 };
@@ -44,37 +44,30 @@ export const DOCS: Doc[] = [
   },
   {
     slug: "self-hosting",
-    title: "How it works",
+    title: "Key concepts",
     description:
-      "The two things you run — the app, once, and a worker on every machine that should run agents — and the shapes that work.",
+      "The three parts of Firetower — the Firetower itself, a worker on every machine that should run agents, and the client you open — and how they fit together.",
     section: "Start",
   },
   {
     slug: "self-hosting/app/install",
-    title: "Install the app",
-    navTitle: "Application",
+    title: "Install the Firetower",
+    navTitle: "The Firetower",
     description:
-      "Install the Firetower app with the CLI: what it asks, what it checks, and what it writes.",
+      "Install the Firetower — the control plane — with the CLI: what it asks, what it checks, and what it writes.",
     section: "Install",
   },
   {
     slug: "self-hosting/machines/install",
-    title: "Add a machine",
+    title: "Add a worker",
     description:
       "Run sessions on a server you already own: install the worker with the CLI, then add the host over SSH.",
     section: "Install",
   },
   {
-    slug: "self-hosting/domain",
-    title: "Put it on a domain",
-    description:
-      "Point a domain at the machine and Firetower serves HTTPS. What to set, which ports to open, and what each certificate failure means.",
-    section: "Install",
-  },
-  {
     slug: "self-hosting/app/upgrade",
-    title: "Upgrade the app",
-    navTitle: "Application",
+    title: "Upgrade the Firetower",
+    navTitle: "The Firetower",
     description:
       "firetower upgrade backs up the database, pulls the new release, and names every machine left running an older worker.",
     section: "Upgrade",
@@ -86,27 +79,6 @@ export const DOCS: Doc[] = [
     description:
       "Drain the host, recreate the container, resume it — and what a worker that has drifted behind the app stops being able to do.",
     section: "Upgrade",
-  },
-  {
-    slug: "self-hosting/operations",
-    title: "Daily operations",
-    description:
-      "Backups, the commands you reach for, running behind a proxy you already have, and who is allowed to use your Firetower.",
-    section: "Operations",
-  },
-  {
-    slug: "repositories",
-    title: "Connect repositories",
-    description:
-      "Paste a URL, or authorize GitHub with an OAuth app so you can pick from a list. Both, and why it is an OAuth app.",
-    section: "Using Firetower",
-  },
-  {
-    slug: "secrets",
-    title: "Secrets",
-    description:
-      "Every credential Firetower holds is sealed with envelope encryption. Where the root key lives, and why it is backed up apart from the database.",
-    section: "Using Firetower",
   },
 ];
 
@@ -153,9 +125,9 @@ export function neighbours(slug: string) {
  * The path to a page, as breadcrumbs.
  *
  * Walks the slug a segment at a time and keeps the ones that are real pages,
- * so `self-hosting/app/install` yields Home › Documentation › How it works ›
- * Install the app — and a segment that never gets its own page, like `app`,
- * simply does not appear rather than producing a crumb that 404s.
+ * so `self-hosting/app/install` yields Home › Documentation › Key concepts ›
+ * Install the Firetower — and a segment that never gets its own page, like
+ * `app`, simply does not appear rather than producing a crumb that 404s.
  */
 export function trail(slug: string) {
   const steps = [

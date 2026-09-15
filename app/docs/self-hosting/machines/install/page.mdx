@@ -1,25 +1,32 @@
 import { docMeta } from "../../../_lib/nav"
-import { Lede, Callout, Where } from "../../../../_components/docs/Bits"
+import { Lede, Callout, Fields, Field, Where } from "../../../../_components/docs/Bits"
 
 export const metadata = docMeta("self-hosting/machines/install")
 
-# Add a machine
+# Add a worker
 
 <Lede>
-A machine is a server you already have. Firetower reaches it over SSH with the
-key you already use, runs the worker there, and installs nothing you did not put
-there.
+A worker is one container, on a machine you already have. It holds what a
+session needs — git, tmux, Node and the agents — and nothing else: no
+credentials, no open port, nothing you did not put there.
 </Lede>
 
-You need two things on it: an SSH account, and the worker container. Everything
-the worker uses is inside that container — git, tmux, Node and an agent — so
-there is nothing else to set up.
+**Any machine will do.** A VPS, a server in your office, a Mac mini under the
+desk, a spare laptop, a cloud VM. There are only two requirements: that you can
+install the worker on it, and that the Firetower can reach it over SSH.
 
-Requirements: Docker and Node 20 or newer.
+So the machine needs an SSH account and the worker container. Everything else
+lives inside that container.
+
+A worker is optional, and a second one is the point: a new Firetower already
+runs sessions on itself. You add workers when you want agents running somewhere
+bigger, or somewhere that stays awake.
+
+Requirements on the machine: Docker and Node 20 or newer.
 
 ## Start the worker
 
-<Where>the machine that should run agents</Where>
+<Where>the machine that will run agents</Where>
 
 ```sh
 npm i -g @firetower/cli
@@ -31,12 +38,12 @@ Pulls `ghcr.io/firetower-cloud/firetower-worker:latest`, starts it as
 Docker volume called `firetower`. Pass `--container <name>` to run more than one
 on the same machine.
 
-The container does nothing on its own. Firetower SSHes to the machine and runs
-`docker exec` when it wants to talk, so there is no sshd in the image, no key
-inside it, and no port to open.
+The container does nothing on its own. The Firetower SSHes to the machine and
+runs `docker exec` when it wants to talk, so there is no sshd in the image, no
+key inside it, and no port to open.
 
-Check that the account you will connect as can reach Docker, because Firetower
-will be that account. Run this as that account, not as root:
+Check that the account you will connect as can reach Docker, because the
+Firetower will be that account. Run this as that account, not as root:
 
 ```sh
 docker ps
@@ -45,19 +52,58 @@ docker ps
 If that says permission denied, add the account to the `docker` group with
 `sudo usermod -aG docker $USER` and log back in.
 
-## Add it in Firetower
+## Add it to your Firetower
 
-<Where>Firetower, in a browser</Where>
+<Where>the Firetower desktop client</Where>
 
-**Compute → Add compute → A server**, then the address, the account to SSH as,
-the private key, and the container name — `firetower-worker`, already filled in.
+**Configuration → Machines → Add a machine**, then follow the wizard:
 
-If it does not connect, the host is added anyway and says what to fix. Sort the
-machine out and press **Try now**; there is nothing to re-add.
+<Fields>
+  <Field name="IP address or hostname">
+    Where the machine is, from the Firetower. On a tailnet, its tailnet
+    address.
+  </Field>
+  <Field name="SSH account">
+    The account to connect as — the same one you checked `docker ps` with.
+  </Field>
+  <Field name="Name">
+    What you want to call it in the fleet.
+  </Field>
+  <Field name="Container name">
+    `firetower-worker`, already filled in. Only change it if you passed
+    `--container`.
+  </Field>
+</Fields>
 
-Nothing on this machine holds a credential. What an agent authenticates with is
-held by the control plane and handed to a session as it starts, so a fresh
-worker needs no login.
+### Authorize Firetower's key
+
+**Firetower makes its own SSH key** — it does not ask for yours. The wizard
+shows the public half; copy it onto the machine, into the SSH account's
+`~/.ssh/authorized_keys`:
+
+```sh
+echo 'ssh-ed25519 AAAAC3… firetower' >> ~/.ssh/authorized_keys
+```
+
+Then press **Add it**. It connects, and says what is wrong if it cannot.
+
+That key is one pair for the whole installation, scoped to it. It opens nothing
+else you own, the private half never leaves the vault, and revoking it is
+deleting that one line — which cuts every machine at once, which is what
+revoking should do.
+
+<Callout>
+The wizard also offers **A key on the server**, where you give the path to a
+key that is already on the Firetower's own machine. Firetower's own key is the
+one to use unless you have a reason.
+</Callout>
+
+If it does not connect, the machine is added anyway and says what to fix. Sort
+it out and press **Try now**; there is nothing to re-add.
+
+Nothing on the worker holds a credential. What an agent authenticates with is
+held by the Firetower and handed to a session as it starts, so a fresh worker
+needs no login.
 
 <Callout>
 Some providers build a VM by naming a container image instead of an operating
@@ -68,7 +114,7 @@ and tmux are there, you are inside the worker itself — leave the field empty.
 
 ## Check what it is running
 
-<Where>the machine that should run agents</Where>
+<Where>the machine that will run agents</Where>
 
 ```sh
 firetower worker status
@@ -80,5 +126,5 @@ Add `--json` to any command that answers a question, including this one.
 
 ## Next
 
-Upgrade it when the app moves on → [Upgrade the
+Upgrade it when the Firetower moves on → [Upgrade the
 worker](/docs/self-hosting/machines/upgrade).
