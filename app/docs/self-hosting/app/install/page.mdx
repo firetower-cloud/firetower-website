@@ -6,13 +6,18 @@ export const metadata = docMeta("self-hosting/app/install")
 # Install the Firetower
 
 <Lede>
-One command on the server. It asks a handful of questions and brings the stack
+One line on the server. It asks a handful of questions and brings the stack
 up.
 </Lede>
 
+Firetower is built server-first: the control plane runs on a **Linux machine**
+— a VPS, a cloud VM, a box in your office — and you connect to it from wherever
+you are, with the desktop client on your Mac or Windows machine, or the mobile
+app. Nothing below runs on your laptop.
+
 ## Before you start
 
-- **Docker, the Compose plugin, and Node 20 or newer** on the server.
+- **A Linux server** you can SSH into, as root or with sudo.
 - **A domain** you can add DNS records to, and an **API token** for whoever
   hosts its DNS.
 
@@ -21,9 +26,18 @@ up.
 <Where>the server the Firetower will run on</Where>
 
 ```sh
-npm i -g @firetower/cli
-firetower install
+curl -fsSL https://usefiretower.com/install.sh | sh
 ```
+
+It gets three things onto the machine, showing each line and asking before it
+runs: Docker with the Compose plugin, if there is none, using Docker's own
+installer; Node 20 or newer, which the CLI runs on; and the Firetower CLI. Then
+it hands over to `firetower install`, and nothing else is decided for you.
+
+<Callout>
+Already have Docker and Node? `npm i -g @firetower/cli` and `firetower install`
+is the same thing without the first two steps.
+</Callout>
 
 The first question decides the rest, and there are two answers:
 
