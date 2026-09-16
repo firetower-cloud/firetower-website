@@ -6,57 +6,47 @@ export const metadata = docMeta("self-hosting/machines/upgrade")
 # Upgrade the worker
 
 <Lede>
-Once per machine, and only after that machine has been drained.
+Firetower does it, over the same SSH connection it uses for everything else:
+one machine at a time, drained first.
 </Lede>
 
-## 1. Drain the host
+## From the Updates screen
 
-<Callout kind="warning">
-**Compute → the host → Drain**, and wait until nothing is running on it.
-Recreating the container takes the tmux server with it, and every session on
-that machine goes too. The CLI cannot check this for you — a worker machine
-holds no credential for the control plane — so it asks instead.
-</Callout>
+<Where>the Firetower desktop client</Where>
 
-Draining stops new sessions being placed there. The ones already running carry
-on until they end.
+**Updates** lists every machine, its worker's version, and whether it is behind
+the Firetower. An upgrade run drains each machine, waits for its sessions to
+end or ends them, runs the installer with the Firetower's own version, waits
+for the worker to answer as that version, and puts the machine back in service.
+A machine that is unreachable is skipped and named.
 
-## 2. Recreate the container
+## From the machine's panel
+
+**Compute → the machine → Reinstall the worker** does the same for one machine,
+whenever you like. Drain it first if sessions are running: replacing the
+binary does not stop a running agent, but the next session starts on the new
+one.
+
+## By hand
 
 <Where>the machine that runs agents</Where>
 
 ```sh
-firetower worker upgrade
+curl -fsSL https://usefiretower.com/worker.sh | sh
 ```
 
-Pulls the new image, removes the container and starts a fresh one on the same
-volume. `firetower:/var/lib/firetower` holds everything worth keeping —
-repositories, worktrees, the event log and the agent's own home — so removing
-the container loses nothing.
-
-Pass `--container <name>` if this machine runs more than one worker.
-
-## 3. Resume it
-
-Back in **Compute → the host**, the button now says **Resume**. Until you press
-it, no new session is placed there.
-
-```sh
-firetower worker status
-```
-
-says what the container ended up on.
+installs the newest release; `--version 0.35.0` pins one. The worker keeps its
+state — repositories, worktrees, the event log, the agents — under
+`~/.firetower/worker`, and the installer only replaces the binary in `bin/`.
 
 ## Version drift
 
 The Firetower compares its own version against each worker's on every connection
 and says when they have drifted. `firetower upgrade` on the Firetower's own
-machine also names every machine still running an older worker, and the command
-to fix each one.
+machine also names every machine still running an older worker.
 
 A worker that is behind still works, quietly. It runs sessions perfectly well;
-what it cannot do is anything added since it was built. A worker older than
-agent hooks will start an agent and never tell you it stopped — the session sits
-on *working* while the agent waits for you, and nothing reports an error. The
-version drift on the fleet screen is the thing to look at when a feature seems
-not to exist.
+what it cannot do is anything added since it was built. A worker older than the
+protocol the Firetower speaks is refused at the handshake and shows as behind
+until it is reinstalled. The version drift on the fleet screen is the thing to
+look at when a feature seems not to exist.
