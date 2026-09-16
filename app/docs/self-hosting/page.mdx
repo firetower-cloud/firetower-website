@@ -11,7 +11,8 @@ You run two things: **the Firetower**, once, and **a worker** on every machine
 that should run agents.
 </Lede>
 
-The Firetower reaches your machines over SSH. The worker never opens a port and
+The Firetower reaches your machines over SSH. The worker is one binary on the
+machine, started by sshd when the Firetower connects; it never opens a port and
 holds no credentials of its own. You connect to it from a native client — and
 because neither it nor the agents live on your laptop, closing that changes
 nothing.
@@ -41,7 +42,8 @@ nothing.
              |                              |
 +-[x]- A worker -----------+   +-[x]- Another worker -----+
 |  firetower-worker        |   |  firetower-worker        |
-|  git . tmux              |   |  git . tmux              |
+|  one binary, no daemon   |   |  one binary, no daemon   |
+|  git . tmux . the agents |   |  git . tmux . the agents |
 |  its own event log       |   |  its own event log       |
 |  no open port            |   |  no open port            |
 |                          |   |                          |
@@ -94,12 +96,16 @@ address you chose — a tailnet address, usually.
 
 ### The worker
 
-One container per machine, `firetower-worker`, holding what a session needs:
-git, tmux and the agents themselves.
+One binary per machine, `firetower-worker`, in `~/.firetower/worker/bin` of
+the account agents run as. Agents run on the machine itself — as that account,
+with that machine's tools, its filesystem and its network. The machine is the
+unit of isolation: a VM of its own when you want one, the machine itself when
+that is the point.
 
-It does nothing on its own — Firetower SSHes to the
-machine and runs `docker exec` when it wants to talk. No sshd in the image, no
-key inside it, no port to open.
+It does nothing on its own — Firetower SSHes to the machine and runs it when it
+wants to talk, and it exits when the Firetower hangs up. Agents outlive that
+under tmux. No daemon to keep alive, no port to open, no key on the machine but
+the one you gave it.
 
 Each worker writes what happened to its own event log before reporting it, so a
 session survives the Firetower being unreachable.
@@ -114,9 +120,9 @@ be drained.
 
 1. **Run the Firetower.** One command on any machine that can reach the
    internet. → [Install](/docs/self-hosting/app/install)
-2. **Run a worker** on every machine that should run agents, and add each one
-   in Configuration → Machines. → [Add a
-   worker](/docs/self-hosting/machines/install)
+2. **Add a machine** for every machine that should run agents: give it
+   Firetower's key, add it under Compute, and Firetower installs the worker
+   itself. → [Add a machine](/docs/self-hosting/machines/install)
 
 Step 2 is optional. A new install already has one host — itself — and runs
 sessions there.
@@ -144,7 +150,7 @@ own cannot be decrypted; stored beside the key, it can.
     {
       name: "The CLI",
       state: "ready",
-      body: "npm i -g @firetower/cli, then firetower install for the Firetower and firetower worker install on each machine that should run agents. It checks the machine, writes the deployment, generates the secrets and upgrades in place. This is the supported path, and the one the rest of these docs describe.",
+      body: "npm i -g @firetower/cli, then firetower install for the Firetower. It checks the machine, writes the deployment, generates the secrets and upgrades in place. Machines that run agents are added from the interface, which installs the worker onto them over SSH. This is the supported path, and the one the rest of these docs describe.",
       href: "/docs/self-hosting/app/install",
     },
     {

@@ -59,9 +59,9 @@ export const DOCS: Doc[] = [
   },
   {
     slug: "self-hosting/machines/install",
-    title: "Add a worker",
+    title: "Add a machine",
     description:
-      "Run sessions on a server you already own: install the worker with the CLI, then add the host over SSH.",
+      "Run sessions on a machine you already own: give it Firetower's key, add it over SSH, and Firetower installs the worker.",
     section: "Install",
   },
   {
@@ -77,7 +77,7 @@ export const DOCS: Doc[] = [
     title: "Upgrade the worker",
     navTitle: "Worker",
     description:
-      "Drain the host, recreate the container, resume it — and what a worker that has drifted behind the app stops being able to do.",
+      "Firetower reinstalls a worker over ssh from the Updates screen or the machine's panel — and what a worker that has drifted behind the app stops being able to do.",
     section: "Upgrade",
   },
 ];

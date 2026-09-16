@@ -12,6 +12,12 @@
     "trailingSlash": false,
     "redirects": [
       {
+        "//": "The worker installer. The script is a release asset of the firetower repository, on a rolling `worker-latest` release the release job keeps current — GitHub's own `latest` is whichever package released last. The site holds no copy, so it can never be out of step with the binaries the script downloads.",
+        "source": "/worker.sh",
+        "destination": "https://github.com/firetower-cloud/firetower/releases/download/worker-latest/worker.sh",
+        "type": 302
+      },
+      {
         "//": "The docs moved under /docs/self-hosting when the cloud option appeared, and split again into install and upgrade. A redirect is one line; a 404 in somebody's bookmark is not. Next's own redirects() cannot do this — an export has no server to run it.",
         "source": "/docs/self-host",
         "destination": "/docs/self-hosting",

@@ -3,126 +3,115 @@ import { Lede, Callout, Fields, Field, Where } from "../../../../_components/doc
 
 export const metadata = docMeta("self-hosting/machines/install")
 
-# Add a worker
+# Add a machine
 
 <Lede>
-A worker is one container, on a machine you already have. It holds what a
-session needs — git, tmux, Node and the agents — and nothing else: no
-credentials, no open port, nothing you did not put there.
+A worker is one binary on a machine you already have. Agents run on that
+machine, as the account you connect with, with its tools, its filesystem and
+its network. The machine is the unit of isolation: give a worker a VM of its
+own when that is what you want, and use the machine itself when that is the
+point — a Mac with Xcode on it, say.
 </Lede>
 
 **Any machine will do.** A VPS, a server in your office, a Mac mini under the
-desk, a spare laptop, a cloud VM. There are only two requirements: that you can
-install the worker on it, and that the Firetower can reach it over SSH.
-
-So the machine needs an SSH account and the worker container. Everything else
-lives inside that container.
+desk, a spare laptop, a cloud VM — macOS or Linux, arm64 or x86_64. There are
+two requirements: an SSH account Firetower can reach, and `git` and `tmux` on
+the machine. Nothing else — not Node, not Docker.
 
 A worker is optional, and a second one is the point: a new Firetower already
-runs sessions on itself. You add workers when you want agents running somewhere
-bigger, or somewhere that stays awake.
+runs sessions on itself. You add machines when you want agents running somewhere
+bigger, somewhere that stays awake, or somewhere with the tools a job needs.
 
-Requirements on the machine: Docker and Node 20 or newer.
-
-## Start the worker
-
-<Where>the machine that will run agents</Where>
-
-```sh
-npm i -g @firetower/cli
-firetower worker install
-```
-
-Pulls `ghcr.io/firetower-cloud/firetower-worker:latest`, starts it as
-`firetower-worker` with `--restart unless-stopped`, and keeps its state on a
-Docker volume called `firetower`. Pass `--container <name>` to run more than one
-on the same machine.
-
-The container does nothing on its own. The Firetower SSHes to the machine and
-runs `docker exec` when it wants to talk, so there is no sshd in the image, no
-key inside it, and no port to open.
-
-Check that the account you will connect as can reach Docker, because the
-Firetower will be that account. Run this as that account, not as root:
-
-```sh
-docker ps
-```
-
-If that says permission denied, add the account to the `docker` group with
-`sudo usermod -aG docker $USER` and log back in.
-
-## Add it to your Firetower
+## Give the machine Firetower's key
 
 <Where>the Firetower desktop client</Where>
 
-**Configuration → Machines → Add a machine**, then follow the wizard:
+**Compute → Add a machine** shows Firetower's public key. That is the one thing
+a machine can only get from a person, and it goes wherever that machine takes
+keys:
+
+- `~/.ssh/authorized_keys` of the account agents should run as, on a machine
+  you own — the dialog folds the exact lines under *Adding it to
+  authorized_keys by hand*;
+- the provider's console, instance metadata or OS Login on Google Cloud;
+- the CA, where there is one.
+
+It is public — safe to paste anywhere. **Firetower makes its own SSH key**; it
+never asks for yours. One pair for the whole installation, scoped to it: it
+opens nothing else you own, the private half never leaves the vault, and
+revoking it is deleting that one line, which cuts every machine at once.
+
+## Add it
 
 <Fields>
   <Field name="IP address or hostname">
     Where the machine is, from the Firetower. On a tailnet, its tailnet
-    address.
+    address. Add `:2222` for a port that is not 22.
   </Field>
   <Field name="SSH account">
-    The account to connect as — the same one you checked `docker ps` with.
+    The account to connect as. The worker and its agents run as this account,
+    with its permissions.
   </Field>
   <Field name="Name">
     What you want to call it in the fleet.
   </Field>
-  <Field name="Container name">
-    `firetower-worker`, already filled in. Only change it if you passed
-    `--container`.
-  </Field>
 </Fields>
 
-### Authorize Firetower's key
+Press **Add it**. Firetower connects and the panel says two things, told apart:
+whether SSH got in, and whether there is a worker.
 
-**Firetower makes its own SSH key** — it does not ask for yours. The wizard
-shows the public half; copy it onto the machine, into the SSH account's
-`~/.ssh/authorized_keys`:
+## Install the worker
 
-```sh
-echo 'ssh-ed25519 AAAAC3… firetower' >> ~/.ssh/authorized_keys
-```
+<Where>the Firetower desktop client</Where>
 
-Then press **Add it**. It connects, and says what is wrong if it cannot.
+A machine the key got into shows **No worker** — not *Unreachable* — with
+**Install the worker** beside it. Press it. Firetower runs its installer over
+the connection it just made: the worker built for that machine's shape lands in
+`~/.firetower/worker/bin`. No sudo, nothing outside the account's home.
 
-That key is one pair for the whole installation, scoped to it. It opens nothing
-else you own, the private half never leaves the vault, and revoking it is
-deleting that one line — which cuts every machine at once, which is what
-revoking should do.
+Then the worker measures the machine and the panel shows what is still missing,
+each with the command that installs it — `brew install tmux` on a Mac,
+`sudo apt-get install -y tmux` on Debian. **Firetower never runs sudo on a
+machine**; that is the one step it leaves to the person who has the password.
+Run it, press **check again**.
 
-<Callout>
-The wizard also offers **A key on the server**, where you give the path to a
-key that is already on the Firetower's own machine. Firetower's own key is the
-one to use unless you have a reason.
-</Callout>
-
-If it does not connect, the machine is added anyway and says what to fix. Sort
-it out and press **Try now**; there is nothing to re-add.
-
-Nothing on the worker holds a credential. What an agent authenticates with is
-held by the Firetower and handed to a session as it starts, so a fresh worker
-needs no login.
+Agents are the last row. Press **Install** beside Claude Code or Codex and
+Firetower fetches the standalone binary the publisher ships onto the machine,
+under the worker's own directory. A `claude` already on the machine is used in
+preference.
 
 <Callout>
-Some providers build a VM by naming a container image instead of an operating
-system. SSH in and run `docker ps`: if you see the worker running, copy that
-container's name into the field. If there is no `docker` command at all but git
-and tmux are there, you are inside the worker itself — leave the field empty.
+An SSH command gets a bare PATH — `/usr/bin:/bin` and little else — with
+nothing the account installed on it. The worker does not use that PATH: it asks
+the account's login shell for its own, adds the places package managers put
+tools, and runs every check and every agent with the result. A tool installed
+after the worker is found the next time it connects.
 </Callout>
 
-## Check what it is running
+## By hand
 
 <Where>the machine that will run agents</Where>
 
+The same installer, run from the machine — for whoever would rather watch it
+happen, and the one route that can answer a `sudo` prompt:
+
 ```sh
-firetower worker status
+curl -fsSL https://usefiretower.com/worker.sh | sh
 ```
 
-<Callout>
-Add `--json` to any command that answers a question, including this one.
-</Callout>
+As the account agents should run as. It works out what the machine is, prints
+the package manager's command for anything missing and asks before running it,
+downloads the release built for that shape, checks it against the release's
+`SHA256SUMS`, and ends with what `firetower-worker doctor` sees — the same
+checks Firetower runs over SSH. `--authorize 'ssh-ed25519 …'` adds the key in
+the same go; `--agent claude-code` fetches the agent; `--skip-packages` leaves
+the packages to you.
+
+```sh
+~/.firetower/worker/bin/firetower-worker doctor --agent claude-code
+```
+
+shows the machine as Firetower sees it, whenever you want to check.
 
 ## Next
 
