@@ -12,6 +12,12 @@
     "trailingSlash": false,
     "redirects": [
       {
+        "//": "The control-plane installer: Docker and Node if missing, the CLI, then firetower install. Same rolling release as the worker's script.",
+        "source": "/install.sh",
+        "destination": "https://github.com/firetower-cloud/firetower/releases/download/worker-latest/install.sh",
+        "type": 302
+      },
+      {
         "//": "The worker installer. The script is a release asset of the firetower repository, on a rolling `worker-latest` release the release job keeps current — GitHub's own `latest` is whichever package released last. The site holds no copy, so it can never be out of step with the binaries the script downloads.",
         "source": "/worker.sh",
         "destination": "https://github.com/firetower-cloud/firetower/releases/download/worker-latest/worker.sh",
