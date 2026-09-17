@@ -38,18 +38,10 @@ export function Hero() {
         </p>
 
         <h1
-          className="pixel rise mt-6 text-[clamp(1.9rem,5.15vw,4rem)]"
+          className="pixel rise mt-6 text-[clamp(1.9rem,5.15vw,4rem)] text-ember"
           style={{ animationDelay: "60ms" }}
         >
-          Run any coding agent,
-          <br />
-          on your own servers,
-          <br />
-          <span className="text-ember">from anywhere.</span>
-          <span
-            className="caret ml-2 inline-block h-[0.78em] w-[0.45em] translate-y-[0.06em] bg-ember align-baseline"
-            aria-hidden
-          />
+          Hello World!
         </h1>
 
         <div className="mt-9 max-w-[56ch]">
