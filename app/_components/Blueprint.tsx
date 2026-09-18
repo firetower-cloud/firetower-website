@@ -1,6 +1,7 @@
 /* ── The hero diagram ─────────────────────────────────────────────────────
-   One app, two machines you own, and the sessions drawn inside the machines
-   they actually run on.
+   Two apps you look at, one Firetower you run, two machines you own, and the
+   sessions drawn inside the machines they actually run on. Same three tiers
+   as the architecture drawing in the docs, and in the same order.
 
    The shape carries the argument, so it is worth saying what it is arguing
    against. Panels of equal weight in a row read as peers, so an earlier
@@ -10,6 +11,12 @@
    the app, and the hosts are the whole point. Hence a hub with two spokes,
    an `ssh` label on each, and the agents listed under the host that runs
    them.
+
+   The clients are on top for a related reason. Without them the Firetower
+   had to be both the server and the thing in your hands, which it said out
+   loud — "runs on your laptop" — and that is the one place it does not run.
+   Naming the desktop and mobile apps separately puts the laptop back where
+   it belongs, on the viewing end of an https connection.
 
    Two rules keep it from falling apart, both learned the hard way:
 
@@ -69,15 +76,29 @@ const sess = (waiting: boolean, agent: string, repo: string, age: string): Row =
 const text = (t: string): Row => ({ kind: "text", text: t });
 const gap = (): Row => ({ kind: "gap" });
 
-/* The app is deliberately the only thing that is not a machine. Its rows say
-   what it owns, and nothing it owns is an agent. */
+/* The clients, which are the only things here you look at.
+
+   They were missing, and their absence was doing real damage: with nothing
+   above it, the Firetower box had to stand for both the thing you run and
+   the thing you hold, and the only way to say that in one panel was "runs on
+   your laptop" — which is the one arrangement the architecture does not
+   have. Naming the apps separately lets the Firetower be what it is, a
+   server, and matches the drawing in the docs. */
+const CLIENTS: Panel[] = [
+  { title: "Desktop", rows: [text("macOS / Windows")] },
+  { title: "Mobile", rows: [text("iOS / Android")] },
+];
+
+/* The Firetower is deliberately the only thing that is neither a client nor
+   a machine that runs agents. Its rows say what it owns, and nothing it owns
+   is an agent. */
 const APP: Panel = {
   title: "FIRETOWER",
   rows: [
     { kind: "stat", label: "inbox", mark: true, value: "2 waiting on you" },
     gap(),
-    text("runs on your laptop, or on a"),
-    text("server you already own"),
+    text("one compose file, on a server"),
+    text("you already own"),
   ],
 };
 
@@ -101,14 +122,23 @@ const HOSTS: Panel[] = [
   },
 ];
 
-/** The same three, stacked and trimmed, for a narrow screen. */
+/** The same four, stacked and trimmed, for a narrow screen.
+
+    The two clients become one panel here rather than two side by side: at
+    36 columns a pair of boxes leaves eleven characters of room each, and
+    "macOS / Windows" does not fit in eleven. One panel with a line apiece
+    says the same thing and stays legible. */
+const CLIENTS_N: Panel = {
+  title: "The apps",
+  rows: [text("Desktop . macOS / Windows"), text("Mobile  . iOS / Android")],
+};
 const APP_N: Panel = {
   title: "FIRETOWER",
   rows: [
     { kind: "stat", label: "inbox", mark: true, value: "2 waiting" },
     gap(),
-    text("runs on your laptop,"),
-    text("or a server you own"),
+    text("one compose file, on a"),
+    text("server you already own"),
   ],
 };
 const HOSTS_N: Panel[] = [
@@ -190,6 +220,55 @@ function box(p: Panel, w: number, compact = false): Seg[][] {
   ];
 }
 
+/** Two blocks of known width set side by side, short one padded out. */
+function beside(a: Seg[][], wa: number, b: Seg[][], wb: number, gapW: number): Seg[][] {
+  const h = Math.max(a.length, b.length);
+  return Array.from({ length: h }, (_, i) => [
+    ...(a[i] ?? [pad(wa)]),
+    pad(gapW),
+    ...(b[i] ?? [pad(wb)]),
+  ]);
+}
+
+/**
+ * The clients above the Firetower, and the wire that joins them.
+ *
+ * Both apps talk to the same address, so they meet at a junction before the
+ * drop rather than arriving on two separate wires — two wires would say the
+ * Firetower has a desktop door and a phone door, and it has one.
+ *
+ * The label sits beside the trunk rather than on it, which is what the
+ * stacked variant already does with `ssh`, and leaves the column free for a
+ * spark to travel down.
+ */
+function clients(panels: Panel[], w: number) {
+  const each = Math.floor((w - 2) / 2);
+  const top = beside(box(panels[0], each), each, box(panels[1], each), each, w - each * 2);
+
+  // Centre of each box, and the junction midway between them.
+  const c1 = Math.floor(each / 2);
+  const c2 = each + (w - each * 2) + Math.floor(each / 2);
+  const j = Math.floor((c1 + c2) / 2);
+
+  const wire: Seg[][] = [
+    [pad(c1), ["|", "frame"], pad(c2 - c1 - 1), ["|", "frame"], pad(w - c2 - 1)],
+    [
+      pad(c1),
+      ["+", "frame"],
+      ["-".repeat(j - c1 - 1), "dot"],
+      ["+", "frame"],
+      ["-".repeat(c2 - j - 1), "dot"],
+      ["+", "frame"],
+      pad(w - c2 - 1),
+    ],
+    [pad(j), ["|", "frame"], pad(w - j - 1)],
+    [pad(j), ["|", "frame"], pad(2), ["https", "sage"], pad(w - j - 8)],
+    [pad(j), ["|", "frame"], pad(w - j - 1)],
+  ];
+
+  return { lines: [...top, ...wire], drop: { col: j, row: top.length + 2 } };
+}
+
 type Spark = { col: number; row: number; back?: boolean; down?: boolean };
 
 /**
@@ -203,38 +282,39 @@ type Spark = { col: number; row: number; back?: boolean; down?: boolean };
  * wherever they are. It is also the truer picture, since one app reaching two
  * machines is exactly what a fork means.
  */
-function hub(app: Panel, hosts: Panel[], w: number) {
-  const left = box(app, w);
-
+function hub(left: Seg[][], trunkRow: number, hosts: Panel[], w: number) {
   const right: Seg[][] = [];
-  const branches: number[] = [];
+  const raw: number[] = [];
   hosts.forEach((h, i) => {
     if (i) right.push([pad(w)]);
     const b = box(h, w);
-    branches.push(right.length + Math.floor(b.length / 2));
+    raw.push(right.length + Math.floor(b.length / 2));
     right.push(...b);
   });
 
-  const height = Math.max(left.length, right.length);
+  /* Line the machines up against the Firetower box, not against the left
+     column as a whole. The column is taller than the panel the ssh wire
+     actually leaves from — everything above it is clients — so centring on
+     it would drag the trunk up out of the Firetower and make the wire look
+     like it starts at the phone. */
+  const mid = Math.floor((Math.min(...raw) + Math.max(...raw)) / 2);
+  const leftLift = Math.max(0, mid - trunkRow);
+  const rightLift = Math.max(0, trunkRow - mid);
+
+  const branches = raw.map((b) => b + rightLift);
+  const height = Math.max(left.length + leftLift, right.length + rightLift);
   const top = Math.min(...branches);
   const bottom = Math.max(...branches);
 
-  // Centre the app against the machines. One short panel top-aligned beside
-  // two tall ones leaves the trunk hanging out of the top corner and the
-  // whole drawing weighted to one side.
-  const lift = Math.max(0, Math.floor((height - left.length) / 2));
-
   // Strictly between the branches, so the vertical they share is unbroken.
-  const trunk = Math.min(
-    bottom - 1,
-    Math.max(top + 1, lift + Math.floor(left.length / 2)),
-  );
+  const trunk = Math.min(bottom - 1, Math.max(top + 1, leftLift + trunkRow));
 
   const sparks: Spark[] = [];
   const lines: Seg[][] = [];
 
   for (let r = 0; r < height; r++) {
-    const i = r - lift;
+    const i = r - leftLift;
+    const j = r - rightLift;
     const l = i >= 0 && i < left.length ? left[i] : [pad(w)];
     let g: Seg[];
 
@@ -249,14 +329,21 @@ function hub(app: Panel, hosts: Panel[], w: number) {
       g = [pad(GAP)];
     }
 
-    lines.push([...l, ...g, ...(right[r] ?? [pad(w)])]);
+    lines.push([...l, ...g, ...(j >= 0 && j < right.length ? right[j] : [pad(w)])]);
   }
 
-  return { lines, sparks };
+  return { lines, sparks, leftLift };
 }
 
-/** Everything stacked, with a short vertical wire between, for narrow screens. */
-function column(panels: Panel[], w: number) {
+/**
+ * Everything stacked, with a short vertical wire between, for narrow screens.
+ *
+ * `wires[i]` labels the link between panel `i` and panel `i + 1`. They are
+ * not all the same protocol any more — the apps reach the Firetower over
+ * https and the Firetower reaches the machines over ssh — and a diagram that
+ * labelled both "ssh" would be telling you the phone holds a host key.
+ */
+function column(panels: Panel[], w: number, wires: string[]) {
   const lines: Seg[][] = [];
   const sparks: Spark[] = [];
   const mid = Math.floor(w / 2);
@@ -265,7 +352,7 @@ function column(panels: Panel[], w: number) {
     if (i > 0) {
       sparks.push({ col: mid, row: lines.length, down: true });
       lines.push([pad(mid), [":", "dot"]]);
-      lines.push([pad(mid), [":", "dot"], pad(2), ["ssh", "sage"]]);
+      lines.push([pad(mid), [":", "dot"], pad(2), [wires[i - 1] ?? "ssh", "sage"]]);
     }
     lines.push(...box(p, w, true));
   });
@@ -318,8 +405,16 @@ function Block({
   );
 }
 
-const wide = hub(APP, HOSTS, 44);
-const tall = column([APP_N, ...HOSTS_N], 36);
+/* The left column, top to bottom: the two apps, the wire they share, and the
+   Firetower they both talk to. The ssh trunk leaves from the middle of that
+   last box, which is why its offset is measured rather than guessed. */
+const head = clients(CLIENTS, 44);
+const appBox = box(APP, 44);
+const left = [...head.lines, ...appBox];
+const wide = hub(left, head.lines.length + Math.floor(appBox.length / 2), HOSTS, 44);
+wide.sparks.push({ col: head.drop.col, row: head.drop.row + wide.leftLift, down: true });
+
+const tall = column([CLIENTS_N, APP_N, ...HOSTS_N], 36, ["https", "ssh", "ssh"]);
 
 export function Blueprint() {
   return (
