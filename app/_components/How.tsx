@@ -13,7 +13,8 @@ import { LIFECYCLE, LIFECYCLE_PROMPT } from "../_lib/lifecycle";
 const LEGEND: { mark: string; tone: string; text: string }[] = [
   { mark: "*", tone: "text-ember", text: "a session that has stopped and needs you" },
   { mark: "o", tone: "text-slate", text: "one still working, nothing to do" },
-  { mark: "ssh", tone: "text-sage", text: "how the app reaches a machine you own" },
+  { mark: "https", tone: "text-sage", text: "how an app reaches your Firetower" },
+  { mark: "ssh", tone: "text-sage", text: "how it reaches a machine you own" },
 ];
 
 export function How() {

@@ -118,6 +118,20 @@
         ]
       },
       {
+        "//": "The demo recording. Nothing under public/ is fingerprinted by the build, so the cut number lives in the filename instead — re-cutting the demo means publishing demo-1.0.* and pointing DemoVideo.tsx at it, never overwriting these bytes. Accept-Ranges so the browser can seek without refetching the file.",
+        "source": "**/*.@(mp4|webm)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          },
+          {
+            "key": "Accept-Ranges",
+            "value": "bytes"
+          }
+        ]
+      },
+      {
         "//": "HTML and the metadata text files must revalidate, or a deploy would not be visible until caches expire.",
         "source": "**/*.@(html|xml|txt|webmanifest|svg)",
         "headers": [
