@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 /* ── The set of things a docs page can reach for ─────────────────────────
    Deliberately small. Every extra component is another way for two pages to
@@ -97,5 +98,43 @@ export function Where({ children }: { children: ReactNode }) {
       </span>
       <span className="text-[13px] text-bone">{children}</span>
     </p>
+  );
+}
+
+/**
+ * A screenshot of the app, with the line that says what to look at in it.
+ *
+ * Captioned rather than bare: a picture of an interface is only evidence for
+ * the sentence above it, and somebody who scans the images alone should still
+ * be able to follow the steps. The dimensions are the file's own, so the page
+ * does not reflow as the images arrive — and because the export has no image
+ * server, they are also the only sizes that exist.
+ */
+export function Shot({
+  src,
+  alt,
+  width,
+  height,
+  children,
+}: {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  children?: ReactNode;
+}) {
+  return (
+    <figure className="mt-5">
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className="w-full rounded-[6px] border border-line"
+      />
+      {children && (
+        <figcaption className="mt-2 text-[12.5px] leading-[1.6] text-mute">{children}</figcaption>
+      )}
+    </figure>
   );
 }
