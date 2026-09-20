@@ -80,6 +80,13 @@ export const DOCS: Doc[] = [
       "Firetower reinstalls a worker over ssh from the Updates screen or the machine's panel — and what a worker that has drifted behind the app stops being able to do.",
     section: "Upgrade",
   },
+  {
+    slug: "connect-github",
+    title: "Connect GitHub",
+    description:
+      "Register the OAuth application a Firetower authorises against, turn on its device flow, and connect your GitHub account — with the one checkbox everybody forgets.",
+    section: "Using Firetower",
+  },
 ];
 
 export const SECTION_ORDER: Doc["section"][] = [
