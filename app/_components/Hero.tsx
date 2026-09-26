@@ -1,6 +1,7 @@
 import { BinaryField } from "./BinaryField";
 import Link from "next/link";
 import { Octocat } from "./Octocat";
+import { InstallIntro } from "./InstallIntro";
 import { REPO_URL } from "../_lib/site";
 
 /**
@@ -85,6 +86,7 @@ export function Hero() {
             </a>
           </div>
         </div>
+        <InstallIntro />
       </div>
 
     </section>
