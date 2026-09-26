@@ -1,6 +1,7 @@
 import { BinaryField } from "./BinaryField";
 import Link from "next/link";
 import { Octocat } from "./Octocat";
+import { InstallIntro } from "./InstallIntro";
 import { REPO_URL } from "../_lib/site";
 
 /**
@@ -35,6 +36,8 @@ export function Hero() {
           <span>Self-hosted</span>
           <span className="text-line">/</span>
           <span>No account</span>
+          <span className="text-line">/</span>
+          <span>Written in Rust</span>
         </p>
 
         <h1
@@ -85,6 +88,7 @@ export function Hero() {
             </a>
           </div>
         </div>
+        <InstallIntro />
       </div>
 
     </section>

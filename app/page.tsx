@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Nav } from "./_components/Nav";
 import { Hero } from "./_components/Hero";
 import { Inbox } from "./_components/Inbox";
+import { Workflow } from "./_components/Workflow";
 import { How } from "./_components/How";
+import { Performance } from "./_components/Performance";
 import { Footer } from "./_components/Footer";
 import { JsonLd } from "./_components/JsonLd";
 import { howToLd, webPageLd } from "./_lib/structured-data";
@@ -33,7 +35,9 @@ export default function Home() {
       <main>
         <Hero />
         <Inbox />
+        <Workflow />
         <How />
+        <Performance />
       </main>
       <Footer />
     </>

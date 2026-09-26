@@ -27,7 +27,7 @@ app/
   page.tsx              the landing page — sections in reading order
   layout.tsx            fonts, sitewide metadata, sitewide JSON-LD
   globals.css           the design system: palette, display face, motion
-  _components/          Nav, Hero, Inbox (the screen), How, Footer, Mark
+  _components/          Nav, Hero, Inbox, Workflow, How, Footer, Mark
   _components/BinaryField.tsx  the canvas field behind the hero
   _components/Blueprint.tsx    the ASCII architecture diagram
   _components/Macbook.tsx      the laptop the demo sits in
@@ -46,18 +46,37 @@ canonical URL, the `metadataBase` every relative image resolves against, the
 host in `robots.txt` and the prefix in the sitemap. Changing the domain is that
 line and nothing else.
 
-**The page is four things: hero, screen, diagram, footer.** Everything else
-was cut. If you add a section back, add its structured data with it and not
-before — `FAQPage` schema outlived the FAQ by about a minute here, and schema
-that does not match visible copy is a penalty rather than a bonus.
+**The page moves from product to process to architecture.** The screen shows
+what Firetower is, the workflow shows what the user does, and "How it fits
+together" explains where the work actually runs. Everything else was cut. If
+you add a section back, add its structured data with it and not before —
+`FAQPage` schema outlived the FAQ by about a minute here, and schema that does
+not match visible copy is a penalty rather than a bonus.
 
 **There is no install section, so every call to action leaves the site** for
 the README's *Running it* heading. If that heading is ever renamed, three
 links break silently: the nav button, the hero, and the footer.
 
-**Two client components, and no more.** `Copy` (the clipboard button) and
-`BinaryField` (the hero background). Everything else is a server component and
-the page should stay readable as HTML.
+**Keep client code at the interactive boundary.** `Copy` (the clipboard
+button), `BinaryField` (the hero background) and `Workflow` (the tour) are the
+client components. Everything else is a server component and the page should
+stay readable as HTML.
+
+**The tour is the Mac app, drawn in markup, not a mockup of one.** Every
+screen in `Workflow.tsx` is copied from `desktop/src/ui` in the product repo —
+the title bar and server strip, the rail's two-line workspace rows, TasksPage,
+the New workspace sheet, the bring-up list, the "Waiting on you" card, the
+preview tab's notes column, the inspector's Commit tab — with the app's own
+tokens scoped inside `.window` and its own marks (`lucide-react`, the same set
+the app uses; the GitHub, Linear and Claude marks are the app's paths). What is
+added is only motion: a cursor doing what you would do. If a screen changes in
+the app, change it here; do not invent one.
+
+Below 720px the same tour is the **phone client** (`mobile/app`): three tabs
+and a stack, the New workspace form with its picker sheet, the conversation
+with the Changes strip and the Approval card, the repository as a page. The
+phone has no preview or annotation, so its third step shows the repository's
+Diff page instead — the closest screen that exists, not an invented one.
 
 **The hero background is a canvas on purpose.** The obvious build is a few
 thousand `<span>`s with CSS on them, but an inline element cannot be
