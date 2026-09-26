@@ -62,6 +62,16 @@ button), `BinaryField` (the hero background) and `Workflow` (the tour) are the
 client components. Everything else is a server component and the page should
 stay readable as HTML.
 
+**The tour is the Mac app, drawn in markup, not a mockup of one.** Every
+screen in `Workflow.tsx` is copied from `desktop/src/ui` in the product repo —
+the title bar and server strip, the rail's two-line workspace rows, TasksPage,
+the New workspace sheet, the bring-up list, the "Waiting on you" card, the
+preview tab's notes column, the inspector's Commit tab — with the app's own
+tokens scoped inside `.window` and its own marks (`lucide-react`, the same set
+the app uses; the GitHub, Linear and Claude marks are the app's paths). What is
+added is only motion: a cursor doing what you would do. If a screen changes in
+the app, change it here; do not invent one.
+
 **The hero background is a canvas on purpose.** The obvious build is a few
 thousand `<span>`s with CSS on them, but an inline element cannot be
 composited on its own, so lighting one under the cursor repaints the whole
