@@ -6,6 +6,7 @@ import {
   FileDiff, FolderTree, GitBranch, GitPullRequest, Globe, LayoutList, ListTodo, Loader2, MessageSquare,
   MessageSquarePlus, Monitor, Paperclip, PanelRight, PanelRightClose, Pencil, Plus, RefreshCw, RotateCw,
   Search, Send, Server, Settings2, Ship, Smartphone, SquareTerminal, Tablet, Ticket, Trash2, X,
+  BatteryFull, Inbox, MoreHorizontal, Mic, Signal as SignalBars, User, Wifi,
 } from "lucide-react";
 import styles from "./Workflow.module.css";
 
@@ -26,13 +27,13 @@ import styles from "./Workflow.module.css";
    the tour on that scene's end state.
    ─────────────────────────────────────────────────────────────────────── */
 
-type Step = { label: string; title: string; text: string; action: string; duration: number };
+type Step = { label: string; duration: number };
 
 const steps: Step[] = [
-  { label: "Tasks", title: "Start with what needs doing.", text: "Your GitHub issues and Linear tickets, read from the trackers as you look. Press Start and a workspace opens with the task attached.", action: "Start it", duration: 15800 },
-  { label: "Agent", title: "A conversation that becomes code.", text: "Give direction and read the work as it happens. When the agent needs a decision it stops and asks — and the question reaches you wherever you are.", action: "Open the preview", duration: 10800 },
-  { label: "Preview", title: "See it running. Point at what’s wrong.", text: "The app runs on the worker, previewed in a tab. Annotate, click anything in the page, write the note, send it to the agent.", action: "Ship it", duration: 9800 },
-  { label: "Ship", title: "Commit, push, open the PR.", text: "Review the diff, keep the files you want, and open the pull request from the workspace — closing the ticket it came from.", action: "Back to tasks", duration: 9800 },
+  { label: "Start from your Issues and Linear tickets", duration: 15800 },
+  { label: "Your agent runs your worktrees", duration: 10800 },
+  { label: "Preview and annotate", duration: 9800 },
+  { label: "Commit and open a PR", duration: 9800 },
 ];
 
 /* Timing helpers: every animated thing reads its moment off a custom property. */
@@ -41,7 +42,21 @@ const at = (t: number): V => ({ "--t": `${t}s` } as V);
 const io = (t: number, out: number): V => ({ "--t": `${t}s`, "--out": `${out}s` } as V);
 const sw = (t: number): V => ({ "--sw": `${t}s` } as V);
 
+/** Below 720px the section draws the phone client instead of the Mac one. */
+function usePhone() {
+  const [phone, setPhone] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 720px)");
+    const on = () => setPhone(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return phone;
+}
+
 export function Workflow() {
+  const phone = usePhone();
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
@@ -82,10 +97,10 @@ export function Workflow() {
   // The Tasks cursor presses Start; the workspace screen then takes over the
   // same tab for the rest of its preparation sequence.
   useEffect(() => {
-    if (active !== 0 || workspaceOpen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!playing || active !== 0 || workspaceOpen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setTimeout(() => setWorkspaceOpen(true), 2700);
     return () => window.clearTimeout(timer);
-  }, [active, run, workspaceOpen]);
+  }, [playing, active, run, workspaceOpen]);
 
   function select(index: number) {
     setPlaying(false);
@@ -94,10 +109,6 @@ export function Workflow() {
     setRun((r) => r + 1);
   }
 
-  const step = active === 0 && workspaceOpen
-    ? { ...steps[0], title: "Your branch. Your remote machine.", text: "Name it, cut the branch, pick the machine and the agent. Firetower fetches the repository, creates the worktree and brings the agent up.", action: "Talk to the agent" }
-    : steps[active];
-
   return (
     <section id="workflow" ref={root} className={styles.section} aria-labelledby="workflow-heading" data-playing={playing}>
       <div className={styles.heading}>
@@ -105,7 +116,6 @@ export function Workflow() {
           <p className="eyebrow">From issue to shipped</p>
           <h2 id="workflow-heading" className="display">Your entire workflow, in one place.</h2>
         </div>
-        <p>Your tools, your agent, your remote machines. Connected from the first task to the final push.</p>
       </div>
 
       <div className={styles.steps} role="tablist" aria-label="Development workflow">
@@ -143,22 +153,12 @@ export function Workflow() {
       </div>
 
       <div id="workflow-panel" role="tabpanel" aria-labelledby={`workflow-tab-${active}`} className={styles.panel}>
-        <div key={`copy-${active}-${run}-${workspaceOpen}`} className={styles.copy}>
-          <h3>{step.title}</h3>
-          <div>
-            <p>{step.text}</p>
-            <button type="button" className={styles.next} onClick={() => active === 0 && !workspaceOpen ? setWorkspaceOpen(true) : select((active + 1) % steps.length)}>
-              {step.action}<span aria-hidden="true">→</span>
-            </button>
-          </div>
-        </div>
-
         <div className={styles.stage}>
-          <div key={`scene-${active}-${run}-${workspaceOpen}`} className={styles.window} data-step={active} aria-hidden="true">
-            {active === 0 && (workspaceOpen ? <WorkspaceScene /> : <TasksScene />)}
-            {active === 1 && <AgentScene />}
-            {active === 2 && <PreviewScene />}
-            {active === 3 && <ShipScene />}
+          <div key={`scene-${active}-${run}-${workspaceOpen}-${phone}`} className={styles.window} data-step={active} data-phone={phone || undefined} aria-hidden="true">
+            {active === 0 && (workspaceOpen ? (phone ? <PhoneWorkspace /> : <WorkspaceScene />) : (phone ? <PhoneTasks /> : <TasksScene />))}
+            {active === 1 && (phone ? <PhoneAgent /> : <AgentScene />)}
+            {active === 2 && (phone ? <PhoneRepo tab="diff" /> : <PreviewScene />)}
+            {active === 3 && (phone ? <PhoneRepo tab="ship" /> : <ShipScene />)}
           </div>
         </div>
       </div>
@@ -715,6 +715,255 @@ function ShipScene() {
         <Composer placeholder="Say something to the agent" style={at(0.1)} />
       </Workbench>
     </Chrome>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   The phone client (`mobile/app`): three tabs and a stack, the inbox as the
+   dashboard, the repository as a page. Same vocabulary, drawn at 390pt.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/** The device: status bar, a screen, the home indicator; a tab bar on tab screens. */
+function Phone({ tab, children }: { tab?: "inbox" | "tasks" | "you"; children: ReactNode }) {
+  return (
+    <div className={styles.phone}>
+      <div className={styles.ios}>
+        <b>9:41</b>
+        <span><SignalBars size={13} strokeWidth={2} /><Wifi size={13} strokeWidth={2} /><BatteryFull size={16} strokeWidth={1.75} /></span>
+      </div>
+      <div className={styles.pScreen}>{children}</div>
+      {tab && (
+        <div className={styles.pTabs}>
+          <span className={tab === "inbox" ? styles.on : ""}><Inbox size={20} strokeWidth={1.75} />Inbox</span>
+          <span className={tab === "tasks" ? styles.on : ""}><ListTodo size={20} strokeWidth={1.75} />Tasks</span>
+          <span className={tab === "you" ? styles.on : ""}><User size={20} strokeWidth={1.75} />You</span>
+        </div>
+      )}
+      <i className={styles.home} />
+    </div>
+  );
+}
+
+/** A finger, where a Mac has a cursor: a touch ring at the moment of the press. */
+function Tap({ at: t }: { at: number }) {
+  return <i className={styles.tap} style={{ "--at": `${t}s` } as V} />;
+}
+
+function Seg({ options, on }: { options: string[]; on: string }) {
+  return <span className={styles.pSeg}>{options.map((o) => <i key={o} className={o === on ? styles.on : ""}>{o}</i>)}</span>;
+}
+
+/* ── tasks ──────────────────────────────────────────────────────────────── */
+
+function PhoneTasks() {
+  return (
+    <Phone tab="tasks">
+      <div className={styles.pPage}>
+        <h1 className={styles.pDisplay}>Tasks</h1>
+        <p className={styles.pSub}>12 to pick from. Starting one opens a workspace.</p>
+        <div className={styles.pTrackers}><span><GithubMark size={12} />GitHub</span><span className={styles.on}><LinearMark size={12} />Linear</span></div>
+        <Seg options={["Tickets"]} on="Tickets" />
+        <div className={styles.pRow2}><Seg options={["Open", "Closed"]} on="Open" /><span className={styles.pMine}>Mine</span></div>
+        <span className={styles.pSearch}>Search</span>
+        {TASKS.map((t, i) => (
+          <div key={t.key} className={`${styles.pTask} ${styles.in} ${i === 0 ? styles.pTaskPress : ""}`} style={{ "--t": `${0.3 + i * 0.1}s`, "--on": "2.25s" } as V}>
+            <Ticket size={16} strokeWidth={1.75} />
+            <span><b>{t.title}</b><small><code>{t.key}</code><code>acme/{t.label}</code>{t.when}</small></span>
+            {i === 0 && <Tap at={1.2} />}
+          </div>
+        ))}
+      </div>
+    </Phone>
+  );
+}
+
+/* ── new workspace, then the workspace coming up ────────────────────────── */
+
+function PhoneWorkspace() {
+  return (
+    <Phone>
+      <div className={styles.screens}>
+        <div className={`${styles.pStack} ${styles.out}`} style={{ "--out": "7.85s" } as V}>
+          <div className={styles.pHead}><ChevronLeft size={22} strokeWidth={1.75} /><b>New workspace</b><i /></div>
+          <div className={styles.pForm}>
+            <label><span>Name<small>What this branch is for</small></span><span className={`${styles.pInput} ${styles.focusRing}`} style={at(0.3)}><Typed text="dark-mode" start={0.4} speed={0.06} /></span></label>
+            <label><span>Repositories<small>One or more</small></span>
+              <span className={styles.pRepo}><code>acme/web-app</code><small><GitBranch size={11} strokeWidth={1.75} />main</small></span>
+            </label>
+            <label><span>Branch<small>Cut from the base above</small></span><span className={`${styles.pInput} ${styles.pMono}`}><i>agent/…</i></span></label>
+            <label><span>Where it runs</span>
+              <span className={styles.pTrigger} style={sw(5.5)}>
+                <span className={styles.swap}><span className={styles.swapA}>{MACHINES[0].name}</span><span className={styles.swapB}>{MACHINES[1].name}</span></span>
+                <ChevronDown size={15} strokeWidth={2} /><Tap at={2.6} />
+              </span>
+              <span className={styles.pTrigger}><AgentMark size={12} />Claude Code<ChevronDown size={15} strokeWidth={2} /></span>
+            </label>
+            <label><span>When the machine is busy</span><Seg options={["Yields", "Equal share", "Takes more"]} on="Equal share" /></label>
+          </div>
+          <div className={styles.pFoot}>
+            <span className={styles.pPrimary} style={sw(7.25)}><span className={styles.swap}><span className={styles.swapA}>Start the workspace</span><span className={styles.swapB}>Starting…</span></span><Tap at={6.2} /></span>
+          </div>
+          {/* The picker: a sheet from the bottom, the whole thing following the finger. */}
+          <div className={`${styles.pScrim} ${styles.in} ${styles.out}`} style={io(3.7, 5.5)} />
+          <div className={`${styles.pSheet} ${styles.in} ${styles.out}`} style={io(3.7, 5.5)}>
+            <i className={styles.pGrabber} />
+            <span className={styles.pEyebrow}>Where it runs</span>
+            {MACHINES.map((m, i) => (
+              <span key={m.name} className={`${styles.pChoice} ${i === 1 ? styles.pChoicePress : ""}`} style={i === 1 ? ({ "--on": "5.45s", "--sw": "5.45s" } as V) : ({ "--sw": "5.45s" } as V)}>
+                <span><b>{m.name}</b><small>{m.ip}</small></span>
+                {i === 0 && <Check size={17} strokeWidth={2} className={`${styles.pCheck} ${styles.swapA}`} />}
+                {i === 1 && <Check size={17} strokeWidth={2} className={`${styles.pCheck} ${styles.swapB}`} />}
+                {i === 1 && <Tap at={4.4} />}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className={`${styles.pStack} ${styles.in}`} style={at(7.95)}>
+          <PhoneWorkspaceHead status="starting" label="Starting" />
+          <div className={styles.pStrip}><FileDiff size={14} strokeWidth={1.75} /><span>Files and commits</span><i /><small>Nothing to commit</small><ChevronRight size={14} strokeWidth={1.75} /></div>
+          <div className={styles.pChat}>
+            <code className={styles.pBranch}>agent/dark-mode</code>
+            <ol className={styles.pBringUp}>
+              {BRINGUP.map((s) => (
+                <li key={s.now} className={styles.bstep} style={{ "--run": `${s.run}s`, "--done": `${s.end}s` } as V}>
+                  <i className={styles.bdot} />
+                  <span><span className={styles.swap}><span className={styles.bnow}>{s.now}</span><span className={styles.bpast}>{s.done}</span></span>{s.detail && <code className={styles.bdetail}>{s.detail}</code>}</span>
+                </li>
+              ))}
+            </ol>
+            <i className={styles.spacer} />
+          </div>
+          <PhoneComposer />
+        </div>
+      </div>
+    </Phone>
+  );
+}
+
+function PhoneWorkspaceHead({ status, label }: { status: "starting" | "working" | "done"; label: string }) {
+  return (
+    <div className={styles.pHead}>
+      <ChevronLeft size={22} strokeWidth={1.75} />
+      <span className={styles.pHeadTitle}><b>dark-mode</b><small><Signal status={status} />{label}<i>·</i>now<AgentMark size={11} /></small></span>
+      <MoreHorizontal size={20} strokeWidth={1.75} />
+    </div>
+  );
+}
+
+/** At rest, a pill: the placeholder, a +, and the microphone. */
+function PhoneComposer({ placeholder = "Say something to the agent" }: { placeholder?: string }) {
+  return (
+    <div className={styles.pComposer}>
+      <span className={styles.pPlus}><Plus size={22} strokeWidth={1.75} /></span>
+      <span className={styles.pPill}>{placeholder}</span>
+      <span className={styles.pMic}><Mic size={19} strokeWidth={1.75} /></span>
+    </div>
+  );
+}
+
+/* ── the conversation ───────────────────────────────────────────────────── */
+
+function PhoneAgent() {
+  return (
+    <Phone>
+      <div className={styles.pStack}>
+        <PhoneWorkspaceHead status="working" label="Working" />
+        <div className={styles.pStrip}>
+          <FileDiff size={14} strokeWidth={1.75} />
+          <span className={styles.stack}>
+            <span className={styles.out} style={{ "--out": "2.5s" } as V}>Files and commits</span>
+            {AGENT_FILES.map((f, i) => {
+              const added = AGENT_FILES.slice(0, i + 1).reduce((n, x) => n + x.added, 0), removed = AGENT_FILES.slice(0, i + 1).reduce((n, x) => n + x.removed, 0);
+              const next = AGENT_FILES[i + 1];
+              return <span key={f.name} className={`${styles.pStripCount} ${styles.in} ${next ? styles.out : ""}`} style={{ "--t": `${f.at}s`, "--out": next ? `${next.at}s` : undefined } as V}>{i + 1} {i === 0 ? "file" : "files"}<em>+{added}</em><s>−{removed}</s></span>;
+            })}
+          </span>
+          <i />
+          <small className={styles.stack}><span className={styles.out} style={{ "--out": "2.5s" } as V}>Nothing to commit</span><span className={styles.in} style={at(2.5)}>Commit &amp; open PR</span></small>
+          <ChevronRight size={14} strokeWidth={1.75} />
+        </div>
+        <div className={styles.pChat}>
+          <code className={styles.pBranch}>agent/dark-mode</code>
+          <div className={`${styles.pYou} ${styles.in}`} style={at(0.4)}><div>Add a dark mode toggle to settings. Remember the user’s preference.</div></div>
+          <p className={`${styles.pSheen} ${styles.in} ${styles.out}`} style={io(0.9, 1.5)}><span className={styles.sheen}>Working</span></p>
+          <ol className={styles.pRail}>
+            <li className={styles.in} style={at(1.4)}><b>read</b><span>src/settings/Appearance.tsx</span></li>
+            <li className={styles.in} style={at(1.9)}><b>read</b><span>src/theme/index.ts</span></li>
+            <li className={styles.in} style={at(2.5)}><b>changed</b><span>src/theme/ThemeToggle.tsx</span><code><em>+28</em> <s>−2</s></code></li>
+            <li className={styles.in} style={at(3.1)}><b>changed</b><span>src/settings/Appearance.tsx</span><code><em>+9</em> <s>−0</s></code></li>
+            <li className={styles.in} style={at(3.6)}><b>changed</b><span>src/theme/preference.ts</span><code><em>+5</em> <s>−0</s></code></li>
+          </ol>
+          <p className={`${styles.pSaid} ${styles.in}`} style={at(3.95)}><Stream text="I’ve added the toggle under Settings › Appearance and it remembers the choice across reloads. I’d like to run the theme tests before handing it back." start={4.0} speed={0.07} /></p>
+          <ol className={styles.pRail}><li className={styles.in} style={at(8.8)}><b>ran</b><span>pnpm test -- theme</span></li></ol>
+          <p className={`${styles.pSheen} ${styles.in}`} style={at(9.0)}><span className={styles.sheen}>Working</span></p>
+          <i className={styles.spacer} />
+        </div>
+        {/* The one loud thing, above the composer: the agent is stopped until you answer. */}
+        <div className={`${styles.pApproval} ${styles.in} ${styles.out}`} style={io(6.2, 8.4)}>
+          <span className={styles.pEyebrowEmber}>Wants to run a command</span>
+          <b>pnpm test -- theme</b>
+          <div><span className={styles.pNo}>No</span><span className={styles.pAllow} style={{ "--press": "8.05s" } as V}>Allow<Tap at={7.0} /></span></div>
+        </div>
+        <PhoneComposer placeholder="Answer the agent" />
+      </div>
+    </Phone>
+  );
+}
+
+/* ── the repository: Diff, or Commit ────────────────────────────────────── */
+
+function PhoneRepo({ tab }: { tab: "diff" | "ship" }) {
+  return (
+    <Phone>
+      <div className={styles.pStack}>
+        <div className={styles.pHead}>
+          <ChevronLeft size={22} strokeWidth={1.75} />
+          <span className={styles.pHeadTitle}><b>dark-mode</b><small>3 files<em>+42</em><s>−2</s></small></span>
+          <i />
+        </div>
+        <div className={styles.pSegWrap}><Seg options={["Diff", "Files", "Commit"]} on={tab === "diff" ? "Diff" : "Commit"} /></div>
+        {tab === "diff" ? (
+          <div className={styles.pDiff}>
+            {AGENT_FILES.map((f, i) => (
+              <div key={f.name} className={styles.in} style={at(0.3 + i * 0.12)}>
+                <span className={styles.pDiffFile}><i>●</i><span><b>{f.name}</b><code>{f.dir}</code></span><em>+{f.added}</em><s>−{f.removed}</s></span>
+                {i === 0 && (
+                  <div className={styles.pDiffLines}>
+                    {DIFF.map(([kind, text], j) => (
+                      <div key={j} data-kind={kind} className={styles.in} style={at(0.6 + j * 0.1)}><code>{kind === "hunk" ? "" : 12 + j}</code><span>{kind === "add" ? "+" : kind === "del" ? "−" : " "}{text}</span></div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className={`${styles.pShip} ${styles.in}`} style={at(0.3)}>
+              <code className={styles.pBranchLine}><GitBranch size={13} strokeWidth={1.75} /><b>agent/dark-mode</b>→ main</code>
+              <span className={styles.pEyebrow}>Title</span>
+              <span className={`${styles.pField} ${styles.swap}`} style={sw(1.6)}>
+                <i className={`${styles.swapA} ${styles.describing}`}><Loader2 size={12} strokeWidth={2} className={styles.spin} />Describing the change…</i>
+                <span className={styles.swapB}><Typed text="Add a theme toggle that follows the system" start={1.7} speed={0.03} /></span>
+              </span>
+              <span className={styles.pEyebrow}>Body</span>
+              <p className={`${styles.pField} ${styles.pBody} ${styles.in}`} style={at(1.7)}>Adds a Light / Dark / System control under Appearance, persists the choice, and defaults to the system theme.</p>
+              <div className={`${styles.pOpen} ${styles.in}`} style={at(8.25)}><span className={styles.pEyebrow}>Open</span><code>github.com/acme/web-app/pull/512</code></div>
+              <i className={styles.spacer} />
+            </div>
+            <div className={styles.pFoot}>
+              <span className={`${styles.pPrimary} ${styles.out}`} style={{ "--out": "8.1s", "--press": "4.65s" } as V}>Commit &amp; open PR<Tap at={3.6} /></span>
+              <small className={styles.pBusy}>
+                <span className={`${styles.in} ${styles.out}`} style={io(4.7, 5.9)}>Committing…</span>
+                <span className={`${styles.in} ${styles.out}`} style={io(5.95, 7.0)}>Pushing…</span>
+                <span className={`${styles.in} ${styles.out}`} style={io(7.05, 8.1)}>Opening the pull request…</span>
+                <span className={styles.in} style={at(8.25)}>The pull request is open.</span>
+              </small>
+            </div>
+          </>
+        )}
+      </div>
+    </Phone>
   );
 }
 

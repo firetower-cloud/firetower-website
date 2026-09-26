@@ -72,6 +72,12 @@ the app uses; the GitHub, Linear and Claude marks are the app's paths). What is
 added is only motion: a cursor doing what you would do. If a screen changes in
 the app, change it here; do not invent one.
 
+Below 720px the same tour is the **phone client** (`mobile/app`): three tabs
+and a stack, the New workspace form with its picker sheet, the conversation
+with the Changes strip and the Approval card, the repository as a page. The
+phone has no preview or annotation, so its third step shows the repository's
+Diff page instead — the closest screen that exists, not an invented one.
+
 **The hero background is a canvas on purpose.** The obvious build is a few
 thousand `<span>`s with CSS on them, but an inline element cannot be
 composited on its own, so lighting one under the cursor repaints the whole

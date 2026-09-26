@@ -36,6 +36,8 @@ export function Hero() {
           <span>Self-hosted</span>
           <span className="text-line">/</span>
           <span>No account</span>
+          <span className="text-line">/</span>
+          <span>Written in Rust</span>
         </p>
 
         <h1
