@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { Nav } from "./_components/Nav";
 import { Hero } from "./_components/Hero";
 import { Inbox } from "./_components/Inbox";
+import { Workflow } from "./_components/Workflow";
+import { Anywhere } from "./_components/Anywhere";
 import { How } from "./_components/How";
+import { Performance } from "./_components/Performance";
 import { Footer } from "./_components/Footer";
 import { JsonLd } from "./_components/JsonLd";
-import { howToLd, webPageLd } from "./_lib/structured-data";
+import { webPageLd } from "./_lib/structured-data";
 import { META_DESCRIPTION, NAME, TAGLINE } from "./_lib/site";
 
 /**
@@ -25,15 +28,16 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      {/* The sitewide graph is in the root layout. These two are about this
-          page specifically: the document itself, and the procedure it shows. */}
+      {/* The sitewide graph is in the root layout. This describes the page. */}
       <JsonLd data={webPageLd()} />
-      <JsonLd data={howToLd()} />
       <Nav />
       <main>
         <Hero />
         <Inbox />
+        <Workflow />
+        <Anywhere />
         <How />
+        <Performance />
       </main>
       <Footer />
     </>

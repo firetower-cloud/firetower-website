@@ -24,6 +24,3 @@ export const LIFECYCLE: Step[] = [
   { k: "launches the agent", v: "with credentials handed over at start, in memory only" },
   { k: "keeps it running", v: "and records what happened before reporting it" },
 ];
-
-/** The example prompt shown above the list, and the HowTo's supply. */
-export const LIFECYCLE_PROMPT = "rate-limit the webhook receiver, 100/min per key";

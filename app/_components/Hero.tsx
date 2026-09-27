@@ -1,6 +1,7 @@
 import { BinaryField } from "./BinaryField";
 import Link from "next/link";
 import { Octocat } from "./Octocat";
+import { InstallIntro } from "./InstallIntro";
 import { REPO_URL } from "../_lib/site";
 
 /**
@@ -35,6 +36,8 @@ export function Hero() {
           <span>Self-hosted</span>
           <span className="text-line">/</span>
           <span>No account</span>
+          <span className="text-line">/</span>
+          <span>Written in Rust</span>
         </p>
 
         <h1
@@ -68,10 +71,10 @@ export function Hero() {
             style={{ animationDelay: "180ms" }}
           >
             <Link
-              href="/docs"
+              href="/docs/getting-started"
               className="group flex items-center gap-2 rounded-[5px] bg-bone px-4 py-2.5 text-[13.5px] font-medium text-ground transition-opacity hover:opacity-88"
             >
-              Read the documentation
+              Self-host in 5 mins
               <span className="transition-transform group-hover:translate-x-0.5">→</span>
             </Link>
             <a
@@ -85,6 +88,7 @@ export function Hero() {
             </a>
           </div>
         </div>
+        <InstallIntro />
       </div>
 
     </section>

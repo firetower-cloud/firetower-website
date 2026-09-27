@@ -1,6 +1,4 @@
 import { Blueprint } from "./Blueprint";
-import { Copy } from "./Copy";
-import { LIFECYCLE, LIFECYCLE_PROMPT } from "../_lib/lifecycle";
 
 /* The architecture gets a section of its own, centred, because the diagram is
    the explanation and everything here is a caption for it.
@@ -13,8 +11,7 @@ import { LIFECYCLE, LIFECYCLE_PROMPT } from "../_lib/lifecycle";
 const LEGEND: { mark: string; tone: string; text: string }[] = [
   { mark: "*", tone: "text-ember", text: "a session that has stopped and needs you" },
   { mark: "o", tone: "text-slate", text: "one still working, nothing to do" },
-  { mark: "https", tone: "text-sage", text: "how an app reaches your Firetower" },
-  { mark: "ssh", tone: "text-sage", text: "how it reaches a machine you own" },
+  { mark: "ssh", tone: "text-sage", text: "how the app reaches a machine you own" },
 ];
 
 export function How() {
@@ -24,18 +21,9 @@ export function How() {
         <div className="rule" />
         <div className="pt-10 text-center sm:pt-14">
           <p className="eyebrow">How it fits together</p>
-          {/* Broken by hand rather than by a width cap. `ch` is the width of
-              "0", which in a condensed uppercase face is nothing like the
-              average letter — `max-w-[22ch]` reads as about half the room it
-              sounds like, and the title came out three lines. */}
-          {/* Two breaks, one per size: after "agent" is the natural clause
-              break and fits from 600px up, but on a phone that first half is
-              wider than the screen, so there it breaks a word earlier. Either
-              way the title is two lines, never three. */}
           <h2 className="display mt-5 text-[clamp(1.7rem,4.4vw,3.05rem)]">
-            Execute your favourite
-            <br className="sm:hidden" /> agent
-            <br className="hidden sm:inline" /> on any machine.
+            Your favorite agent,
+            <br /> on <span className="text-ember">your favorite hardware</span>
           </h2>
           <p className="mx-auto mt-5 max-w-[64ch] text-[15.5px] leading-[1.66] text-dim">
             Firetower reaches each machine over SSH and starts a worker there. The agents
@@ -74,40 +62,6 @@ export function How() {
             transport detail: a child process, a container exec, or SSH. The daemon cannot
             tell the difference, and neither can a firewall.
           </Note>
-        </div>
-
-        {/* ── The lifecycle ───────────────────────────────────────────── */}
-        <div className="mx-auto mt-14 max-w-[900px]">
-          <p className="eyebrow text-center">What one sentence of work turns into</p>
-          <div className="panel mt-3 overflow-hidden">
-            <div className="flex items-center gap-2 border-b border-line bg-raise/40 px-4 py-3">
-              <span className="font-mono text-[12px] text-mute">$</span>
-              <span className="min-w-0 flex-1 truncate font-mono text-[12.5px] text-bone">
-                {LIFECYCLE_PROMPT}
-              </span>
-              <Copy text={LIFECYCLE_PROMPT} label="Copy" />
-            </div>
-
-            <ol className="divide-y divide-line-soft">
-              {LIFECYCLE.map((s, i) => (
-                <li key={s.k} className="flex items-baseline gap-3 px-4 py-2.5">
-                  <span className="w-5 shrink-0 font-mono text-[10.5px] text-ember-deep">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="shrink-0 font-mono text-[12.5px] text-bone">{s.k}</span>
-                  <span className="hidden h-px min-w-4 flex-1 self-center bg-line-soft sm:block" />
-                  <span className="text-[12.5px] text-dim">{s.v}</span>
-                </li>
-              ))}
-            </ol>
-
-            <div className="border-t border-line bg-raise/40 px-4 py-2.5">
-              <span className="text-[12.5px] text-dim">
-                Then: attach from a browser or a phone, answer it, review the diff, push the
-                branch, open the pull request, destroy the workspace.
-              </span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

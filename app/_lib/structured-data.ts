@@ -10,7 +10,7 @@
  * rich results turned off for a whole domain.
  */
 import { AUTHOR, LICENSE, NAME, REPO_URL, SITE_URL, SUMMARY, TAGLINE } from "./site";
-import { LIFECYCLE, LIFECYCLE_PROMPT } from "./lifecycle";
+import { LIFECYCLE } from "./lifecycle";
 import { findDoc, href, trail } from "../docs/_lib/nav";
 
 export const ORG_ID = `${SITE_URL}/#organization`;
@@ -149,7 +149,7 @@ export function howToLd() {
     supply: [
       { "@type": "HowToSupply", name: "A server you can reach over SSH" },
       { "@type": "HowToSupply", name: "A git repository" },
-      { "@type": "HowToSupply", name: `A task, in a sentence — for example: ${LIFECYCLE_PROMPT}` },
+      { "@type": "HowToSupply", name: "A task, in a sentence" },
     ],
     tool: [{ "@type": "HowToTool", name: NAME }],
     step: LIFECYCLE.map((s, i) => ({
