@@ -27,7 +27,9 @@ app/
   page.tsx              the landing page — sections in reading order
   layout.tsx            fonts, sitewide metadata, sitewide JSON-LD
   globals.css           the design system: palette, display face, motion
-  _components/          Nav, Hero, Inbox, Workflow, How, Footer, Mark
+  _components/          Nav, Hero, Inbox, Workflow, Anywhere, How, Lifecycle, Footer, Mark
+  _components/Lifecycle.tsx    what happens when you start a workspace, one screen, step by step
+  _components/Anywhere.tsx     close your laptop: the copy, and the phone tour (`PhoneTour` from Workflow) beside it
   _components/BinaryField.tsx  the canvas field behind the hero
   _components/Blueprint.tsx    the ASCII architecture diagram
   _components/Macbook.tsx      the laptop the demo sits in

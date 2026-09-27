@@ -311,7 +311,7 @@ const TASKS = [
 function TasksPage({ start }: { start?: { at: number } }) {
   return (
     <div className={styles.page}>
-      <h1 className={`${styles.h1} ${styles.in}`} style={at(0.1)}>12 to pick from.</h1>
+      <div className={`${styles.h1} ${styles.in}`} style={at(0.1)}>12 to pick from.</div>
       <p className={`${styles.lede} ${styles.in}`} style={at(0.18)}>Read from your trackers as you look. Starting one opens a workspace.</p>
       <div className={`${styles.card} ${styles.in}`} style={at(0.3)}>
         <div className={styles.toolbar}>
@@ -759,7 +759,7 @@ function PhoneTasks() {
   return (
     <Phone tab="tasks">
       <div className={styles.pPage}>
-        <h1 className={styles.pDisplay}>Tasks</h1>
+        <div className={styles.pDisplay}>Tasks</div>
         <p className={styles.pSub}>12 to pick from. Starting one opens a workspace.</p>
         <div className={styles.pTrackers}><span><GithubMark size={12} />GitHub</span><span className={styles.on}><LinearMark size={12} />Linear</span></div>
         <Seg options={["Tickets"]} on="Tickets" />
@@ -964,6 +964,64 @@ function PhoneRepo({ tab }: { tab: "diff" | "ship" }) {
         )}
       </div>
     </Phone>
+  );
+}
+
+/**
+ * The phone tour on its own: the same four screens, looping, for the section
+ * that says you can pick the work up on your phone. No timeline, no tabs —
+ * it starts when it is on screen and goes round.
+ */
+export function PhoneTour() {
+  const [active, setActive] = useState(0);
+  const [workspaceOpen, setWorkspaceOpen] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [run, setRun] = useState(0);
+  const root = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const host = root.current;
+    if (!host) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries[0]?.isIntersecting) return;
+      setPlaying(true);
+      setRun((r) => r + 1);
+      observer.disconnect();
+    }, { threshold: 0.35 });
+    observer.observe(host);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!playing) return;
+    const host = root.current;
+    const timer = window.setTimeout(() => {
+      const box = host?.getBoundingClientRect();
+      const onScreen = !!box && box.bottom > 0 && box.top < window.innerHeight;
+      if (document.hidden || !onScreen) { setRun((r) => r + 1); return; }
+      setWorkspaceOpen(false);
+      setActive((value) => (value + 1) % steps.length);
+      setRun((r) => r + 1);
+    }, steps[active].duration);
+    return () => window.clearTimeout(timer);
+  }, [playing, active, run]);
+
+  useEffect(() => {
+    if (active !== 0 || workspaceOpen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(() => setWorkspaceOpen(true), 2700);
+    return () => window.clearTimeout(timer);
+  }, [active, run, workspaceOpen]);
+
+  return (
+    <div ref={root} className={styles.tour}>
+      <div key={`phone-${active}-${run}-${workspaceOpen}`} className={styles.window} data-phone aria-hidden="true">
+        {active === 0 && (workspaceOpen ? <PhoneWorkspace /> : <PhoneTasks />)}
+        {active === 1 && <PhoneAgent />}
+        {active === 2 && <PhoneRepo tab="diff" />}
+        {active === 3 && <PhoneRepo tab="ship" />}
+      </div>
+    </div>
   );
 }
 

@@ -106,7 +106,7 @@ const APP: Panel = {
    a provider and an address say "this is a machine, and it is yours". */
 const HOSTS: Panel[] = [
   {
-    title: "GCP VM . 34.79.12.180",
+    title: "Mac Studio . 192.168.1.57",
     rows: [
       text("worker . tmux . git"),
       sess(true, "Claude Code", "westlabs/ledger", "2h48m"),
@@ -143,7 +143,7 @@ const APP_N: Panel = {
 };
 const HOSTS_N: Panel[] = [
   {
-    title: "GCP VM . 34.79.12.180",
+    title: "Mac Studio . 192.168.1.57",
     rows: [
       text("worker . tmux . git"),
       sess(true, "Claude Code", "westlabs/ledger", ""),
