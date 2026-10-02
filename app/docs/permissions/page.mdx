@@ -1,7 +1,6 @@
 import { docMeta } from "../_lib/nav"
 import { Lede, Callout, Shot } from "../../_components/docs/Bits"
-import { Diagram } from "../../_components/docs/Diagram"
-import { Layers } from "../../_components/docs/Model"
+import { Layers, Shift } from "../../_components/docs/Model"
 
 export const metadata = docMeta("permissions")
 
@@ -234,19 +233,21 @@ That is what **extra permissions** are for. On any single resource you can name
 a specific person, or a specific team, and give them Viewer or Editor access to
 that one item, without moving it anywhere and without changing who owns it.
 
-<Diagram caption="Bob keeps his workspace. Kevin can read it, and that is all.">{`
-   without an extra permission        with one
-
-   u/bob                              u/bob
-   * fix-login   workspace            * fix-login   workspace
-                                            |
-   kevin cannot see it.               kevin . viewer
-                                            |
-   to show him, bob must move         bob keeps it. nothing moved,
-   it into a directory they are       and he can take the
-   both in, and it stops being        permission back whenever he
-   his.                               likes.
-`}</Diagram>
+<Shift
+  caption="Bob keeps his workspace either way. The difference is whether Kevin can read it."
+  before={{
+    when: "Without one",
+    path: "u/bob",
+    holds: ["fix-login, a workspace"],
+    verdict: "Kevin cannot see it. To show him, Bob would have to move it into a directory they are both in, and it would stop being his.",
+  }}
+  after={{
+    when: "With one",
+    path: "u/bob",
+    holds: ["fix-login, a workspace", "kevin · viewer"],
+    verdict: "Nothing moved, it is still Bob's, and he can take the permission back whenever he likes.",
+  }}
+/>
 
 - The resource stays exactly where it is, and stays yours.
 - You can give Viewer or Editor this way, but **not Admin**. Letting somebody
@@ -257,7 +258,7 @@ that one item, without moving it anywhere and without changing who owns it.
 Use a directory when a group needs an area to work in. Use an extra permission
 when one person needs one thing.
 
-[Share a resource](/docs/permissions/sharing) walks through both, with the
+[Sharing a resource](/docs/permissions/sharing) walks through both, with the
 screen that does it.
 
 ## Two things to be aware of

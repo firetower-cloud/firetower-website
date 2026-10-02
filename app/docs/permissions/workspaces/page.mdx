@@ -1,37 +1,82 @@
 import { docMeta } from "../../_lib/nav"
 import { Lede, Callout, Shot } from "../../../_components/docs/Bits"
-import { Diagram } from "../../../_components/docs/Diagram"
+import { Inside } from "../../../_components/docs/Model"
 
 export const metadata = docMeta("permissions/workspaces")
 
-# Workspace permissions
+# Sharing a workspace
 
 <Lede>
-A workspace is the one resource with two things inside it. There is the place,
-which is a branch and a folder on a machine, and there are the conversations
-with agents working in it. They are shared differently, because a conversation
-runs on one person's subscription and pushes with their GitHub account.
+A workspace is the one resource with two different things inside it. There is
+the place, which is a branch and a folder on a machine, and there are the
+conversations with agents working in it. They are shared differently, because a
+conversation runs on one person's subscription and pushes with their GitHub
+account.
 </Lede>
 
-## The place and the conversations
+## What a workspace looks like
 
-<Diagram caption="Share the room. Each conversation in it still belongs to whoever started it.">{`
-+-[x]- WORKSPACE ---------------------------------------------+
-|  the branch, the files, the terminal                        |
-|  shared like any other resource                             |
-|                                                             |
-|  +-- an agent ------------+   +-- another agent ---------+  |
-|  |  somebody's            |   |  somebody else's         |  |
-|  |  subscription          |   |  subscription            |  |
-|  |  github account        |   |  github account          |  |
-|  |  name on the commits   |   |  name on the commits     |  |
-|  +------------------------+   +--------------------------+  |
-+-------------------------------------------------------------+
-`}</Diagram>
+<Shot
+  src="/shots/workspace/workspace.png"
+  alt="A workspace open in the app: its name and repository on the left of the toolbar, two agent chips beside them, the open agent's transcript in the middle, and the diff on the right"
+  width={2800}
+  height={1800}
+>
+  One workspace, `fix-login`. The two glyphs in the toolbar are the two agents
+  working in it; clicking one reads its conversation. `d/shared` at the top
+  right is where the workspace is filed.
+</Shot>
+
+## What is in one
+
+<Inside
+  caption="The outer box is shared the way anything else is. The inner boxes are not shared at all: each one is whoever started it."
+  anatomy={{
+    above: {
+      path: "d/shared",
+      lead: "The directory the workspace is filed in. Whoever reaches this directory reaches the workspace.",
+      link: "holds",
+    },
+    box: {
+      kind: "Workspace",
+      name: "fix-login",
+      lead: "The place. One branch, one folder, on one machine, with a terminal into it. Anybody with Editor here can work in it.",
+      facts: [
+        { term: "branch", text: "agent/fix-login" },
+        { term: "checkout", text: "one folder, shared" },
+        { term: "machine", text: "Google Cloud VM 01" },
+      ],
+    },
+    partsLead: "and in it, one session per agent",
+    parts: [
+      {
+        kind: "Session",
+        name: "Claude Code",
+        facts: [
+          { term: "started by", text: "kevin" },
+          { term: "spends", text: "kevin's subscription" },
+          { term: "pushes as", text: "kevin on GitHub" },
+          { term: "typed in by", text: "kevin, and nobody else" },
+        ],
+      },
+      {
+        kind: "Session",
+        name: "Codex",
+        facts: [
+          { term: "started by", text: "bob" },
+          { term: "spends", text: "bob's subscription" },
+          { term: "pushes as", text: "bob on GitHub" },
+          { term: "typed in by", text: "bob, and nobody else" },
+        ],
+      },
+    ],
+    note: "Both agents are editing the same folder. The work is shared; the accounts paying for it are not.",
+  }}
+/>
 
 Sharing a workspace is the same as sharing anything else. Move it into a
 directory, or name somebody on it. See
-[Share a resource](/docs/permissions/sharing).
+[Sharing a resource](/docs/permissions/sharing).
 
 What that gets somebody is the **place**.
 
@@ -88,17 +133,6 @@ is where it always was.
 Press **+** in the toolbar, or the button on that line. You get a second agent
 in the same workspace: the same branch, the same files, the same machine, and
 your own subscription and GitHub account.
-
-<Diagram caption="Two agents, one folder. The work is shared, the accounts are not.">{`
-   workspace  fix-login
-   branch  agent/fix-login
-   folder  one, shared
-
-   your agent                  their agent
-   your subscription           their subscription
-   your github account         their github account
-   your name on the commits    their name on the commits
-`}</Diagram>
 
 This is also how you take work over from somebody. Read what their agent did,
 then start your own and carry on from the same branch.

@@ -1,10 +1,10 @@
 import { docMeta } from "../../_lib/nav"
 import { Lede, Callout, Shot } from "../../../_components/docs/Bits"
-import { Diagram } from "../../../_components/docs/Diagram"
+import { Shift } from "../../../_components/docs/Model"
 
 export const metadata = docMeta("permissions/sharing")
 
-# Share a resource
+# Sharing a resource
 
 <Lede>
 There are two ways to let somebody at one of your things, and they are not
@@ -58,15 +58,21 @@ are allowed to.
 
 Once it has moved, the directory owns it:
 
-<Diagram caption="Before, it answered to you. After, it answers to whoever administers the directory.">{`
-   before                            after
-
-   u/kevin                           d/backend
-   * staging-key                     * staging-key
-                                     
-   kevin decides                     whoever has admin on
-   everything                        d/backend decides
-`}</Diagram>
+<Shift
+  caption="Moving is not lending. The level you had on it is gone with it."
+  before={{
+    when: "Before",
+    path: "u/kevin",
+    holds: ["staging-key"],
+    verdict: "Kevin decides everything about it, including who else sees it.",
+  }}
+  after={{
+    when: "After the move",
+    path: "d/backend",
+    holds: ["staging-key"],
+    verdict: <>Whoever has <b className="text-bone">Admin</b> on d/backend decides. If Kevin is not one of them, he cannot take it back.</>,
+  }}
+/>
 
 <Callout kind="warning">
 Moving something into a directory is not lending. If you are not an Admin of
@@ -121,4 +127,4 @@ with their own account, and gets their own setup script and variables.
 
 **A conversation with an agent.** The workspace it runs in can be shared, and
 the conversation cannot. That is its own page:
-[Workspace permissions](/docs/permissions/workspaces).
+[Sharing a workspace](/docs/permissions/workspaces).

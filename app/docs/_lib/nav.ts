@@ -85,14 +85,14 @@ export const DOCS: Doc[] = [
   },
   {
     slug: "permissions/sharing",
-    title: "Share a resource",
+    title: "Sharing a resource",
     description:
       "Two ways to let somebody at one of your things: move it into a directory and hand it over, or name them on it and keep it. Which to pick, and how to do each.",
     section: "Core concepts",
   },
   {
     slug: "permissions/workspaces",
-    title: "Workspace permissions",
+    title: "Sharing a workspace",
     description:
       "A workspace holds a place and the conversations in it. The place is shared like anything else; a conversation belongs to whoever started it, because it spends their subscription and commits in their name.",
     section: "Core concepts",
