@@ -260,50 +260,6 @@ when one person needs one thing.
 [Share a resource](/docs/permissions/sharing) walks through both, with the
 screen that does it.
 
-## Working together in a workspace
-
-A shared workspace needs one more distinction, because two different things
-live there.
-
-<Diagram caption="The room is shared. The conversations in it are not.">{`
-+-[x]- WORKSPACE  migrate-orders ------------------------------+
-|  in d/backend. bob and kevin are both editors.               |
-|                                                              |
-|  the branch, the files, the terminal.                        |
-|  anyone with editor can work here.                           |
-|                                                              |
-|  +-- bob's agent ----------+   +-- kevin's agent ---------+  |
-|  |  bob's subscription     |   |  kevin's subscription    |  |
-|  |  bob's github account   |   |  kevin's github account  |  |
-|  |  commits in his name    |   |  commits in his name     |  |
-|  |                         |   |                          |  |
-|  |  kevin can read this    |   |  bob can read this       |  |
-|  |  and cannot type here   |   |  and cannot type here    |  |
-|  +-------------------------+   +--------------------------+  |
-+--------------------------------------------------------------+
-`}</Diagram>
-
-**The workspace is the place.** With Editor access you can work in it: open a
-terminal, attach a repository, and start your own agent alongside the ones
-already running.
-
-**A conversation with an agent belongs to whoever started it.** It runs on
-*their* subscription and pushes to GitHub with *their* account, under *their*
-name. So even with full access to the workspace, you cannot type into somebody
-else's conversation, answer the prompts their agent is waiting on, or change
-which model it uses.
-
-When you open a colleague's conversation you can read everything, and the way
-to join in is to start **your own agent** in the same workspace. It works on
-the same files and the same branch, and it runs on your subscription, with your
-GitHub account, under your name.
-
-Put simply: a place can be shared, a conversation cannot.
-
-[Workspace permissions](/docs/permissions/workspaces) covers this properly:
-what each person can do in a shared workspace, and what happens to the agents
-in it.
-
 ## Two things to be aware of
 
 **Sharing a workspace shares its files.** Anyone who can see a workspace can
