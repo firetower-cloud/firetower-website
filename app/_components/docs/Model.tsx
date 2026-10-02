@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
    the thing being shown is a relationship with words on it, and every label
    has to fit a monospace grid that then decides the layout.
 
-   These two are the permissions model, drawn in boxes the browser lays out.
+   The model itself is drawn here, in boxes the browser lays out.
    ─────────────────────────────────────────────────────────────────────── */
 
 type Line = { term: string; text: string };
@@ -103,77 +103,6 @@ export function Layers({ layers, caption }: { layers: Layer[]; caption?: ReactNo
             );
           })}
         </div>
-      </div>
-      {caption && (
-        <figcaption className="mt-2.5 text-[12.5px] leading-[1.6] text-mute">{caption}</figcaption>
-      )}
-    </figure>
-  );
-}
-
-export type Place = {
-  /** The directory's path, as it is written. */
-  path: string;
-  /** What it is for, in a few words. */
-  lead: string;
-  /** What is filed in it. */
-  holds: string[];
-  /** Who reaches it, and at what level. */
-  access: { who: string; level: "Viewer" | "Editor" | "Admin" | "No access" }[];
-};
-
-const LEVEL: Record<string, string> = {
-  Viewer: "border-slate/40 text-slate",
-  Editor: "border-sage/40 text-sage",
-  Admin: "border-ember-deep text-ember",
-  "No access": "border-line text-mute",
-};
-
-/**
- * A set of directories, what is in each, and who reaches it.
- *
- * Three facts per directory and they are not the same shape, so this is three
- * bands in a card rather than a table: a table makes "what is in it" and "who
- * reaches it" look like the same kind of answer, and the whole point of a
- * directory is that they are not.
- */
-export function Places({ places, caption }: { places: Place[]; caption?: ReactNode }) {
-  return (
-    <figure className="mt-6">
-      <div className="grid gap-3 sm:grid-cols-3">
-        {places.map((p) => (
-          <div
-            key={p.path}
-            className="flex flex-col overflow-hidden rounded-[6px] border border-line bg-panel"
-          >
-            <div className="border-b border-line px-3.5 py-2.5">
-              <p className="font-mono text-[12.5px] text-bone">{p.path}</p>
-              <p className="mt-0.5 text-[11.5px] leading-[1.5] text-mute">{p.lead}</p>
-            </div>
-            <ul className="flex-1 space-y-1.5 px-3.5 py-3">
-              {p.holds.map((h) => (
-                <li key={h} className="flex gap-2 text-[12.5px] leading-[1.5] text-dim">
-                  <span aria-hidden className="text-ember-deep">
-                    ·
-                  </span>
-                  {h}
-                </li>
-              ))}
-            </ul>
-            <div className="space-y-1 border-t border-line bg-ground/50 px-3.5 py-2.5">
-              {p.access.map((a) => (
-                <p key={a.who + a.level} className="flex items-start gap-2 text-[12px]">
-                  <span
-                    className={`mt-px shrink-0 rounded-[3px] border px-1.5 py-px font-mono text-[10px] tracking-wide whitespace-nowrap uppercase ${LEVEL[a.level]}`}
-                  >
-                    {a.level}
-                  </span>
-                  <span className="min-w-0 leading-[1.5] text-dim">{a.who}</span>
-                </p>
-              ))}
-            </div>
-          </div>
-        ))}
       </div>
       {caption && (
         <figcaption className="mt-2.5 text-[12.5px] leading-[1.6] text-mute">{caption}</figcaption>

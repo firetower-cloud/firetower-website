@@ -1,7 +1,7 @@
 import { docMeta } from "../_lib/nav"
 import { Lede, Callout, Shot } from "../../_components/docs/Bits"
 import { Diagram } from "../../_components/docs/Diagram"
-import { Layers, Places } from "../../_components/docs/Model"
+import { Layers } from "../../_components/docs/Model"
 
 export const metadata = docMeta("permissions")
 
@@ -259,126 +259,6 @@ when one person needs one thing.
 
 [Share a resource](/docs/permissions/sharing) walks through both, with the
 screen that does it.
-
-## A worked example
-
-Nine engineers at a company called Westlabs, four codebases, and one Firetower.
-Three of them keep the infrastructure running; the other six build features
-across a web app, an iOS app and a public API. Everybody deploys. Nobody is a
-full-time administrator.
-
-Here is the whole of it.
-
-### Two teams, because two groups decide different things
-
-| Team | Who | Why it exists |
-| --- | --- | --- |
-| **Everyone** | all nine | Automatic. It is what the build machines are granted to. |
-| **Platform** | Ana, Marc, Ines | The three people who are allowed to retire a machine and who hold the keys that reach the production replica. |
-
-That is it. There is no Web team, no Mobile team and no API team, and the
-reason is the one thing worth taking from this page: **a team is a group of
-people who decide the same things, not a group of people who work on the same
-code.** The six product engineers move between the web app and the iOS app
-from week to week. A team per codebase would need maintaining every time
-somebody changed what they were working on, and would grant exactly the same
-access each time.
-
-### Three directories
-
-<Places
-  caption="Nine people, four codebases, three directories. Every other thing any of them owns is in their own u/name and has never needed a decision."
-  places={[
-    {
-      path: "d/build",
-      lead: "The machines agents run on.",
-      holds: ["two 32-core build machines", "a small always-on box for long jobs"],
-      access: [
-        { who: "Everyone", level: "Editor" },
-        { who: "Platform", level: "Admin" },
-      ],
-    },
-    {
-      path: "d/platform",
-      lead: "The things that can reach production.",
-      holds: [
-        "the machine with a replica of the production database",
-        "the staging deploy key",
-        "the workspace the infrastructure repo is worked in",
-      ],
-      access: [
-        { who: "Platform", level: "Admin" },
-        { who: "everybody else", level: "No access" },
-      ],
-    },
-    {
-      path: "d/product",
-      lead: "Work more than one person will touch.",
-      holds: [
-        "the long-running workspaces for the web app and the iOS app",
-        "the shared Linear API key",
-      ],
-      access: [
-        { who: "Everyone", level: "Editor" },
-        { who: "Ana and Bob, the leads", level: "Admin" },
-      ],
-    },
-  ]}
-/>
-
-### Why each line of that is what it is
-
-**`d/build` is Everyone as Editor, Platform as Admin.** Nine people need to run
-agents on those machines, and that is Editor. Retiring one when it is replaced
-is Admin, and it belongs to the three people who would be rebuilding it. An
-Editor cannot take somebody else's thing out of a directory, which is precisely
-what stops a product engineer removing a machine six colleagues have sessions
-on.
-
-**`d/platform` grants nothing to anybody outside Platform, not even Viewer.**
-Viewer on a directory is seeing what is filed in it, and what is filed in it is
-a machine holding customer data and a key that deploys. There is no useful
-level between "can reach production" and "cannot".
-
-**`d/product` is Everyone, not a product team.** Compare the two: a Product team
-of six would be a list somebody has to update when the tenth person joins, and
-it would grant the same thing Everyone already grants. The team that is worth
-keeping is the smaller one, because it is the one that says no to somebody.
-
-**Nothing in there is per codebase.** Four codebases, zero directories named
-after them. A directory is answering "who decides about this", and the answer
-is the same for the web app and the iOS app, so they share one.
-
-### What never goes in a directory
-
-Nine Claude subscriptions, nine sets of personal API keys, four laptops, and
-everybody's own scratch workspaces. All of it sits in `u/ana`, `u/bob`,
-`u/marc` and so on, and none of it has ever needed a conversation.
-
-**Repositories, in particular.** All six product engineers work on
-`westlabs/web`, and all six connected it themselves with their own GitHub
-account. There is no shared copy and no decision to make: what each of them can
-reach is what GitHub already lets them reach.
-
-### The two crossings, and what each one uses
-
-**Ana needs to read a migration Bob is working on.** It is one workspace, once,
-and Bob is not handing it over. He names Ana as **Viewer** on that workspace:
-an extra permission, nothing moves, and he takes it back on Friday.
-
-**Priya is taking over the checkout rewrite from Bob.** That is not a look, it
-is a handover, and it is permanent. Bob moves the workspace from `u/bob` into
-`d/product`, where it stops being his and becomes the directory's. Priya works
-in it as an Editor, and the leads can dispose of it when it is finished.
-
-The test between them is one question: is this one person looking at one thing,
-or is this work that should outlive whose it used to be?
-
-<Callout>
-Four codebases produced three directories and two teams. If your count is
-climbing with your repositories rather than with your people, the directories
-are being named after the wrong thing.
-</Callout>
 
 ## Working together in a workspace
 
