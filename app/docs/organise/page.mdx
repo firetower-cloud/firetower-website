@@ -1,0 +1,158 @@
+import { docMeta } from "../_lib/nav"
+import { Lede, Callout } from "../../_components/docs/Bits"
+import { Spaces, Wires } from "../../_components/docs/Model"
+
+export const metadata = docMeta("organise")
+
+# Organise your resources
+
+<Lede>
+Two nouns do all the work. A **team** is who somebody is. A **directory** is
+which pool of things they can reach. You need both the moment those two stop
+being the same list, and not a minute before.
+</Lede>
+
+## For a solo engineer
+
+Nothing to set up. Everything you make is born in your own space and nobody
+else is in it.
+
+<Spaces
+  caption="No teams, no directories, no decisions."
+  spaces={[
+    {
+      path: "u/kevin",
+      lead: "Your own space. Implicit, and not sharable by anybody.",
+      holds: ["mac-mini", "backend-workspace", "claude-subscription"],
+    },
+  ]}
+/>
+
+## For small teams (2 to 5)
+
+One team and one directory. The team is **Everyone**, which already exists and
+maintains itself, and the directory is the one pool you all work out of.
+
+<Wires
+  caption="Everyone is Editor on d/shared: run on the machine, work in the workspace, use the secret, and add your own things beside them."
+  wiring={{
+    teams: [{ name: "Everyone", note: "everybody, automatically" }],
+    dirs: [
+      {
+        path: "d/shared",
+        holds: ["main-workspace", "claude-subscription", "common-secret", "dev-machine"],
+      },
+    ],
+    links: [[0, 0]],
+  }}
+/>
+
+Everything else stays personal, and that is most of it.
+
+<Spaces
+  caption="Two roots. Personal is u/<you>, shared is d/shared, and nothing in the first is reachable from the second."
+  spaces={[
+    { path: "u/kevin", holds: ["laptop", "claude-subscription", "scratch-workspace"] },
+    { path: "u/ana", holds: ["laptop", "codex-subscription"] },
+    { path: "u/marc", holds: ["laptop", "linear-key"] },
+  ]}
+/>
+
+<Callout>
+Give one or two people **Admin** on `d/shared` rather than all of them. An
+Editor can add their own things and cannot take anybody else's out, which is
+what stops a machine three people are working on being retired by the fourth.
+</Callout>
+
+## For larger teams (10 and up)
+
+This is where one directory stops being enough, and it is not because there are
+more people. It is because the pools diverge: the iOS engineers need the Macs,
+the backend engineers need the Linux boxes, and neither needs the other's.
+
+Two teams, three directories, and four grants.
+
+<Wires
+  caption="Every line is Editor. Backend reaches shared and Linux; iOS reaches shared and Apple; neither reaches the other's machines."
+  wiring={{
+    teams: [
+      { name: "Backend", note: "5 people" },
+      { name: "iOS", note: "4 people" },
+    ],
+    dirs: [
+      {
+        path: "d/shared",
+        holds: ["api-workspace", "github-secret", "claude-subscription"],
+      },
+      {
+        path: "d/linux-machines",
+        holds: ["linux-dev-01", "linux-build-01", "backend-runner"],
+      },
+      {
+        path: "d/apple-machines",
+        holds: ["mac-mini-01", "mac-mini-02", "ios-build-machine"],
+      },
+    ],
+    links: [
+      [0, 0],
+      [0, 1],
+      [1, 0],
+      [1, 2],
+    ],
+  }}
+/>
+
+Read it either way round, and that is the point of having two nouns:
+
+- **One team reaches several directories.** Backend is on `d/shared` and on
+  `d/linux-machines`, which is two grants rather than a directory holding both
+  pools and granting more than it meant to.
+- **One directory is reached by several teams.** `d/shared` is granted to
+  Backend and to iOS, which is two grants rather than a copy of the
+  subscription in each pool.
+
+And everybody still has their own space, which none of this touches.
+
+<Spaces
+  caption="Nine people, three directories, and nine personal spaces that have never needed a decision."
+  spaces={[
+    { path: "u/alice", holds: ["laptop", "claude-subscription"] },
+    { path: "u/bob", holds: ["laptop", "codex-subscription"] },
+  ]}
+/>
+
+## Which noun is which
+
+| | A team | A directory |
+| --- | --- | --- |
+| Answers | who somebody is | which pool they reach |
+| Changes when | somebody joins, leaves or moves | the infrastructure changes |
+| Is a list of | people | machines, keys, subscriptions, workspaces |
+| You add one when | a group needs granting as a group | a pool needs a different set of people |
+
+The failure this prevents is the one where the two are folded together: a
+directory per team, each holding a copy of the same shared things. Then adding
+a subscription means adding it twice, and the second copy is the one somebody
+forgets to rotate.
+
+## Rules of thumb
+
+**Leave personal things personal.** Laptops, subscriptions, personal API keys.
+There is no reason to share a subscription, and one good reason not to:
+whoever uses it is spending your quota.
+
+**Make a directory when a pool needs a different set of people**, not when a
+new project starts. Four codebases worked on by the same nine people are one
+directory, not four.
+
+**Make a team when a group needs granting more than once.** One grant does not
+need a team; the same three names on a third thing does.
+
+**Give Admin narrowly.** Editor is "work here and add your own". Admin is
+"decide what happens to what is in here", including removing somebody else's.
+
+<Callout>
+Start with `d/shared` and Everyone. Split it the first time you find yourself
+wanting to grant half of it to half of the people, and not before: a directory
+that was never needed is still a directory somebody has to keep granting.
+</Callout>

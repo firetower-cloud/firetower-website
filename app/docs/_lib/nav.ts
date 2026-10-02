@@ -84,6 +84,13 @@ export const DOCS: Doc[] = [
     section: "Core concepts",
   },
   {
+    slug: "organise",
+    title: "Organise your resources",
+    description:
+      "What to set up at three sizes: on your own, two to five people, and ten or more with different infrastructure. Why a team says who somebody is and a directory says which pool they reach, and when you need both.",
+    section: "Core concepts",
+  },
+  {
     slug: "permissions/sharing",
     title: "Sharing a resource",
     description:
