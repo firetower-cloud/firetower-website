@@ -1,6 +1,7 @@
 import { docMeta } from "../_lib/nav"
 import { Lede, Callout, Shot } from "../../_components/docs/Bits"
 import { Diagram } from "../../_components/docs/Diagram"
+import { Layers, Places } from "../../_components/docs/Model"
 
 export const metadata = docMeta("permissions")
 
@@ -12,34 +13,46 @@ and Resources. Each answers a different question, and together they cover
 everything from "who can add a colleague" to "who can touch this one machine".
 </Lede>
 
-<Diagram caption="Read it downwards. People belong to teams, people and teams are given a level on a directory, and a directory holds resources.">{`
-+-[x]- PEOPLE -----------------------------------------------+
-|  admin or member                                           |
-|  about running the organisation, not about access          |
-+------------------------------------------------------------+
-                              |
-                        belong to many
-                              |
-+-[x]- TEAMS ------------------------------------------------+
-|  a group of people                                         |
-|  everybody is in the team called everyone                  |
-+------------------------------------------------------------+
-                              |
-            people and teams are given a level on
-                              |
-+-[x]- DIRECTORIES ------------------------------------------+
-|  viewer    see what is in it                               |
-|  editor    work in it, and add your own things             |
-|  admin     decide what happens to what is in it            |
-+------------------------------------------------------------+
-                              |
-                          which hold
-                              |
-+-[x]- RESOURCES --------------------------------------------+
-|  * machines     * subscriptions    * api keys              |
-|  * workspaces   * repositories                             |
-+------------------------------------------------------------+
-`}</Diagram>
+<Layers
+  caption="Read it downwards. Access to one thing is always the most generous route to it, and a person who is both an Editor by team and a Viewer by name is an Editor."
+  layers={[
+    {
+      name: "People",
+      lead: "Everybody who can sign in to this Firetower.",
+      lines: [
+        { term: "Admin", text: "Runs the organisation: adds and removes people, makes teams and directories, updates Firetower." },
+        { term: "Member", text: "Does their own work, and whatever has been shared with them." },
+      ],
+      note: "Neither one is access to a colleague's work. That is decided entirely below.",
+      through: "belong to any number of",
+    },
+    {
+      name: "Teams",
+      lead: "A named group of people, so access is handed to a group rather than to one person at a time.",
+      lines: [
+        { term: "Everyone", text: "Every person in the organisation, kept current by itself. It has no list to maintain." },
+        { term: "yours", text: "Any team you make: a list you keep, read at the time it is used rather than copied." },
+      ],
+      through: "a person or a team is given one level on",
+    },
+    {
+      name: "Directories",
+      lead: "A place to put things so other people can reach them. You give access to the directory, not to each thing in it.",
+      lines: [
+        { term: "viewer", text: "See what is in it." },
+        { term: "editor", text: "Work with what is in it, and put their own things into it." },
+        { term: "admin", text: "Decide what happens to what is in it, including taking things out." },
+      ],
+      through: "which holds",
+    },
+    {
+      name: "Resources",
+      lead: "The things Firetower manages. Every one of them is yours the moment you make it.",
+      chips: ["Machines", "Subscriptions", "API keys", "Workspaces", "Repositories"],
+      note: "A new resource starts in its owner's own directory, written u/their-name, where nobody else can see it.",
+    },
+  ]}
+/>
 
 ## People
 
@@ -246,6 +259,126 @@ when one person needs one thing.
 
 [Share a resource](/docs/permissions/sharing) walks through both, with the
 screen that does it.
+
+## A worked example
+
+Nine engineers at a company called Westlabs, four codebases, and one Firetower.
+Three of them keep the infrastructure running; the other six build features
+across a web app, an iOS app and a public API. Everybody deploys. Nobody is a
+full-time administrator.
+
+Here is the whole of it.
+
+### Two teams, because two groups decide different things
+
+| Team | Who | Why it exists |
+| --- | --- | --- |
+| **Everyone** | all nine | Automatic. It is what the build machines are granted to. |
+| **Platform** | Ana, Marc, Ines | The three people who are allowed to retire a machine and who hold the keys that reach the production replica. |
+
+That is it. There is no Web team, no Mobile team and no API team, and the
+reason is the one thing worth taking from this page: **a team is a group of
+people who decide the same things, not a group of people who work on the same
+code.** The six product engineers move between the web app and the iOS app
+from week to week. A team per codebase would need maintaining every time
+somebody changed what they were working on, and would grant exactly the same
+access each time.
+
+### Three directories
+
+<Places
+  caption="Nine people, four codebases, three directories. Every other thing any of them owns is in their own u/name and has never needed a decision."
+  places={[
+    {
+      path: "d/build",
+      lead: "The machines agents run on.",
+      holds: ["two 32-core build machines", "a small always-on box for long jobs"],
+      access: [
+        { who: "Everyone", level: "Editor" },
+        { who: "Platform", level: "Admin" },
+      ],
+    },
+    {
+      path: "d/platform",
+      lead: "The things that can reach production.",
+      holds: [
+        "the machine with a replica of the production database",
+        "the staging deploy key",
+        "the workspace the infrastructure repo is worked in",
+      ],
+      access: [
+        { who: "Platform", level: "Admin" },
+        { who: "everybody else", level: "No access" },
+      ],
+    },
+    {
+      path: "d/product",
+      lead: "Work more than one person will touch.",
+      holds: [
+        "the long-running workspaces for the web app and the iOS app",
+        "the shared Linear API key",
+      ],
+      access: [
+        { who: "Everyone", level: "Editor" },
+        { who: "Ana and Bob, the leads", level: "Admin" },
+      ],
+    },
+  ]}
+/>
+
+### Why each line of that is what it is
+
+**`d/build` is Everyone as Editor, Platform as Admin.** Nine people need to run
+agents on those machines, and that is Editor. Retiring one when it is replaced
+is Admin, and it belongs to the three people who would be rebuilding it. An
+Editor cannot take somebody else's thing out of a directory, which is precisely
+what stops a product engineer removing a machine six colleagues have sessions
+on.
+
+**`d/platform` grants nothing to anybody outside Platform, not even Viewer.**
+Viewer on a directory is seeing what is filed in it, and what is filed in it is
+a machine holding customer data and a key that deploys. There is no useful
+level between "can reach production" and "cannot".
+
+**`d/product` is Everyone, not a product team.** Compare the two: a Product team
+of six would be a list somebody has to update when the tenth person joins, and
+it would grant the same thing Everyone already grants. The team that is worth
+keeping is the smaller one, because it is the one that says no to somebody.
+
+**Nothing in there is per codebase.** Four codebases, zero directories named
+after them. A directory is answering "who decides about this", and the answer
+is the same for the web app and the iOS app, so they share one.
+
+### What never goes in a directory
+
+Nine Claude subscriptions, nine sets of personal API keys, four laptops, and
+everybody's own scratch workspaces. All of it sits in `u/ana`, `u/bob`,
+`u/marc` and so on, and none of it has ever needed a conversation.
+
+**Repositories, in particular.** All six product engineers work on
+`westlabs/web`, and all six connected it themselves with their own GitHub
+account. There is no shared copy and no decision to make: what each of them can
+reach is what GitHub already lets them reach.
+
+### The two crossings, and what each one uses
+
+**Ana needs to read a migration Bob is working on.** It is one workspace, once,
+and Bob is not handing it over. He names Ana as **Viewer** on that workspace:
+an extra permission, nothing moves, and he takes it back on Friday.
+
+**Priya is taking over the checkout rewrite from Bob.** That is not a look, it
+is a handover, and it is permanent. Bob moves the workspace from `u/bob` into
+`d/product`, where it stops being his and becomes the directory's. Priya works
+in it as an Editor, and the leads can dispose of it when it is finished.
+
+The test between them is one question: is this one person looking at one thing,
+or is this work that should outlive whose it used to be?
+
+<Callout>
+Four codebases produced three directories and two teams. If your count is
+climbing with your repositories rather than with your people, the directories
+are being named after the wrong thing.
+</Callout>
 
 ## Working together in a workspace
 
