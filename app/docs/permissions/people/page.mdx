@@ -15,12 +15,13 @@ at a time.
 
 ## Where it is
 
-**Organisation → People**, in the browser. It is an administrator's screen, and
-it is the full list of who can sign in to this Firetower.
+**Organisation → People**, in the web administration panel of your control
+plane. It is an administrator's screen, and it is the full list of who can sign
+in to this Firetower.
 
 <Shot
   src="/shots/people/people.png"
-  alt="The People screen in the browser: four people with their email, role and state, a search box, and an Add a person button"
+  alt="The People screen in the web administration panel: four people with their email, role and state, a search box, and an Add a person button"
   width={2560}
   height={880}
 >
@@ -114,22 +115,22 @@ When they sign in, this is the only thing they are offered.
 
 Saying so plainly: a password somebody else chose is a password somebody else
 has seen, so Firetower treats the account as not yet theirs until they have
-replaced it. The moment they do, every other browser signed in as them is
-signed out and yours stops working.
+replaced it. The moment they do, every session of theirs ends, on every device
+they had it open on, and the password you handed over stops working.
 
 ## On the apps
 
-Replacing a password happens in the browser and nowhere else. One screen that
-decides whether somebody can get in at all is enough to keep correct, and the
-browser is the surface that is always there and always the same version as the
-server.
+Replacing a password happens in the web administration panel and nowhere else.
+One screen that decides whether somebody can get in at all is enough to keep
+correct, and the panel is the surface that is always reachable and always the
+same version as the server behind it.
 
 So the Mac, Windows and phone apps do not offer the form. They sign in, notice,
-and point at the control plane.
+and send you to the panel.
 
 <Shot
   src="/shots/people/desktop-locked.png"
-  alt="The desktop app after signing in with a temporary password: Replace your password first, with a button to open the Firetower in a browser and another to sign in again"
+  alt="The desktop app after signing in with a temporary password: Replace your password first, with a button to open the web administration panel and another to sign in again"
   width={2000}
   height={1140}
 >
