@@ -95,6 +95,13 @@ export const DOCS: Doc[] = [
     section: "Permissions",
   },
   {
+    slug: "permissions/people",
+    title: "Add somebody",
+    description:
+      "Adding a person: the form, the password the server makes and shows once, and the one thing they have to do before anything else works. Resetting a password, switching somebody off, and removing them.",
+    section: "Permissions",
+  },
+  {
     slug: "permissions/sharing",
     title: "Share a resource",
     description:
