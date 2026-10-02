@@ -4,36 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DOCS, SECTION_ORDER, href } from "../../docs/_lib/nav";
-
-type Heading = { id: string; text: string };
-
-/**
- * The sections of the page being read, taken from the page itself.
- *
- * Read out of the rendered article rather than parsed out of the MDX, because
- * the ids are `rehype-slug`'s and the only place they certainly exist is the
- * document it just made. A table of contents whose anchors are a second guess
- * at the same algorithm is a table of contents that silently rots.
- */
-function useHeadings(path: string): Heading[] {
-  const [headings, setHeadings] = useState<Heading[]>([]);
-
-  useEffect(() => {
-    setHeadings(
-      [...document.querySelectorAll<HTMLElement>("article h2[id]")].map((h) => ({
-        id: h.id,
-        // Skipping the "#" permalink React puts first inside every heading.
-        text: [...h.childNodes]
-          .filter((n) => !(n instanceof HTMLElement && n.tagName === "A"))
-          .map((n) => n.textContent ?? "")
-          .join("")
-          .trim(),
-      })),
-    );
-  }, [path]);
-
-  return headings;
-}
+import type { Heading } from "../../docs/_lib/toc";
 
 /**
  * Which section you are in, so the list says where you are rather than only
@@ -45,17 +16,21 @@ function useHeadings(path: string): Heading[] {
  */
 function useCurrent(headings: Heading[]): string | null {
   const [current, setCurrent] = useState<string | null>(null);
+  // The ids, not the array: it arrives as a prop and is a new object on every
+  // render, which would tear the listener down and put it back for nothing.
+  const ids = headings.map((h) => h.id).join("|");
 
   useEffect(() => {
-    if (headings.length === 0) return;
+    if (ids === "") return;
+    const list = ids.split("|");
     const at = () => {
-      let seen = headings[0].id;
-      for (const h of headings) {
-        const el = document.getElementById(h.id);
-        if (el && el.getBoundingClientRect().top <= 120) seen = h.id;
+      let seen = list[0];
+      for (const id of list) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) seen = id;
       }
       // Nothing is "current" until the first heading has been reached.
-      const first = document.getElementById(headings[0].id);
+      const first = document.getElementById(list[0]);
       setCurrent(first && first.getBoundingClientRect().top > 120 ? null : seen);
     };
     at();
@@ -65,7 +40,8 @@ function useCurrent(headings: Heading[]): string | null {
       window.removeEventListener("scroll", at);
       window.removeEventListener("resize", at);
     };
-  }, [headings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ids]);
 
   return current;
 }
@@ -77,10 +53,14 @@ function useCurrent(headings: Heading[]): string | null {
  * The page you are on opens into its own sections. Only that one: every page
  * expanded is a column nobody can scan, and the sections of a page you are not
  * reading are not a destination you are looking for.
+ *
+ * The sections come in from the server, already in the HTML. Which one you are
+ * standing in is the only part that needs a browser.
  */
-export function Sidebar() {
+export function Sidebar({ toc }: { toc: Record<string, Heading[]> }) {
   const path = usePathname();
-  const headings = useHeadings(path);
+  const here = DOCS.find((d) => href(d.slug) === path);
+  const headings = (here && toc[here.slug]) ?? [];
   const current = useCurrent(headings);
 
   return (
@@ -122,7 +102,7 @@ export function Sidebar() {
                                     : "text-mute hover:text-text"
                                 }`}
                               >
-                                {h.text}
+                                {h.title}
                               </a>
                             </li>
                           ))}

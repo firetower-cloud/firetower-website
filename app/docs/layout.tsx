@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "../_components/Nav";
 import { Footer } from "../_components/Footer";
 import { Sidebar, DocsRail } from "../_components/docs/Sidebar";
+import { toc } from "./_lib/toc";
 import { PrevNext } from "../_components/docs/PrevNext";
 import { DocSchema } from "../_components/docs/DocSchema";
 
@@ -22,7 +23,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
     <>
       <Nav />
       <div className="mx-auto flex max-w-[1180px] gap-10 px-5 pt-10 pb-24 sm:px-8 lg:gap-16 lg:pt-14">
-        <Sidebar />
+        <Sidebar toc={toc()} />
         <main className="min-w-0 flex-1">
           <DocSchema />
           <DocsRail />
