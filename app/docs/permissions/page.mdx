@@ -1,5 +1,5 @@
 import { docMeta } from "../_lib/nav"
-import { Lede, Callout } from "../../_components/docs/Bits"
+import { Lede, Callout, Shot } from "../../_components/docs/Bits"
 import { Diagram } from "../../_components/docs/Diagram"
 
 export const metadata = docMeta("permissions")
@@ -52,6 +52,17 @@ organisation signs in through, and upgrade Firetower itself.
 A Member does their own work. They add machines, connect accounts and start
 workspaces, plus everything they have been given access to.
 
+<Shot
+  src="/shots/permissions/people.png"
+  alt="The People screen, listing three people with their address, role and state"
+  width={2560}
+  height={1800}
+>
+  People are managed in the browser, at **Organisation to People**. Adding
+  somebody gives you a password to pass on; they choose their own the first
+  time they sign in.
+</Shot>
+
 <Callout>
 This role is only about running the organisation. It is not a shortcut to other
 people's work: an Admin does not automatically get access to a colleague's
@@ -67,6 +78,16 @@ and a person's access is always the most generous of everything they belong to.
 Every organisation has one team called **Everyone**, which is exactly what it
 sounds like. You never have to maintain it: whoever is in your organisation
 today is in it.
+
+<Shot
+  src="/shots/permissions/teams.png"
+  alt="The Teams screen, showing Everyone with three people and Backend with two"
+  width={2560}
+  height={1800}
+>
+  Everyone is kept up to date by itself. Any other team you make is a list you
+  keep.
+</Shot>
 
 ## Directories
 
@@ -84,6 +105,16 @@ Both **people** and **teams** can be given one of three levels:
 The difference between Editor and Admin is the one worth remembering. An Editor
 can add their own things to a directory, but cannot take anybody else's out.
 That is what stops one person removing a server the whole team is working on.
+
+<Shot
+  src="/shots/permissions/directories.png"
+  alt="The Access screen, listing directories with what is filed in each and who can see into them"
+  width={2560}
+  height={1800}
+>
+  **Organisation to Access** lists every directory, what is filed in it, and
+  who reaches it. An empty one is a directory nobody has put anything in yet.
+</Shot>
 
 ## Resources
 
@@ -113,53 +144,6 @@ can see it.
 
 This is why moving something into a directory is a real decision rather than a
 convenience. You are handing it over.
-
-## An example: Westlabs
-
-Westlabs has two people. Kevin set the Firetower up, so he is an Admin. Bob
-joined later and is a Member. Here is how their organisation is laid out after
-a few weeks.
-
-<Diagram caption="Two personal directories nobody else can reach into, one directory everybody shares, and one for the people working on the backend.">{`
-+-[x]- WESTLABS ----------------------------------------------------+
-|                                                                   |
-|  u/kevin            his own, nobody else's                        |
-|  * macbook          his laptop                                    |
-|  * claude max       his subscription                              |
-|  * acme/api         repository, opened with his github            |
-|  * billing-fix      workspace                                     |
-|                                                                   |
-|  u/bob              his own, nobody else's                        |
-|  * claude pro       his subscription                              |
-|  * acme/web         repository, opened with his github            |
-|  * fix-login        workspace                                     |
-|                                                                   |
-|  d/shared                          everyone . editor              |
-|                                    kevin . admin                  |
-|  * build-01         the big build machine                         |
-|  * ci-runner        the ci box                                    |
-|                                                                   |
-|  d/backend                         backend team . editor          |
-|                                    kevin . admin                  |
-|  * staging-key      the shared linear key                         |
-|  * migrate-orders   workspace, started by bob                     |
-|                                                                   |
-+-------------------------------------------------------------------+
-`}</Diagram>
-
-What that layout means in practice:
-
-| Question | Answer |
-| --- | --- |
-| Can Bob run an agent on `build-01`? | Yes. Everyone is an Editor on `d/shared`. |
-| Can Bob remove `build-01`? | No. That needs Admin on `d/shared`, which Kevin has. |
-| Can Bob add his own server to `d/shared`? | Yes. An Editor can add their own things. |
-| Can Kevin open Bob's `fix-login` workspace? | No. It is in `u/bob`, and being an organisation Admin does not reach in. |
-| Can Kevin use Bob's Claude subscription? | No, for the same reason. |
-| Can Kevin see `migrate-orders`, which Bob started? | Yes. Bob put it in `d/backend`, so it belongs to the directory now. |
-| Can Kevin end `migrate-orders`? | Yes. He is Admin on `d/backend`. |
-| Can Kevin type into Bob's agent in `migrate-orders`? | No. See [Working together](#working-together-in-a-workspace). |
-| Can Bob reach `acme/api`? | No. Repositories never leave a personal directory. If Bob needs it, he connects it himself with his own GitHub account. |
 
 ## How we would suggest organising it
 
@@ -250,6 +234,9 @@ that one item, without moving it anywhere and without changing who owns it.
 Use a directory when a group needs an area to work in. Use an extra permission
 when one person needs one thing.
 
+[Share a resource](/docs/permissions/sharing) walks through both, with the
+screen that does it.
+
 ## Working together in a workspace
 
 A shared workspace needs one more distinction, because two different things
@@ -289,6 +276,10 @@ the same files and the same branch, and it runs on your subscription, with your
 GitHub account, under your name.
 
 Put simply: a place can be shared, a conversation cannot.
+
+[Workspace permissions](/docs/permissions/workspaces) covers this properly:
+what each person can do in a shared workspace, and what happens to the agents
+in it.
 
 ## Two things to be aware of
 
