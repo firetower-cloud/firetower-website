@@ -14,30 +14,29 @@ everything from "who can add a colleague" to "who can touch this one machine".
 
 <Diagram caption="Read it downwards. People belong to teams, people and teams are given a level on a directory, and a directory holds resources.">{`
 +-[x]- PEOPLE -----------------------------------------------+
-|  Everyone with an account. Admin or Member.                |
-|  That role is about running the organisation and           |
-|  grants no access to anybody's work.                       |
+|  admin or member                                           |
+|  about running the organisation, not about access          |
 +------------------------------------------------------------+
                               |
                         belong to many
                               |
 +-[x]- TEAMS ------------------------------------------------+
-|  A group of people. Everybody is in the team called        |
-|  Everyone, which you never have to maintain.               |
+|  a group of people                                         |
+|  everybody is in the team called everyone                  |
 +------------------------------------------------------------+
                               |
             people and teams are given a level on
                               |
 +-[x]- DIRECTORIES ------------------------------------------+
-|  Viewer    see what is in it                               |
-|  Editor    work in it, and add your own things             |
-|  Admin     decide what happens to what is in it            |
+|  viewer    see what is in it                               |
+|  editor    work in it, and add your own things             |
+|  admin     decide what happens to what is in it            |
 +------------------------------------------------------------+
                               |
                           which hold
                               |
 +-[x]- RESOURCES --------------------------------------------+
-|  * machines     * subscriptions    * API keys              |
+|  * machines     * subscriptions    * api keys              |
 |  * workspaces   * repositories                             |
 +------------------------------------------------------------+
 `}</Diagram>
@@ -126,24 +125,24 @@ a few weeks.
 |                                                                   |
 |  u/kevin            his own, nobody else's                        |
 |  * macbook          his laptop                                    |
-|  * Claude Max       his subscription                              |
-|  * acme/api         repository, opened with his GitHub            |
+|  * claude max       his subscription                              |
+|  * acme/api         repository, opened with his github            |
 |  * billing-fix      workspace                                     |
 |                                                                   |
 |  u/bob              his own, nobody else's                        |
-|  * Claude Pro       his subscription                              |
-|  * acme/web         repository, opened with his GitHub            |
+|  * claude pro       his subscription                              |
+|  * acme/web         repository, opened with his github            |
 |  * fix-login        workspace                                     |
 |                                                                   |
-|  d/shared                          Everyone . Editor              |
-|                                    Kevin . Admin                  |
+|  d/shared                          everyone . editor              |
+|                                    kevin . admin                  |
 |  * build-01         the big build machine                         |
-|  * ci-runner        the CI box                                    |
+|  * ci-runner        the ci box                                    |
 |                                                                   |
-|  d/backend                         Backend team . Editor          |
-|                                    Kevin . Admin                  |
-|  * staging-key      the shared Linear key                         |
-|  * migrate-orders   workspace, started by Bob                     |
+|  d/backend                         backend team . editor          |
+|                                    kevin . admin                  |
+|  * staging-key      the shared linear key                         |
+|  * migrate-orders   workspace, started by bob                     |
 |                                                                   |
 +-------------------------------------------------------------------+
 `}</Diagram>
@@ -229,17 +228,17 @@ a specific person, or a specific team, and give them Viewer or Editor access to
 that one item, without moving it anywhere and without changing who owns it.
 
 <Diagram caption="Bob keeps his workspace. Kevin can read it, and that is all.">{`
-   WITHOUT an extra permission        WITH one
+   without an extra permission        with one
 
    u/bob                              u/bob
    * fix-login   workspace            * fix-login   workspace
-                                           |
-   Kevin cannot see it.               Kevin . Viewer
-                                           |
-   To show him, Bob must move         Bob keeps it. Nothing moved.
-   it into a directory they are       He can take the permission
-   both in, and it stops being        back whenever he likes.
-   his.
+                                            |
+   kevin cannot see it.               kevin . viewer
+                                            |
+   to show him, bob must move         bob keeps it. nothing moved,
+   it into a directory they are       and he can take the
+   both in, and it stops being        permission back whenever he
+   his.                               likes.
 `}</Diagram>
 
 - The resource stays exactly where it is, and stays yours.
@@ -258,17 +257,17 @@ live there.
 
 <Diagram caption="The room is shared. The conversations in it are not.">{`
 +-[x]- WORKSPACE  migrate-orders ------------------------------+
-|  in d/backend. Bob and Kevin are both Editors.               |
+|  in d/backend. bob and kevin are both editors.               |
 |                                                              |
 |  the branch, the files, the terminal.                        |
-|  anyone with Editor can work here.                           |
+|  anyone with editor can work here.                           |
 |                                                              |
-|  +-- Bob's agent ----------+   +-- Kevin's agent ---------+  |
-|  |  Bob's subscription     |   |  Kevin's subscription    |  |
-|  |  Bob's GitHub account   |   |  Kevin's GitHub account  |  |
+|  +-- bob's agent ----------+   +-- kevin's agent ---------+  |
+|  |  bob's subscription     |   |  kevin's subscription    |  |
+|  |  bob's github account   |   |  kevin's github account  |  |
 |  |  commits in his name    |   |  commits in his name     |  |
 |  |                         |   |                          |  |
-|  |  Kevin can read this    |   |  Bob can read this       |  |
+|  |  kevin can read this    |   |  bob can read this       |  |
 |  |  and cannot type here   |   |  and cannot type here    |  |
 |  +-------------------------+   +--------------------------+  |
 +--------------------------------------------------------------+
