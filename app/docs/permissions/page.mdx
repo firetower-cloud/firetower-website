@@ -1,5 +1,6 @@
 import { docMeta } from "../_lib/nav"
 import { Lede, Callout } from "../../_components/docs/Bits"
+import { Diagram } from "../../_components/docs/Diagram"
 
 export const metadata = docMeta("permissions")
 
@@ -10,6 +11,36 @@ Permissions in Firetower are built from four layers: People, Teams, Directories
 and Resources. Each answers a different question, and together they cover
 everything from "who can add a colleague" to "who can touch this one machine".
 </Lede>
+
+<Diagram caption="Read it downwards. People belong to teams, people and teams are given a level on a directory, and a directory holds resources.">{`
++-[x]- PEOPLE -----------------------------------------------+
+|  Everyone with an account. Admin or Member.                |
+|  That role is about running the organisation and           |
+|  grants no access to anybody's work.                       |
++------------------------------------------------------------+
+                              |
+                        belong to many
+                              |
++-[x]- TEAMS ------------------------------------------------+
+|  A group of people. Everybody is in the team called        |
+|  Everyone, which you never have to maintain.               |
++------------------------------------------------------------+
+                              |
+            people and teams are given a level on
+                              |
++-[x]- DIRECTORIES ------------------------------------------+
+|  Viewer    see what is in it                               |
+|  Editor    work in it, and add your own things             |
+|  Admin     decide what happens to what is in it            |
++------------------------------------------------------------+
+                              |
+                          which hold
+                              |
++-[x]- RESOURCES --------------------------------------------+
+|  * machines     * subscriptions    * API keys              |
+|  * workspaces   * repositories                             |
++------------------------------------------------------------+
+`}</Diagram>
 
 ## People
 
@@ -84,6 +115,83 @@ can see it.
 This is why moving something into a directory is a real decision rather than a
 convenience. You are handing it over.
 
+## An example: Westlabs
+
+Westlabs has two people. Kevin set the Firetower up, so he is an Admin. Bob
+joined later and is a Member. Here is how their organisation is laid out after
+a few weeks.
+
+<Diagram caption="Two personal directories nobody else can reach into, one directory everybody shares, and one for the people working on the backend.">{`
++-[x]- WESTLABS ----------------------------------------------------+
+|                                                                   |
+|  u/kevin            his own, nobody else's                        |
+|  * macbook          his laptop                                    |
+|  * Claude Max       his subscription                              |
+|  * acme/api         repository, opened with his GitHub            |
+|  * billing-fix      workspace                                     |
+|                                                                   |
+|  u/bob              his own, nobody else's                        |
+|  * Claude Pro       his subscription                              |
+|  * acme/web         repository, opened with his GitHub            |
+|  * fix-login        workspace                                     |
+|                                                                   |
+|  d/shared                          Everyone . Editor              |
+|                                    Kevin . Admin                  |
+|  * build-01         the big build machine                         |
+|  * ci-runner        the CI box                                    |
+|                                                                   |
+|  d/backend                         Backend team . Editor          |
+|                                    Kevin . Admin                  |
+|  * staging-key      the shared Linear key                         |
+|  * migrate-orders   workspace, started by Bob                     |
+|                                                                   |
++-------------------------------------------------------------------+
+`}</Diagram>
+
+What that layout means in practice:
+
+| Question | Answer |
+| --- | --- |
+| Can Bob run an agent on `build-01`? | Yes. Everyone is an Editor on `d/shared`. |
+| Can Bob remove `build-01`? | No. That needs Admin on `d/shared`, which Kevin has. |
+| Can Bob add his own server to `d/shared`? | Yes. An Editor can add their own things. |
+| Can Kevin open Bob's `fix-login` workspace? | No. It is in `u/bob`, and being an organisation Admin does not reach in. |
+| Can Kevin use Bob's Claude subscription? | No, for the same reason. |
+| Can Kevin see `migrate-orders`, which Bob started? | Yes. Bob put it in `d/backend`, so it belongs to the directory now. |
+| Can Kevin end `migrate-orders`? | Yes. He is Admin on `d/backend`. |
+| Can Kevin type into Bob's agent in `migrate-orders`? | No. See [Working together](#working-together-in-a-workspace). |
+| Can Bob reach `acme/api`? | No. Repositories never leave a personal directory. If Bob needs it, he connects it himself with his own GitHub account. |
+
+## How we would suggest organising it
+
+There is no right answer, but this shape works for most teams and is easy to
+undo.
+
+**Leave personal things personal.** Your laptop, your subscription, your API
+keys. There is no reason to share a subscription, and plenty of reasons not to:
+whoever uses it is spending your quota.
+
+**Put shared compute in one directory and grant Everyone as Editor.** Build
+machines, CI boxes, anything with real CPU. Everyone can run on them and nobody
+can remove them by accident. That is exactly the gap between Editor and Admin.
+
+**Give Admin on that directory to one or two people**, not to everybody. These
+are the people who can retire a machine when it is replaced.
+
+**Make a directory per team only when a team has things of its own**, such as a
+shared API key or a machine with a particular database on it. Two directories
+that hold the same thing are worse than one.
+
+**Start a workspace wherever the work belongs.** If it is yours alone, leave it
+in your own space. If a colleague will pick it up, put it in the team's
+directory from the start, because moving it later hands it over for good.
+
+<Callout>
+If you are two or three people, you may need nothing beyond your own
+directories and `d/shared`. Add a team directory the first time you find
+yourself sharing the same thing with the same group twice.
+</Callout>
+
 ## What stays yours, always
 
 Nothing in your personal directory can be taken by anyone, including an Admin.
@@ -120,6 +228,20 @@ That is what **extra permissions** are for. On any single resource you can name
 a specific person, or a specific team, and give them Viewer or Editor access to
 that one item, without moving it anywhere and without changing who owns it.
 
+<Diagram caption="Bob keeps his workspace. Kevin can read it, and that is all.">{`
+   WITHOUT an extra permission        WITH one
+
+   u/bob                              u/bob
+   * fix-login   workspace            * fix-login   workspace
+                                           |
+   Kevin cannot see it.               Kevin . Viewer
+                                           |
+   To show him, Bob must move         Bob keeps it. Nothing moved.
+   it into a directory they are       He can take the permission
+   both in, and it stops being        back whenever he likes.
+   his.
+`}</Diagram>
+
 - The resource stays exactly where it is, and stays yours.
 - You can give Viewer or Editor this way, but **not Admin**. Letting somebody
   into one thing is not the same as putting them in charge of it. If you want
@@ -133,6 +255,24 @@ when one person needs one thing.
 
 A shared workspace needs one more distinction, because two different things
 live there.
+
+<Diagram caption="The room is shared. The conversations in it are not.">{`
++-[x]- WORKSPACE  migrate-orders ------------------------------+
+|  in d/backend. Bob and Kevin are both Editors.               |
+|                                                              |
+|  the branch, the files, the terminal.                        |
+|  anyone with Editor can work here.                           |
+|                                                              |
+|  +-- Bob's agent ----------+   +-- Kevin's agent ---------+  |
+|  |  Bob's subscription     |   |  Kevin's subscription    |  |
+|  |  Bob's GitHub account   |   |  Kevin's GitHub account  |  |
+|  |  commits in his name    |   |  commits in his name     |  |
+|  |                         |   |                          |  |
+|  |  Kevin can read this    |   |  Bob can read this       |  |
+|  |  and cannot type here   |   |  and cannot type here    |  |
+|  +-------------------------+   +--------------------------+  |
++--------------------------------------------------------------+
+`}</Diagram>
 
 **The workspace is the place.** With Editor access you can work in it: open a
 terminal, attach a repository, and start your own agent alongside the ones
