@@ -1,5 +1,5 @@
 import { docMeta } from "../../../_lib/nav"
-import { Lede, Callout, Shot, Where } from "../../../../_components/docs/Bits"
+import { Lede, Callout, Shot } from "../../../../_components/docs/Bits"
 
 export const metadata = docMeta("self-hosting/app/upgrade")
 
@@ -8,8 +8,7 @@ export const metadata = docMeta("self-hosting/app/upgrade")
 <Lede>
 From the app, not from a terminal. **Updates** in the sidebar says what you are
 running and what is out; **Check now** asks again; the button on the control
-plane row does it. The command line is for the first install and for the day
-something will not come back.
+plane row does it.
 </Lede>
 
 ## Where it is
@@ -19,7 +18,7 @@ open it. What it offers is what that person could actually do.
 
 <Shot
   src="/shots/updates/updates-available-admin.png"
-  alt="The Updates screen with a release available: the heading reads 0.43.0 is out, the control plane row has an Upgrade to 0.43.0 button, and a machine below it is offered Bring up to 0.42.0"
+  alt="The Updates screen with a release available: the heading reads 0.43.0 is out, the control plane row has an Upgrade to 0.43.0 button, and of the two machines under it one is up to date and the other is offered Bring up to 0.42.0"
   width={2560}
   height={1800}
 >
@@ -28,8 +27,9 @@ open it. What it offers is what that person could actually do.
 </Shot>
 
 The heading is the thing you can act on. An administrator with a release out
-reads "0.43.0 is out". Somebody who only administers one machine reads "GCP is
-behind", because the release is not theirs to install and the machine is.
+reads "0.43.0 is out". Somebody who only administers one machine reads
+"Google Cloud VM 01 is behind", because the release is not theirs to install
+and the machine is.
 
 ## Who can upgrade what
 
@@ -77,7 +77,7 @@ opens the sheet that says what the upgrade would do, and you agree to that.
   src="/shots/updates/updates-plan.png"
   alt="The upgrade sheet: checkboxes for the control plane and each machine, a list of the deployment files the upgrade writes with a keep mine or replace choice, and two checkboxes about running sessions"
   width={1328}
-  height={1130}
+  height={1177}
 >
   Everything the run would do, before it does any of it.
 </Shot>
@@ -137,39 +137,6 @@ was broken was to try to upgrade.
 It writes into `backups/` in the deployment directory, with the root key beside
 the dump. A database backup without that key cannot be decrypted, which is also
 why the two should not be stored in the same place afterwards.
-
-## What the command line is still for
-
-Three things.
-
-**Installing.** `firetower install` is how the deployment comes to exist.
-→ [Install the Firetower](/docs/self-hosting/app/install)
-
-**Adding the updater, once.** The control plane cannot recreate its own
-container, so a small sidecar does it. Installs from before that sidecar
-existed do not have it, and the control plane row says so instead of offering a
-button:
-
-<Where>the server the Firetower runs on</Where>
-
-```sh
-firetower upgrade
-```
-
-One run of that adds the updater to `firetower.yml`. After it, upgrades happen
-on the Updates screen and you do not need to go back.
-
-**When it will not come back.**
-
-```sh
-firetower doctor
-firetower logs -f
-```
-
-`doctor` re-runs the machine checks from install and reads the deployment for
-the mistakes that stop it starting. `logs` takes a service name, `firetower`,
-`postgres` or `caddy`, or tails all three. The backup from the run is in
-`backups/`.
 
 ## Then the machines
 
