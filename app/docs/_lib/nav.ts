@@ -15,7 +15,7 @@ export type Doc = {
   /** Used as the meta description and the sidebar's hover text. */
   description: string;
   /** Sidebar grouping. */
-  section: "Start" | "Install" | "Upgrade" | "Operations" | "Using Firetower";
+  section: "Start" | "Install" | "Upgrade" | "Permissions" | "Operations";
   /**
    * What the sidebar calls it, when that differs from the title.
    *
@@ -65,6 +65,13 @@ export const DOCS: Doc[] = [
     section: "Install",
   },
   {
+    slug: "connect-github",
+    title: "Connect GitHub",
+    description:
+      "Register the OAuth application a Firetower authorises against, turn on its device flow, and connect your GitHub account — with the one checkbox everybody forgets.",
+    section: "Install",
+  },
+  {
     slug: "self-hosting/app/upgrade",
     title: "Upgrade the Firetower",
     navTitle: "The Firetower",
@@ -85,28 +92,21 @@ export const DOCS: Doc[] = [
     title: "Permissions",
     description:
       "The four layers of permissions: people, teams, directories and resources. How ownership follows a directory, what stays yours whatever happens, and how to share one thing with one person.",
-    section: "Using Firetower",
+    section: "Permissions",
   },
   {
     slug: "permissions/sharing",
     title: "Share a resource",
     description:
       "Two ways to let somebody at one of your things: move it into a directory and hand it over, or name them on it and keep it. Which to pick, and how to do each.",
-    section: "Using Firetower",
+    section: "Permissions",
   },
   {
     slug: "permissions/workspaces",
     title: "Workspace permissions",
     description:
       "A workspace holds a place and the conversations in it. The place is shared like anything else; a conversation belongs to whoever started it, because it spends their subscription and commits in their name.",
-    section: "Using Firetower",
-  },
-  {
-    slug: "connect-github",
-    title: "Connect GitHub",
-    description:
-      "Register the OAuth application a Firetower authorises against, turn on its device flow, and connect your GitHub account — with the one checkbox everybody forgets.",
-    section: "Using Firetower",
+    section: "Permissions",
   },
 ];
 
@@ -114,8 +114,8 @@ export const SECTION_ORDER: Doc["section"][] = [
   "Start",
   "Install",
   "Upgrade",
+  "Permissions",
   "Operations",
-  "Using Firetower",
 ];
 
 export const href = (slug: string) => (slug ? `/docs/${slug}` : "/docs");
