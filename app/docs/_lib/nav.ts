@@ -81,6 +81,13 @@ export const DOCS: Doc[] = [
     section: "Upgrade",
   },
   {
+    slug: "permissions",
+    title: "Permissions",
+    description:
+      "The four layers of permissions: people, teams, directories and resources. How ownership follows a directory, what stays yours whatever happens, and how to share one thing with one person.",
+    section: "Using Firetower",
+  },
+  {
     slug: "connect-github",
     title: "Connect GitHub",
     description:
