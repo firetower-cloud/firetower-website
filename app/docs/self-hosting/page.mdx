@@ -1,6 +1,6 @@
 import { docMeta } from "../_lib/nav"
 import { Lede, Callout } from "../../_components/docs/Bits"
-import { Diagram, Methods } from "../../_components/docs/Diagram"
+import { Diagram } from "../../_components/docs/Diagram"
 
 export const metadata = docMeta("self-hosting")
 
@@ -142,24 +142,6 @@ answers the clients.
 Back the root key up separately from the database. A database backup on its
 own cannot be decrypted; stored beside the key, it can.
 </Callout>
-
-## Ways to deploy it
-
-<Methods
-  items={[
-    {
-      name: "The CLI",
-      state: "ready",
-      body: "npm i -g @firetower/cli, then firetower install for the Firetower. It checks the machine, writes the deployment, generates the secrets and upgrades in place. Machines that run agents are added from the interface, which installs the worker onto them over SSH. This is the supported path, and the one the rest of these docs describe.",
-      href: "/docs/self-hosting/app/install",
-    },
-    {
-      name: "Terraform modules",
-      state: "planned",
-      body: "A module for the Firetower and a module for a worker, so a machine can be created and joined in one apply instead of a VM, then an install, then a form. Not available yet.",
-    },
-  ]}
-/>
 
 ## Next
 
