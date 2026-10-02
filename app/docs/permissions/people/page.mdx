@@ -3,12 +3,14 @@ import { Lede, Callout, Shot } from "../../../_components/docs/Bits"
 
 export const metadata = docMeta("permissions/people")
 
-# Add somebody
+# Users and teams
 
 <Lede>
 Adding a person takes one form and hands you one password. The password is
 temporary by design: they are signed in and allowed to do exactly one thing
-with it, which is replace it. Everything else waits until they have.
+with it, which is replace it. Everything else waits until they have. Teams come
+after that, and exist so access is handed to a group rather than to one person
+at a time.
 </Lede>
 
 ## Where it is
@@ -167,6 +169,34 @@ is deliberate.
 
 The one question it does ask is who takes over a directory they were the last
 administrator of, because that one really is the organisation's to answer.
+
+## Teams
+
+A team is a list of people with a name on it, and the only thing it is for is
+being given access to something. Anybody can be in as many as you like, and
+what somebody reaches is always the most generous of everything they belong to.
+
+<Shot
+  src="/shots/people/teams.png"
+  alt="The Teams screen: Everyone, badged Everybody, with three people and the note kept up to date by itself, and a team called Backend with two"
+  width={2560}
+  height={800}
+>
+  **Organisation → Teams.** Press **Add a team**, name it, and put people in it.
+</Shot>
+
+**Everyone** is there from the start and is exactly what it sounds like. It has
+no membership list to maintain: whoever is in the organisation today is in it,
+including the person you added five minutes ago. It cannot be renamed, emptied
+or removed.
+
+Everything that can be shared can be shared with a team, the same way it can be
+shared with one person, and the team is read at the time rather than copied. So
+somebody who joins Backend next month reaches what Backend reaches, without
+anybody revisiting the things it was given.
+
+That is the whole reason to make one. If you find yourself naming the same
+three people on thing after thing, make a team and name the team instead.
 
 ## What they can reach on their first day
 
