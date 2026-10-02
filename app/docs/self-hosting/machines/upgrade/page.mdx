@@ -1,31 +1,121 @@
 import { docMeta } from "../../../_lib/nav"
-import { Lede, Callout, Where } from "../../../../_components/docs/Bits"
+import { Lede, Callout, Shot, Where } from "../../../../_components/docs/Bits"
+import { Diagram } from "../../../../_components/docs/Diagram"
 
 export const metadata = docMeta("self-hosting/machines/upgrade")
 
 # Upgrade the worker
 
 <Lede>
-Firetower does it, over the same SSH connection it uses for everything else:
-one machine at a time, drained first.
+Also from the app. **Updates** lists every machine you can see with the version
+of the worker on it, and the button beside one reinstalls it over the same SSH
+connection Firetower uses for everything else: drained first, one machine at a
+time.
 </Lede>
+
+## Level with the Firetower, never past it
+
+A machine is brought up to the version **the control plane is running**, and no
+further. That is what the button offers and the only version the server will
+accept.
+
+<Diagram caption="A worker ahead of the control plane is a worker talking to something that does not know its protocol yet.">{`
+   the release that is out      0.43.0
+                                  |
+                                  |  only an upgrade of the
+                                  |  whole deployment gets here
+                                  v
+   this firetower is running    0.42.0  <-- the ceiling for a machine
+                                  ^
+                                  |  "bring up to 0.42.0"
+                                  |
+   this machine is on           0.41.0
+`}</Diagram>
+
+So a newer release is never installed on a machine on its own. Moving the
+deployment is what raises the ceiling, and then the machines follow →
+[Upgrade the Firetower](/docs/self-hosting/app/upgrade).
+
+<Callout>
+This is not caution for its own sake. Whoever administers one machine may have
+no right to upgrade the control plane, so a worker stranded ahead of it is one
+they cannot rescue.
+</Callout>
+
+## Who can upgrade a machine
+
+Whoever administers it: you own it, you have **Admin** on the directory it is
+filed in, or you administer the organisation. It is the same question the
+sharing panel asks about everything else, and there is no second rule for
+upgrades. See [Permissions](/docs/permissions).
+
+<Shot
+  src="/shots/updates/updates-machine-admin.png"
+  alt="A machine row on the Updates screen with a Bring up to 0.42.0 button"
+  width={1608}
+  height={154}
+>
+  To somebody who administers the machine.
+</Shot>
+
+<Shot
+  src="/shots/updates/updates-machine-member.png"
+  alt="The same machine row to somebody else: the version, and the words somebody who administers it can move it"
+  width={1608}
+  height={154}
+>
+  To everybody else. The row is there, because knowing a machine you work on is
+  behind is worth something; the button is not.
+</Shot>
+
+Machines nobody has shared with you are not in the list at all.
 
 ## From the Updates screen
 
-<Where>the Firetower desktop client</Where>
+Press **Bring up to 0.42.0** on the machine's row. If anything is running on it
+you are asked first, with the titles.
 
-**Updates** lists every machine, its worker's version, and whether it is behind
-the Firetower. An upgrade run drains each machine, waits for its sessions to
-end or ends them, runs the installer with the Firetower's own version, waits
-for the worker to answer as that version, and puts the machine back in service.
-A machine that is unreachable is skipped and named.
+<Shot
+  src="/shots/updates/updates-ending.png"
+  alt="A confirmation: Bring GCP up to 0.42.0, it is reinstalled so what is running on it ends, naming two sessions, with End them and upgrade"
+  width={944}
+  height={472}
+>
+  Reinstalling the worker ends what is on the machine. The sessions are named
+  because somebody who administers a shared directory can end work that is not
+  theirs, and the least they can do is read whose it is.
+</Shot>
+
+The run drains the machine so nothing new starts on it, waits for the sessions
+to end or ends them, installs the worker, waits for it to answer as the new
+version, and puts the machine back in service. It appears under **Runs** with
+its steps, and a machine that is unreachable is skipped and named.
+
+You can also tick several machines, and the control plane with them, in the
+upgrade sheet, and have one run do the lot.
 
 ## From the machine's panel
 
-**Compute → the machine → Reinstall the worker** does the same for one machine,
-whenever you like. Drain it first if sessions are running: replacing the
-binary does not stop a running agent, but the next session starts on the new
-one.
+**Configuration → Compute → Machines → the machine → Reinstall the worker**
+does one machine, whenever you like, with no version check in the way.
+
+<Shot
+  src="/shots/updates/machine-panel.png"
+  alt="A machine's panel under Compute: its checks for the worker, git, tmux and the shell, the agents installed on it, and buttons to connect, reinstall the worker, drain and remove"
+  width={1488}
+  height={1196}
+>
+  The same panel that added the machine. The address here is a placeholder.
+</Shot>
+
+**Drain** first if sessions are running. Replacing the binary does not stop an
+agent that is already going, but it is the only way to be sure nothing starts
+in the middle of it.
+
+The checks above the buttons are the useful part of this panel: the worker's
+version, git, tmux, a shell, the state directory, and which agents are
+installed. If a feature seems not to exist on one machine, this is where to
+look.
 
 ## By hand
 
@@ -35,18 +125,22 @@ one.
 curl -fsSL https://usefiretower.com/worker.sh | sh
 ```
 
-installs the newest release; `--version 0.35.0` pins one. The worker keeps its
-state — repositories, worktrees, the event log, the agents — under
-`~/.firetower/worker`, and the installer only replaces the binary in `bin/`.
+installs the newest release; `--version 0.42.0` pins one, which is what you
+want, because the machine should match the deployment. The worker keeps its
+state under `~/.firetower/worker`: repositories, worktrees, the event log and
+the agents. The installer only replaces the binary in `bin/`.
+
+This is for a machine Firetower cannot reach over SSH at the moment. Everything
+else is better done from the screen, which drains first and checks afterwards.
 
 ## Version drift
 
-The Firetower compares its own version against each worker's on every connection
-and says when they have drifted. `firetower upgrade` on the Firetower's own
-machine also names every machine still running an older worker.
+Firetower compares its own version against each worker's on every connection.
 
 A worker that is behind still works, quietly. It runs sessions perfectly well;
-what it cannot do is anything added since it was built. A worker older than the
-protocol the Firetower speaks is refused at the handshake and shows as behind
-until it is reinstalled. The version drift on the fleet screen is the thing to
-look at when a feature seems not to exist.
+what it cannot do is anything added since it was built. One older than the
+protocol the control plane speaks is refused at the handshake and shows as
+behind until it is reinstalled.
+
+The version on the Updates screen is the thing to look at when a feature seems
+not to exist.

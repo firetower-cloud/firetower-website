@@ -1,14 +1,154 @@
 import { docMeta } from "../../../_lib/nav"
-import { Lede, Callout, Where } from "../../../../_components/docs/Bits"
+import { Lede, Callout, Shot, Where } from "../../../../_components/docs/Bits"
 
 export const metadata = docMeta("self-hosting/app/upgrade")
 
 # Upgrade the Firetower
 
 <Lede>
-One command. It backs the database up first, and finishes by naming every
-machine left running an older worker.
+From the app, not from a terminal. **Updates** in the sidebar says what you are
+running and what is out; **Check now** asks again; the button on the control
+plane row does it. The command line is for the first install and for the day
+something will not come back.
 </Lede>
+
+## Where it is
+
+**Updates**, at the bottom of the sidebar, under Configuration. Anybody can
+open it. What it offers is what that person could actually do.
+
+<Shot
+  src="/shots/updates/updates-available-admin.png"
+  alt="The Updates screen with a release available: the heading reads 0.43.0 is out, the control plane row has an Upgrade to 0.43.0 button, and a machine below it is offered Bring up to 0.42.0"
+  width={2560}
+  height={1800}
+>
+  **Updates**, seen by an administrator. The deployment is one row, every
+  machine is a row under it, and past upgrades are listed at the bottom.
+</Shot>
+
+The heading is the thing you can act on. An administrator with a release out
+reads "0.43.0 is out". Somebody who only administers one machine reads "GCP is
+behind", because the release is not theirs to install and the machine is.
+
+## Who can upgrade what
+
+| | Read the screen | Upgrade the deployment | Upgrade a machine |
+| --- | --- | --- | --- |
+| Organisation Admin | yes | yes | yes |
+| Owns the machine, or administers the directory it is in | yes | no | that machine |
+| Everybody else | yes | no | no |
+
+**Reading is not upgrading.** Everybody sees the version this Firetower runs
+and whether a newer one is out, because somebody who cannot tell their work is
+running on something six months old cannot ask for anything about it. The
+machines in the list are narrowed to the ones they can already see.
+
+**The deployment is the organisation's.** Recreating the control plane and its
+database is the one action here that interrupts every person at once, so it is
+an Admin's and nobody else's.
+
+**A machine belongs to whoever administers it.** That is the same question the
+sharing panel asks everywhere else: you own it, you have Admin on the directory
+it is filed in, or you administer the organisation. Nothing new is invented
+here. See [Permissions](/docs/permissions).
+
+<Shot
+  src="/shots/updates/updates-plane-member.png"
+  alt="The control plane row as a member sees it: the version, and the words an administrator moves this where the button would be"
+  width={1608}
+  height={154}
+>
+  The control plane row, to somebody who is not an administrator. The version
+  is there and the button is not.
+</Shot>
+
+## Check now
+
+Firetower asks the releases feed on its own, and **Check now** asks straight
+away. The line under the heading says when it last looked.
+
+## Upgrade
+
+Press **Upgrade to 0.43.0** on the control plane row. Nothing happens yet: it
+opens the sheet that says what the upgrade would do, and you agree to that.
+
+<Shot
+  src="/shots/updates/updates-plan.png"
+  alt="The upgrade sheet: checkboxes for the control plane and each machine, a list of the deployment files the upgrade writes with a keep mine or replace choice, and two checkboxes about running sessions"
+  width={1328}
+  height={1130}
+>
+  Everything the run would do, before it does any of it.
+</Shot>
+
+**What to upgrade.** The control plane and any machine, in one run. A machine
+you may not upgrade is listed with the reason and cannot be ticked.
+
+**Files the upgrade writes.** Some releases change `firetower.yml` or the
+Caddyfile. Each one says what it is: `Update` is a file the release changed and
+you have not, written without asking. `Edited` is one you changed, and that is
+the choice on the right. **Keep mine** leaves your version alone, which is
+what you want if you dropped Caddy for a proxy you already run. **Replace**
+takes the release's. Nothing overwrites an edit of yours unless you say so
+here.
+
+**Wait until nothing is running** holds the run until the sessions on the
+targets have ended by themselves, which is the kind default. **End what is
+running** does not wait, and says how many sessions that is.
+
+<Callout kind="warning">
+Upgrading the control plane recreates it, so everybody using this Firetower is
+disconnected while it restarts, and the agents on any machine in the same run
+are ended. Tick wait until nothing is running unless you know what is open.
+</Callout>
+
+## Watching it
+
+The run appears under **Runs** and opens to its steps. They are the real ones,
+in order, with the live log of whichever is going.
+
+<Shot
+  src="/shots/updates/updates-run.png"
+  alt="A run open under Runs: the preflight check, the database backup, the updater, the control plane all done, and the machine still going with its log underneath"
+  width={2560}
+  height={1800}
+>
+  A run in progress. The backup is a step like any other, and it is first.
+</Shot>
+
+**Cancel** stops a run that has not started changing anything, puts the drained
+machines back in service, and is refused once a step is part way through
+recreating something. Half a recreate is worse than a whole one.
+
+If the backup fails the run stops and asks rather than carrying on, and
+**Continue anyway** is how you tell it to go without one. The step keeps its
+warning, so the history says the upgrade happened without a backup.
+
+A run is visible to whoever started it, and to an administrator. Somebody who
+upgrades a machine can watch what they started.
+
+## Back up now
+
+The same backup, outside an upgrade, for administrators. Worth pressing once
+when you set the thing up: until it existed the only way to find out a backup
+was broken was to try to upgrade.
+
+It writes into `backups/` in the deployment directory, with the root key beside
+the dump. A database backup without that key cannot be decrypted, which is also
+why the two should not be stored in the same place afterwards.
+
+## What the command line is still for
+
+Three things.
+
+**Installing.** `firetower install` is how the deployment comes to exist.
+→ [Install the Firetower](/docs/self-hosting/app/install)
+
+**Adding the updater, once.** The control plane cannot recreate its own
+container, so a small sidecar does it. Installs from before that sidecar
+existed do not have it, and the control plane row says so instead of offering a
+button:
 
 <Where>the server the Firetower runs on</Where>
 
@@ -16,40 +156,10 @@ machine left running an older worker.
 firetower upgrade
 ```
 
-In order, it:
+One run of that adds the updater to `firetower.yml`. After it, upgrades happen
+on the Updates screen and you do not need to go back.
 
-1. Backs up the database and copies the root key beside the dump, into
-   `backups/` in the deployment directory. Pass `--no-backup` to skip it.
-2. Pulls the new images and recreates the containers. Migrations run at
-   start-up.
-3. Waits for it to report healthy, and says which version you are on.
-4. Lists the machines whose worker is now behind, with the command to run on
-   each.
-
-The CLI upgrades itself first — `npm i -g @firetower/cli` — if the release
-needs a newer one than you have. `--skip-version-check` opts out.
-
-## If the deployment file changed
-
-Some releases change `firetower.yml`. When that happens the CLI says so and
-asks before replacing yours, keeping the old one as `firetower.yml.backup`.
-
-Answer no if you have edited it — to drop Caddy for a proxy you already run,
-say — then re-apply your changes against the copy it kept.
-
-## Then the workers
-
-`firetower upgrade` does not touch them. They are separate machines, and each
-one has to be drained before its container is recreated → [Upgrade the
-worker](/docs/self-hosting/machines/upgrade).
-
-<Callout>
-`firetower status` says the same thing at any time: the version you are on, the
-health of each service, and which hosts have drifted. `--json` makes it
-something to point a monitor at.
-</Callout>
-
-## If it does not come back
+**When it will not come back.**
 
 ```sh
 firetower doctor
@@ -57,8 +167,12 @@ firetower logs -f
 ```
 
 `doctor` re-runs the machine checks from install and reads the deployment for
-the mistakes that stop it starting. `logs` takes a service name — `firetower`,
-`postgres`, `caddy` — or tails all three.
+the mistakes that stop it starting. `logs` takes a service name, `firetower`,
+`postgres` or `caddy`, or tails all three. The backup from the run is in
+`backups/`.
 
-The database backup from step 1 is in `backups/`, with the root key it needs to
-be worth anything.
+## Then the machines
+
+Upgrading the deployment does not move the workers unless you ticked them. Each
+one is reinstalled over SSH, drained first →
+[Upgrade the worker](/docs/self-hosting/machines/upgrade).

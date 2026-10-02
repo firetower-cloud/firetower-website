@@ -76,7 +76,7 @@ export const DOCS: Doc[] = [
     title: "Upgrade the Firetower",
     navTitle: "The Firetower",
     description:
-      "firetower upgrade backs up the database, pulls the new release, and names every machine left running an older worker.",
+      "Upgrading from the Updates screen: check for a release, see what the run would write and what it would end, and watch it go. Who may move the deployment, and what the command line is still for.",
     section: "Upgrade",
   },
   {
@@ -84,7 +84,7 @@ export const DOCS: Doc[] = [
     title: "Upgrade the worker",
     navTitle: "Worker",
     description:
-      "Firetower reinstalls a worker over ssh from the Updates screen or the machine's panel — and what a worker that has drifted behind the app stops being able to do.",
+      "Firetower reinstalls a worker over SSH from the Updates screen or the machine's panel. Who may upgrade a machine, why it is only ever brought level with the control plane, and what a worker that has drifted behind stops being able to do.",
     section: "Upgrade",
   },
   {
