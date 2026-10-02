@@ -1,5 +1,5 @@
 import { docMeta } from "../../../_lib/nav"
-import { Lede, Callout, Shot, Where } from "../../../../_components/docs/Bits"
+import { Lede, Callout, Shot } from "../../../../_components/docs/Bits"
 import { Diagram } from "../../../../_components/docs/Diagram"
 
 export const metadata = docMeta("self-hosting/machines/upgrade")
@@ -117,22 +117,6 @@ The checks above the buttons are the useful part of this panel: the worker's
 version, git, tmux, a shell, the state directory, and which agents are
 installed. If a feature seems not to exist on one machine, this is where to
 look.
-
-## By hand
-
-<Where>the machine that runs agents</Where>
-
-```sh
-curl -fsSL https://usefiretower.com/worker.sh | sh
-```
-
-installs the newest release; `--version 0.42.0` pins one, which is what you
-want, because the machine should match the deployment. The worker keeps its
-state under `~/.firetower/worker`: repositories, worktrees, the event log and
-the agents. The installer only replaces the binary in `bin/`.
-
-This is for a machine Firetower cannot reach over SSH at the moment. Everything
-else is better done from the screen, which drains first and checks afterwards.
 
 ## Version drift
 
