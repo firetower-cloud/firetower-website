@@ -1,0 +1,177 @@
+import { docMeta } from "../../_lib/nav"
+import { Lede, Callout, Shot } from "../../../_components/docs/Bits"
+import { Inside } from "../../../_components/docs/Model"
+
+export const metadata = docMeta("permissions/workspaces")
+
+# Sharing a workspace
+
+<Lede>
+A workspace is the one resource with two different things inside it. There is
+the place, which is a branch and a folder on a machine, and there are the
+conversations with agents working in it. They are shared differently, because a
+conversation runs on one person's subscription and pushes with their GitHub
+account.
+</Lede>
+
+## What a workspace looks like
+
+<Shot
+  src="/shots/workspace/workspace.png"
+  alt="A workspace open in the app: its name and repository on the left of the toolbar, two agent chips beside them, the open agent's transcript in the middle, and the diff on the right"
+  width={2800}
+  height={1800}
+>
+  One workspace, `fix-login`. The two glyphs in the toolbar are the two agents
+  working in it; clicking one reads its conversation. `d/shared` at the top
+  right is where the workspace is filed.
+</Shot>
+
+## What is in one
+
+<Inside
+  caption="The outer box is shared the way anything else is. The inner boxes are not shared at all: each one is whoever started it."
+  anatomy={{
+    above: {
+      path: "d/shared",
+      lead: "The directory the workspace is filed in. Whoever reaches this directory reaches the workspace.",
+      link: "holds",
+    },
+    box: {
+      kind: "Workspace",
+      name: "fix-login",
+      lead: "The place. One branch, one folder, on one machine, with a terminal into it. Anybody with Editor here can work in it.",
+      facts: [
+        { term: "branch", text: "agent/fix-login" },
+        { term: "checkout", text: "one folder, shared" },
+        { term: "machine", text: "Google Cloud VM 01" },
+      ],
+    },
+    partsLead: "and in it, one session per agent",
+    parts: [
+      {
+        kind: "Session",
+        name: "Claude Code",
+        facts: [
+          { term: "started by", text: "kevin" },
+          { term: "spends", text: "kevin's subscription" },
+          { term: "pushes as", text: "kevin on GitHub" },
+          { term: "typed in by", text: "kevin, and nobody else" },
+        ],
+      },
+      {
+        kind: "Session",
+        name: "Codex",
+        facts: [
+          { term: "started by", text: "bob" },
+          { term: "spends", text: "bob's subscription" },
+          { term: "pushes as", text: "bob on GitHub" },
+          { term: "typed in by", text: "bob, and nobody else" },
+        ],
+      },
+    ],
+    note: "Both agents are editing the same folder. The work is shared; the accounts paying for it are not.",
+  }}
+/>
+
+Sharing a workspace is the same as sharing anything else. Move it into a
+directory, or name somebody on it. See
+[Sharing a resource](/docs/permissions/sharing).
+
+What that gets somebody is the **place**.
+
+## What each level can do
+
+| | Viewer | Editor | Owner of a conversation |
+| --- | --- | --- | --- |
+| Read the transcript | yes | yes | yes |
+| See the diff and the files | yes | yes | yes |
+| Open a terminal | no | yes | yes |
+| Attach another repository | no | yes | yes |
+| Start their own agent here | no | yes | yes |
+| Type into **this** conversation | no | no | yes |
+| Answer what **this** agent is asking | no | no | yes |
+| Change **this** agent's model | no | no | yes |
+| Commit and push from **this** agent | no | no | yes |
+| End **this** agent | no | no | yes |
+| End the whole workspace | no | no | whoever owns the workspace |
+
+The right-hand column is not a level you are given. It is simply whether the
+conversation is yours, and it cannot be granted to anybody else.
+
+## Why a conversation cannot be handed over
+
+An agent is a running program signed in as one person. It spends **their**
+Claude or Codex subscription, and when it pushes a branch it uses **their**
+GitHub account, so their name is on the commits.
+
+If a colleague with Editor could type into it, they would be spending your
+quota and committing as you. So they cannot, and neither can an organisation
+Admin. Being able to administer is not the same as being able to spend.
+
+## What you see in somebody else's conversation
+
+Everything, except the box to type in.
+
+<Shot
+  src="/shots/permissions/watching.png"
+  alt="Somebody else's conversation open in the app: the transcript is readable and in place of the composer there is a line reading you are watching this work, with a button to start your own agent"
+  width={2560}
+  height={1720}
+>
+  The transcript, the diff and the files are all there. Where the box to type
+  in would be, there is a line saying whose work this is and the one thing you
+  can do about it.
+</Shot>
+
+Each chip in the toolbar is one agent, and clicking one reads its conversation
+whoever started it. Your own are unchanged: open one of those and the composer
+is where it always was.
+
+## Joining in: start your own agent
+
+Press **+** in the toolbar, or the button on that line. You get a second agent
+in the same workspace: the same branch, the same files, the same machine, and
+your own subscription and GitHub account.
+
+<Shot
+  src="/shots/workspace/add-agent.png"
+  alt="The + at the end of the agent chips, pressed: a panel reading add an agent to this workspace, same checkout same branch, listing Claude Code and Codex as ready here and Kimi Code as not installed on that machine"
+  width={880}
+  height={666}
+>
+  The **+** sits after the chips, so what it adds is visibly one more of those.
+  The agents offered are the ones installed on this workspace's machine that
+  **you** have an account for; one you have not connected says so instead.
+</Shot>
+
+This is also how you take work over from somebody. Read what their agent did,
+then start your own and carry on from the same branch.
+
+<Callout>
+Both agents are editing the same files at the same time. If you are continuing
+somebody's work rather than working beside them, it is worth agreeing that they
+have stopped before you start.
+</Callout>
+
+## Ending things
+
+**Ending an agent** is for whoever started it. Your agents are yours to stop,
+and theirs are theirs.
+
+**Ending the workspace** stops every agent in it, including other people's, so
+it belongs to whoever owns the workspace. If it is in your own space, that is
+you. If it has been moved into a directory, it is whoever has Admin there.
+
+If the control is not offered to you, that is why.
+
+## What sharing a workspace also shares
+
+**The files.** Anyone who can see the workspace can see what is in it. That
+includes any environment variables a repository writes into it, so if those
+hold production secrets, sharing the workspace shares them.
+
+**The machine it runs on, through the terminal.** An Editor can open a shell in
+the workspace folder. That is deliberate, because their agent can run commands
+there anyway, but it is worth knowing that Editor on a workspace means a shell
+on the machine hosting it.

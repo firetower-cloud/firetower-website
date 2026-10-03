@@ -15,14 +15,13 @@ export type Doc = {
   /** Used as the meta description and the sidebar's hover text. */
   description: string;
   /** Sidebar grouping. */
-  section: "Start" | "Install" | "Upgrade" | "Operations" | "Using Firetower";
+  section: "Quickstart" | "Core concepts";
   /**
    * What the sidebar calls it, when that differs from the title.
    *
-   * Two pages are "The Firetower" — one under Install, one under Upgrade — and
-   * the section above them says which. A page title has no section beside it:
-   * it is a browser tab, a breadcrumb and a search result, so those stay
-   * "Install the Firetower" and "Upgrade the Firetower".
+   * For the pages whose title only reads as a title. A page title is a browser
+   * tab, a breadcrumb and a search result, so it says the whole thing; the
+   * sidebar has a section heading above it doing half that work already.
    */
   navTitle?: string;
 };
@@ -33,69 +32,88 @@ export const DOCS: Doc[] = [
     title: "Documentation",
     description:
       "How to run Firetower: pick between hosting it yourself and the cloud, install it, add machines for agents to run on, and look after its credentials.",
-    section: "Start",
+    section: "Quickstart",
   },
   {
     slug: "getting-started",
     title: "Getting started",
     description:
       "Two ways to run Firetower — host it yourself today, or the cloud when it arrives. What each one asks of you.",
-    section: "Start",
+    section: "Quickstart",
   },
   {
     slug: "self-hosting",
     title: "Key concepts",
     description:
       "The three parts of Firetower — the Firetower itself, a worker on every machine that should run agents, and the client you open — and how they fit together.",
-    section: "Start",
+    section: "Quickstart",
   },
   {
     slug: "self-hosting/app/install",
     title: "Install the Firetower",
-    navTitle: "The Firetower",
     description:
       "Install the Firetower — the control plane — with the CLI: what it asks, what it checks, and what it writes.",
-    section: "Install",
+    section: "Quickstart",
   },
   {
     slug: "self-hosting/machines/install",
     title: "Add a machine",
     description:
       "Run sessions on a machine you already own: give it Firetower's key, add it over SSH, and Firetower installs the worker.",
-    section: "Install",
-  },
-  {
-    slug: "self-hosting/app/upgrade",
-    title: "Upgrade the Firetower",
-    navTitle: "The Firetower",
-    description:
-      "firetower upgrade backs up the database, pulls the new release, and names every machine left running an older worker.",
-    section: "Upgrade",
-  },
-  {
-    slug: "self-hosting/machines/upgrade",
-    title: "Upgrade the worker",
-    navTitle: "Worker",
-    description:
-      "Firetower reinstalls a worker over ssh from the Updates screen or the machine's panel — and what a worker that has drifted behind the app stops being able to do.",
-    section: "Upgrade",
+    section: "Quickstart",
   },
   {
     slug: "connect-github",
     title: "Connect GitHub",
     description:
       "Register the OAuth application a Firetower authorises against, turn on its device flow, and connect your GitHub account — with the one checkbox everybody forgets.",
-    section: "Using Firetower",
+    section: "Quickstart",
+  },
+  {
+    slug: "permissions/people",
+    title: "Users and teams",
+    description:
+      "Adding a person: the form, the password the server makes and shows once, and the one thing they have to do before anything else works. Resetting a password, switching somebody off, and removing them.",
+    section: "Core concepts",
+  },
+  {
+    slug: "permissions",
+    title: "Permissions",
+    description:
+      "The four layers of permissions: people, teams, directories and resources. How ownership follows a directory, what stays yours whatever happens, and how to share one thing with one person.",
+    section: "Core concepts",
+  },
+  {
+    slug: "organise",
+    title: "Organise your resources",
+    description:
+      "What to set up at three sizes: on your own, two to five people, and ten or more with different infrastructure. Why a team says who somebody is and a directory says which pool they reach, and when you need both.",
+    section: "Core concepts",
+  },
+  {
+    slug: "permissions/sharing",
+    title: "Sharing a resource",
+    description:
+      "Two ways to let somebody at one of your things: move it into a directory and hand it over, or name them on it and keep it. Which to pick, and how to do each.",
+    section: "Core concepts",
+  },
+  {
+    slug: "permissions/workspaces",
+    title: "Sharing a workspace",
+    description:
+      "A workspace holds a place and the conversations in it. The place is shared like anything else; a conversation belongs to whoever started it, because it spends their subscription and commits in their name.",
+    section: "Core concepts",
+  },
+  {
+    slug: "update",
+    title: "Update",
+    description:
+      "Updating from the Updates screen: check for a release, see what the run would write and what it would end, watch it go, and bring each machine level with the deployment. Who may update what.",
+    section: "Core concepts",
   },
 ];
 
-export const SECTION_ORDER: Doc["section"][] = [
-  "Start",
-  "Install",
-  "Upgrade",
-  "Operations",
-  "Using Firetower",
-];
+export const SECTION_ORDER: Doc["section"][] = ["Quickstart", "Core concepts"];
 
 export const href = (slug: string) => (slug ? `/docs/${slug}` : "/docs");
 

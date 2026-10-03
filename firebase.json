@@ -18,13 +18,13 @@
         "type": 302
       },
       {
-        "//": "The worker installer. The script is a release asset of the firetower repository, on a rolling `worker-latest` release the release job keeps current — GitHub's own `latest` is whichever package released last. The site holds no copy, so it can never be out of step with the binaries the script downloads.",
+        "//": "The worker installer. The script is a release asset of the firetower repository, on a rolling `worker-latest` release the release job keeps current \u2014 GitHub's own `latest` is whichever package released last. The site holds no copy, so it can never be out of step with the binaries the script downloads.",
         "source": "/worker.sh",
         "destination": "https://github.com/firetower-cloud/firetower/releases/download/worker-latest/worker.sh",
         "type": 302
       },
       {
-        "//": "The docs moved under /docs/self-hosting when the cloud option appeared, and split again into install and upgrade. A redirect is one line; a 404 in somebody's bookmark is not. Next's own redirects() cannot do this — an export has no server to run it.",
+        "//": "The docs moved under /docs/self-hosting when the cloud option appeared, and split again into install and upgrade. A redirect is one line; a 404 in somebody's bookmark is not. Next's own redirects() cannot do this \u2014 an export has no server to run it.",
         "source": "/docs/self-host",
         "destination": "/docs/self-hosting",
         "type": 301
@@ -80,6 +80,17 @@
         "source": "/docs/self-hosting/machines",
         "destination": "/docs/self-hosting/machines/install",
         "type": 301
+      },
+      {
+        "//": "The two upgrade pages became one Update page: upgrading is done on the Updates screen now, and splitting the deployment from the workers put the same screen on two pages.",
+        "source": "/docs/self-hosting/app/upgrade",
+        "destination": "/docs/update",
+        "type": 301
+      },
+      {
+        "source": "/docs/self-hosting/machines/upgrade",
+        "destination": "/docs/update",
+        "type": 301
       }
     ],
     "headers": [
@@ -118,7 +129,7 @@
         ]
       },
       {
-        "//": "The demo recording. Nothing under public/ is fingerprinted by the build, so the cut number lives in the filename instead — re-cutting the demo means publishing demo-1.0.* and pointing DemoVideo.tsx at it, never overwriting these bytes. Accept-Ranges so the browser can seek without refetching the file.",
+        "//": "The demo recording. Nothing under public/ is fingerprinted by the build, so the cut number lives in the filename instead \u2014 re-cutting the demo means publishing demo-1.0.* and pointing DemoVideo.tsx at it, never overwriting these bytes. Accept-Ranges so the browser can seek without refetching the file.",
         "source": "**/*.@(mp4|webm)",
         "headers": [
           {
@@ -142,7 +153,7 @@
         ]
       },
       {
-        "//": "Baseline hardening. Google Analytics is the only cross-origin thing the site loads, and none of these headers touch it — there is deliberately no CSP here, because adding one that forgets googletagmanager.com breaks measurement silently.",
+        "//": "Baseline hardening. Google Analytics is the only cross-origin thing the site loads, and none of these headers touch it \u2014 there is deliberately no CSP here, because adding one that forgets googletagmanager.com breaks measurement silently.",
         "source": "**",
         "headers": [
           {
