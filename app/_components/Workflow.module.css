@@ -19,16 +19,16 @@
 
 .section {
   --swift: cubic-bezier(0.16, 1, 0.3, 1);
-  max-width: 1180px;
+  max-width: var(--shell);
   margin: 0 auto;
-  padding: 88px 32px 100px;
+  padding: 160px 32px 0;
   scroll-margin-top: 70px;
 }
 
 /* ── heading ────────────────────────────────────────────────────────────── */
 
 .heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; margin-bottom: 40px; }
-.heading h2 { margin-top: 18px; font-size: clamp(1.7rem, 4.4vw, 3.05rem); }
+.heading h2 { margin-top: 18px; font-size: clamp(34px, 4.4vw, 60px); }
 .heading h2 span { color: var(--color-mute); }
 .heading > p { max-width: 340px; padding-bottom: 6px; font-size: 14px; line-height: 1.7; color: var(--color-dim); }
 
@@ -62,14 +62,17 @@
 .footer button:hover { color: var(--color-bone); border-color: var(--color-line); }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   The window. From here down, the tokens are the app's.
+   The window. From here down, the tokens are the app's — its neutrals, its
+   type scale, its shadows. The one exception is the accent, which follows the
+   brand rather than the build, so the screens on this page read as part of
+   the page they are on.
    ═══════════════════════════════════════════════════════════════════════ */
 
 .window {
   --color-ground: #0b0b0c; --color-panel: #111113; --color-raise: #17171a; --color-overlay: #1e1e22;
   --color-line: #26262b; --color-line-soft: #1a1a1e; --color-strip: #0b0b0c;
   --color-bone: #f4f4f5; --color-text: #c8c8ce; --color-dim: #8b8b93; --color-mute: #5e5e67;
-  --color-ember: #ff6b2c; --color-ember-soft: #ff9a6b; --color-ember-tint: #2a1509; --color-ember-deep: #7a3417;
+  --color-ember: #ffb23f; --color-ember-soft: #ffd27a; --color-ember-tint: #2a1f09; --color-ember-deep: #8a6224;
   --color-sage: #6ec08a; --color-sage-tint: #12251a; --color-sage-deep: #2c5b3d;
   --color-brick: #e5645a; --color-brick-tint: #2a1414; --color-brick-deep: #6e2f2b;
   --color-slate: #7d95b0; --color-slate-tint: #161d26; --color-slate-deep: #35485c;

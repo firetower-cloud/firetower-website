@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { DotGothic16 } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "./_components/JsonLd";
 import { Analytics } from "./_components/Analytics";
@@ -8,51 +8,42 @@ import { organizationLd, softwareApplicationLd, webSiteLd } from "./_lib/structu
 import { META_DESCRIPTION, NAME, SITE_URL, TAGLINE } from "./_lib/site";
 
 /**
- * The same three faces the application uses, checked in rather than fetched
- * from a CDN: the site is built in CI and sometimes offline, and a build that
- * needs the network to render text fails for reasons that have nothing to do
- * with the change being made. All three are variable, so one file each covers
- * the whole weight range.
+ * The brand's two faces. Geist for everything that is read, Geist Mono for
+ * everything that is a reading — labels, counters, commands, status. The
+ * split is the whole typographic idea: prose is set like prose and the
+ * instrument panel is set like an instrument panel, and nothing is in
+ * between.
+ *
+ * Both are loaded as variable fonts — one file each, every weight from 100 to
+ * 900 — so asking for 600 in a heading costs nothing extra. next/font fetches
+ * them at build time and self-hosts the result, so there is still no CDN in
+ * the request path, only in the build.
  */
-const archivo = localFont({
-  src: "../public/fonts/archivo.woff2",
-  variable: "--font-archivo",
-  weight: "100 900",
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist",
   display: "swap",
 });
 
-const archivoNarrow = localFont({
-  src: "../public/fonts/archivo-narrow.woff2",
-  variable: "--font-archivo-narrow",
-  weight: "100 900",
-  display: "swap",
-});
-
-const jetbrains = localFont({
-  src: "../public/fonts/jetbrains-mono.woff2",
-  variable: "--font-jetbrains",
-  weight: "100 800",
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
 /**
- * The one face the application does not have: a bitmap monospace, used for
- * the hero headline and nowhere else. The rest of the page keeps the
- * condensed uppercase voice, so the switch marks the hero as the machine
- * talking rather than becoming the site's default.
+ * The third face exists for one job: the ASCII scenes.
  *
- * DotGothic16 rather than one of the more obviously "pixel" display faces:
- * it is the only one on Google Fonts with square pixels, a real lowercase
- * and open enough counters to stay readable at 60px. The chunkier ones look
- * the part in a specimen and turn into a wall in a headline.
- *
- * next/font fetches it at build time and self-hosts the result, so there is
- * still no CDN in the request path — only in the build.
+ * Those are character grids positioned in `ch` and `em` down to the cell, so
+ * the face has to have an advance width that is exactly 0.6em and glyphs
+ * that still read at 11px. JetBrains Mono has both, and it is checked in
+ * rather than fetched because the hero is the first thing painted and a
+ * character grid in a fallback metric is not a drawing, it is a smear.
  */
-const pixel = DotGothic16({
-  subsets: ["latin"],
-  variable: "--font-pixel-face",
-  weight: "400",
+const jetbrains = localFont({
+  src: "../public/fonts/jetbrains-mono.woff2",
+  variable: "--font-jetbrains",
+  weight: "100 800",
   display: "swap",
 });
 
@@ -100,13 +91,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0908",
+  themeColor: "#0b0b0c",
   colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${archivo.variable} ${archivoNarrow.variable} ${jetbrains.variable} ${pixel.variable}`}>
+    <html lang="en" className={`${geist.variable} ${geistMono.variable} ${jetbrains.variable}`}>
       <body>
         <JsonLd data={organizationLd()} />
         <JsonLd data={webSiteLd()} />

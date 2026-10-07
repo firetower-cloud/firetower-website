@@ -113,8 +113,8 @@ export function Workflow() {
     <section id="workflow" ref={root} className={styles.section} aria-labelledby="workflow-heading" data-playing={playing}>
       <div className={styles.heading}>
         <div>
-          <p className="eyebrow">From issue to shipped</p>
-          <h2 id="workflow-heading" className="display">Your entire workflow, in one place.</h2>
+          <p className="eyebrow">[ WORKFLOW ]</p>
+          <h2 id="workflow-heading" className="display">Your Entire Workflow, In One Place.</h2>
         </div>
       </div>
 
