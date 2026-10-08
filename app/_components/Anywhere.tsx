@@ -1,70 +1,59 @@
 import { PhoneTour } from "./Workflow";
 
-/* ── Close your laptop ────────────────────────────────────────────────────
-   The claim the whole product rests on, said once, plainly: the agent runs
-   on your server, so no device is the one holding the work. On the right,
-   the phone client going through the same four screens as the tour above —
-   the proof that the conversation is the same one wherever it is opened.
-   On the left, what happens when each part fails, because "it keeps running"
-   is only worth saying with the failure cases next to it.
+/* ── Any device ──────────────────────────────────────────────────────────
+   The same four screens as the section above, on the phone client, next to
+   the one sentence that explains why that is possible at all.
+
+   This used to carry the three failure cases as well — laptop, server,
+   worker. They are gone from here because the section below lets you cause
+   each of them yourself, and a list of claims next to a thing that proves
+   them is just the thing being read out twice.
    ─────────────────────────────────────────────────────────────────────── */
 
-const FAILURES = [
-  {
-    what: "Your laptop closes. Or the app crashes.",
-    then: "Nothing happens to the agent.",
-    why: "It never ran on the laptop. Open Firetower on any other device and the conversation is exactly where you left it.",
-  },
-  {
-    what: "The Firetower server goes down.",
-    then: "The workers keep running.",
-    why: "Each agent is on its own machine, in its own worktree. When the server comes back it catches up on everything that happened while it was away.",
-  },
-  {
-    what: "A worker dies.",
-    then: "The worktree is still there.",
-    why: "Your branch and every file the agent changed are on that machine, and Firetower still knows about them. Restart the worker and carry on.",
-  },
+const DEVICES = [
+  { name: "macOS", note: "the desktop client" },
+  { name: "Windows", note: "the same build" },
+  { name: "iOS", note: "review on the move" },
+  { name: "Android", note: "review on the move" },
 ];
 
 export function Anywhere() {
+  // Bottom padding of its own, unlike the other sections: what follows is a
+  // sticky track with no top padding to borrow.
+  //
+  // The phone tour is hidden at the width where the section above switches to
+  // the phone client itself — below 720px these are the same four screens, and
+  // showing them twice in a row is just a longer page.
   return (
-    <section id="anywhere" className="relative scroll-mt-14">
-      <div className="mx-auto max-w-[1180px] px-5 sm:px-8">
-        <div className="rule" />
-        <div className="grid items-center gap-12 pt-12 pb-20 sm:pt-16 sm:pb-28 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-20">
-          <div>
-            <p className="eyebrow">From any device</p>
-            <h2 className="display mt-5 text-[clamp(1.7rem,4.4vw,3.05rem)]">
-              Close your laptop <span className="text-ember">anytime</span>.
-              <br /> Pick up your phone.
-            </h2>
-            <p className="mt-5 max-w-[58ch] text-[15.5px] leading-[1.66] text-dim">
-              <strong className="font-medium text-bone">
+    <section id="anywhere" className="scroll-mt-14 pt-20 pb-20 sm:pt-40 sm:pb-32">
+      <div className="mx-auto max-w-(--shell) px-5 sm:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-20">
+          <div className="flex flex-col gap-4">
+            <p className="eyebrow">[ ANY DEVICE ]</p>
+            <h2 className="display h2">Start On One. Finish On Another.</h2>
+            <p className="max-w-[58ch] text-[17px] leading-[1.6] text-dim">
+              <span className="text-bone">
                 The agent runs on your server, not on the device you started it from
-              </strong>
-              , so every device can pick up exactly where another left off.
+              </span>
+              , so every device picks up exactly where another left off. The same
+              conversation, the same diff, the same branch — on a phone on a train.
             </p>
 
-            <div className="mt-9 grid gap-3">
-              {FAILURES.map((f) => (
-                <div key={f.what} className="rounded-[6px] border border-line-soft px-4 py-3.5">
-                  <p className="text-[14px] leading-[1.4] text-dim">
-                    <span className="eyebrow mr-2">If</span>
-                    {f.what}
-                  </p>
-                  <p className="mt-2 text-[15px] font-medium leading-[1.35] text-bone">{f.then}</p>
-                  <p className="mt-1 text-[13.5px] leading-[1.6] text-dim">{f.why}</p>
+            <dl className="mt-4 grid gap-px border border-line bg-line sm:grid-cols-2">
+              {DEVICES.map((device) => (
+                <div key={device.name} className="bg-ground px-4 py-3.5">
+                  <dt className="text-[15px] font-medium text-bone">{device.name}</dt>
+                  <dd className="mt-1 font-mono text-[12px] tracking-[0.04em] text-mute">
+                    {device.note}
+                  </dd>
                 </div>
               ))}
-            </div>
-
-            <p className="mt-7 text-[15.5px] leading-[1.6] text-bone">
-              Each part can fail on its own. The work survives every one of them.
-            </p>
+            </dl>
           </div>
 
-          <PhoneTour />
+          <div className="max-[719px]:hidden">
+            <PhoneTour />
+          </div>
         </div>
       </div>
     </section>

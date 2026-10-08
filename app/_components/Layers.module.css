@@ -1,0 +1,106 @@
+/* ── The pinned stage the four-layer stack is taken apart on ──────────────
+   Six screens of scrolling, one screen of sticky viewport: an intro, then
+   1.15 screens per layer — more than one swipe, so a gesture can never carry
+   you past a layer — then a hold on the agents before the section unpins.
+   The drawing sits right of centre and the words sit in the page's left
+   gutter, with the ground colour laid back over the overlap so the two never
+   fight.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.track {
+  position: relative;
+  height: min(600vh, 5400px);
+  background: var(--color-ground);
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  height: min(100vh, 900px);
+  overflow: hidden;
+}
+
+/* 200 columns by 70 rows. The font size is capped so the cell never grows
+   past the point where the text on a slab stops reading as a terminal. */
+.grid {
+  position: absolute;
+  left: 58%;
+  transform: translate(-50%, -50%);
+  width: 200ch;
+  height: calc(70 * 1.15em);
+  font-family: var(--font-mono);
+  font-size: min(11px, calc(100vw / 124));
+  line-height: 1.15;
+  letter-spacing: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.grid pre {
+  position: absolute;
+  inset: 0 auto auto 0;
+  margin: 0;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: 0;
+  white-space: pre;
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--color-ground) 0%,
+    rgb(11 11 12 / 0.9) 26%,
+    rgb(11 11 12 / 0) 46%
+  );
+}
+
+.panel {
+  position: absolute;
+  left: max(32px, calc((100% - var(--shell)) / 2 + 32px));
+  transform: translateY(-50%);
+  width: min(420px, calc(100% - 64px));
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Between the full layout and the stacked one the panel is as wide as ever
+   but the page is not, so the ground colour has to be held further across
+   before it starts letting the drawing through. */
+@media (max-width: 1100px) {
+  .veil {
+    background: linear-gradient(
+      90deg,
+      var(--color-ground) 0%,
+      rgb(11 11 12 / 0.96) 42%,
+      rgb(11 11 12 / 0) 62%
+    );
+  }
+}
+
+@media (max-width: 860px) {
+  .grid {
+    left: 50%;
+    top: 62% !important;
+  }
+  .veil {
+    background: linear-gradient(
+      180deg,
+      var(--color-ground) 0%,
+      rgb(11 11 12 / 0.92) 30%,
+      rgb(11 11 12 / 0) 48%
+    );
+  }
+  .panel {
+    /* Clear of the sticky header, which is 69px of the viewport this section
+       is pinned inside. */
+    top: 96px !important;
+    left: 20px;
+    transform: none;
+    width: calc(100% - 40px);
+  }
+}

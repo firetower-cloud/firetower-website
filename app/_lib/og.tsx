@@ -1,11 +1,11 @@
 /**
  * The social card.
  *
- * Satori (what next/og renders with) does not read WOFF2, and the product's
- * faces are only checked in as WOFF2 — so rather than ship a second copy of
- * Archivo in another format for one image, the card leans on next/og's
- * bundled face and gets its character from colour, the tower mark, and the
- * ridgeline. Hierarchy comes from size and colour, not weight.
+ * Satori (what next/og renders with) does not read WOFF2, and Geist is only
+ * on disk as WOFF2 after next/font has self-hosted it — so rather than ship a
+ * second copy of the face in another format for one image, the card leans on
+ * next/og's bundled face and gets its character from colour, the tower mark,
+ * and the ridgeline. Hierarchy comes from size and colour, not weight.
  */
 import { ImageResponse } from "next/og";
 
@@ -13,12 +13,12 @@ export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
 export const OG_ALT = "Firetower — run any coding agent on your own servers";
 
-const GROUND = "#0a0908";
-const BONE = "#f4f0e9";
-const DIM = "#948c83";
-const MUTE = "#6b645d";
-const EMBER = "#ff6b2c";
-const LINE = "#262320";
+const GROUND = "#0b0b0c";
+const BONE = "#ededef";
+const DIM = "#a8a8ae";
+const MUTE = "#5e5e64";
+const EMBER = "#ffb23f";
+const LINE = "#1e1e20";
 
 export function renderOgImage({ title, eyebrow }: { title: string; eyebrow?: string }) {
   return new ImageResponse(
@@ -45,7 +45,7 @@ export function renderOgImage({ title, eyebrow }: { title: string; eyebrow?: str
             bottom: 0,
             height: 300,
             background:
-              "linear-gradient(0deg, rgba(255,107,44,0.22), rgba(255,107,44,0.05) 52%, rgba(255,107,44,0) 100%)",
+              "linear-gradient(0deg, rgba(255,178,63,0.22), rgba(255,178,63,0.05) 52%, rgba(255,178,63,0) 100%)",
           }}
         />
 

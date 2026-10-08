@@ -22,6 +22,7 @@ export const META_DESCRIPTION =
   "Open-source control plane for coding agents. Run them on your own servers, attach from a browser or a phone, review the diff and ship the branch. Self-hosted, no account.";
 
 export const REPO_URL = "https://github.com/firetower-cloud/firetower";
+export const DISCORD_URL = "https://discord.com/invite/uVa8wsYym";
 export const REPO_RAW = "https://raw.githubusercontent.com/firetower-cloud/firetower/main";
 export const LICENSE = "AGPL-3.0-only";
 export const AUTHOR = "Westlabs LLC";

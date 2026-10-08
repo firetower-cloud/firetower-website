@@ -1,0 +1,111 @@
+/* ── The hero, and the ridge behind it ───────────────────────────────────
+   The scene is a fixed 2160×1080 character canvas pinned to the top right
+   and scaled down, so the tower always lands in the same place relative to
+   the headline whatever the viewport is. Below 760px it stops being a
+   backdrop and becomes a footer to the copy: dropped to the bottom, scaled
+   right down, and veiled from the top instead of the left.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: calc(100vh - 69px);
+  min-height: 760px;
+  max-height: 1000px;
+}
+
+.scene {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2160px;
+  height: 1080px;
+  pointer-events: none;
+  transform: scale(0.9);
+  transform-origin: top right;
+}
+
+/* The lamp's halo, behind every character layer. */
+.glow {
+  position: absolute;
+  left: 1534px;
+  top: -8px;
+  width: 540px;
+  height: 540px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--color-ember) 0%, transparent 60%);
+}
+
+/* What makes the drawing a backdrop rather than a competitor: the ground
+   colour, laid back over the left two thirds of it. */
+.veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      var(--color-ground) 0%,
+      rgb(11 11 12 / 0.88) 30%,
+      rgb(11 11 12 / 0.35) 48%,
+      rgb(11 11 12 / 0) 62%
+    ),
+    linear-gradient(0deg, var(--color-ground) 0%, rgb(11 11 12 / 0) 18%);
+}
+
+.inner {
+  position: relative;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 0 32px;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.status {
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+}
+
+@media (max-width: 760px) {
+  .hero {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    padding: 56px 0 440px;
+  }
+  .scene {
+    top: auto;
+    bottom: 0;
+    transform: scale(0.42);
+    transform-origin: right bottom;
+  }
+  .veil {
+    background: linear-gradient(
+      180deg,
+      var(--color-ground) 0%,
+      var(--color-ground) 55%,
+      rgb(11 11 12 / 0) 75%
+    );
+  }
+  /* On a phone the scene is below the copy rather than behind it, so a
+     status strip pinned to the bottom would land in the middle of the
+     drawing. Put it back in the flow, under the install command. */
+  .status {
+    /* Relative, not static: the veil is positioned, so a static strip would
+       be painted underneath it and read as half-erased. The offsets have to
+       be cleared with it, or `relative` just shifts the strip by them. */
+    position: relative;
+    inset: auto;
+    z-index: 1;
+    margin: 28px 20px 0;
+  }
+  .inner {
+    padding: 0 20px;
+  }
+}

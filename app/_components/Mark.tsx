@@ -79,14 +79,19 @@ export function Signal({ status, size = 7 }: { status: Status; size?: number }) 
   );
 }
 
-/** Wordmark lockup used in the nav and the footer. */
-export function Wordmark({ size = 22 }: { size?: number }) {
+/**
+ * Wordmark lockup used in the nav and the footer.
+ *
+ * The mark is the product's own, unchanged. The word next to it is set in the
+ * body face at 600 and pulled in tight, rather than tracked out in caps: the
+ * lockup should read as the name of a thing, and the tracked-out voice now
+ * belongs to the labels.
+ */
+export function Wordmark({ size = 24 }: { size?: number }) {
   return (
     <span className="flex items-center gap-2.5 text-bone">
       <Mark size={size} />
-      <span className="font-narrow text-[13px] font-semibold tracking-[0.22em] uppercase">
-        Firetower
-      </span>
+      <span className="text-[18px] font-semibold tracking-[-0.02em]">Firetower</span>
     </span>
   );
 }
