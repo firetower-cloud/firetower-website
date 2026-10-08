@@ -47,9 +47,26 @@ const DIST = 110;
 /** The five stops, as poses. */
 const KEYS = [0, 0.375, 0.525, 0.675, 0.825];
 const STOPS = KEYS.length;
-/** Where each stop's stretch of scrolling ends, in screens. The last runs off
-    the end of the track, so the agents hold until the section unpins. */
-const ENDS = [0.55, 1.3, 2.05, 2.8, 9];
+/**
+ * How long one layer takes to move into place.
+ *
+ * The next move is allowed to start at 70% of this, which bounds how far the
+ * scene can fall behind a fast scroll without ever letting it take a
+ * shortcut.
+ */
+const MOVE_MS = 560;
+
+/**
+ * Where each stop's stretch of scrolling ends, in screens.
+ *
+ * 1.15 screens each, and that number is the whole of the pacing. A trackpad
+ * swipe with momentum carries roughly a screen; at anything under that, one
+ * gesture crosses two thresholds and a layer gets skipped without ever being
+ * looked at. Keeping a stretch longer than a gesture is what makes one swipe
+ * mean one layer. The last entry runs off the end of the track so the agents
+ * hold until the section unpins.
+ */
+const ENDS = [0.8, 1.95, 3.1, 4.25, 99];
 
 const COPY: Record<string, [string, string, string]> = {
   intro: [
@@ -439,7 +456,7 @@ const NAV = 69;
 
 export function Layers() {
   const track = useRef<HTMLDivElement>(null);
-  const anim = useRef({ step: 0, animStep: 0, from: 0, to: 0, t0: 0, dur: 0, prev: 0 });
+  const anim = useRef({ want: 0, step: 0, animStep: 0, from: 0, to: 0, t0: 0, prev: 0 });
   const reduced = useReducedMotion();
   const [state, setState] = useState({ frame: 0, p: 0, step: 0, move: 1, prev: 0 });
 
@@ -455,34 +472,45 @@ export function Layers() {
         // instead, and an all-zero rect otherwise looks like "on screen".
         if (!rect.width) return;
         if (rect.bottom < -50 || rect.top > vh + 50) return;
-        // How far the section has scrolled since it pinned, in screens. Each
-        // stop holds for a stretch; crossing the end of one (plus a little
-        // slack, so a nudge at the boundary does not flip back and forth)
-        // moves to the next straight away.
+        // How far the section has scrolled since it pinned, in screens, and
+        // therefore which stop the scroll is *asking* for. The little slack is
+        // so a nudge at a boundary does not flip back and forth.
         const raw = -rect.top / stop;
         const slack = 0.08;
-        let cur = a.step;
-        while (cur < STOPS - 1 && raw > ENDS[cur] + slack) cur++;
-        while (cur > 0 && raw < ENDS[cur - 1] - slack) cur--;
-        a.step = cur;
+        let want = a.want;
+        while (want < STOPS - 1 && raw > ENDS[want] + slack) want++;
+        while (want > 0 && raw < ENDS[want - 1] - slack) want--;
+        a.want = want;
       }
       const now = Date.now();
+      // What the scroll asks for and what the scene commits to are two
+      // different things. However hard the reader flings, the stack only ever
+      // moves one layer at a time, and only once the move before it is nearly
+      // done — so a fling walks the layers in order instead of teleporting
+      // past them. Skipping a layer is the one failure that cannot be undone:
+      // the reader never sees it and does not know they missed it.
+      const settled = reduced || now - a.t0 >= MOVE_MS * 0.7;
+      if (a.want !== a.step && settled) a.step += Math.sign(a.want - a.step);
+
       setState((s) => {
         const frame = s.frame + 1;
         if (a.step !== a.animStep) {
           a.from = s.p;
           a.to = KEYS[a.step];
           a.t0 = now;
-          a.dur = reduced ? 0 : Math.min(1800, 950 + 300 * (Math.abs(a.step - a.animStep) - 1));
           a.prev = a.animStep;
           a.animStep = a.step;
         }
-        const k = a.dur ? Math.min(1, (now - a.t0) / a.dur) : 1;
+        const dur = reduced ? 0 : MOVE_MS;
+        const k = dur ? Math.min(1, (now - a.t0) / dur) : 1;
         const eased = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
         const p = a.from + (a.to - a.from) * eased;
         return { frame, p, step: a.step, move: k, prev: a.prev };
       });
-    }, 50);
+      // 30ms, not 50: a redraw measures about 6ms, so the budget is there,
+      // and an eased move of half a second is eleven frames at 20fps — enough
+      // to see it step. At 33fps it is twenty, which reads as a move.
+    }, 30);
     return () => window.clearInterval(id);
   }, [reduced]);
 
@@ -496,7 +524,7 @@ export function Layers() {
     const packRows: string[] = [];
     // Where each link's packet is this frame. One lookup per link rather than
     // per cell, because a link contributes ninety cells.
-    const heads = LINKS.map((_, k) => (reduced ? -1 : (state.frame * 0.0225 + k * 0.37) % 1));
+    const heads = LINKS.map((_, k) => (reduced ? -1 : (state.frame * 0.0135 + k * 0.37) % 1));
     for (let r = 0; r < ROWS; r++) {
       const bucket = pose.wires.get(r);
       if (!bucket) {

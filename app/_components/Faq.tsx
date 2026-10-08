@@ -25,12 +25,16 @@ const QUESTIONS: [string, string][] = [
     "Nothing happens to the agent. It never ran on the laptop. Open Firetower on your phone or another computer and the conversation is exactly where you left it.",
   ],
   [
+    "Do I lose my work when a worker crashes?",
+    "No. Your work is a branch and a worktree on that machine's disk, not state inside Firetower — restart the worker and the agent carries on from where it stopped. The same holds a layer up: if the control plane goes down the workers keep running and log locally, and it catches up by replay when it comes back. Worst case, SSH into the machine yourself. It is an ordinary git worktree, so you can commit and push by hand.",
+  ],
+  [
     "Does the worker open any ports?",
     "No. It reads frames from stdin and writes them to stdout, so it can be reached through SSH, a container exec or a child process. A firewall cannot tell the difference.",
   ],
   [
-    "How is Firetower licensed?",
-    "AGPL-3.0-only. If you run a modified Firetower as a network service, you have to publish your changes.",
+    "Why is it open source?",
+    "Because nothing else gets adopted at scale. A company that is going to run coding agents on its own infrastructure has to be able to read the code, audit it, and keep running it whether or not we are still around — no amount of marketing substitutes for that. It also makes the thing better: people running Firetower on hardware we have never seen find the problems we never would, and fix them.",
   ],
 ];
 

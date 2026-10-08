@@ -441,14 +441,14 @@ export function Hero() {
           </a>
 
           <h1 className="display text-[clamp(38px,6.2vw,64px)] leading-[0.98] [text-shadow:0_2px_30px_var(--color-ground)]">
-            Every agent you run, watched from one tower.
+            Run every agent, on every machine, from one tower.
           </h1>
 
           <p className="max-w-[540px] text-[clamp(16px,2vw,18px)] leading-[1.6] text-dim [text-shadow:0_1px_16px_var(--color-ground)]">
-            Firetower is a control plane for coding agents that runs on your own servers —
-            one agent or fifty, on one machine or twenty. It cuts the branch, makes the
-            worktree, starts tmux and launches the agent, then tells you the moment it
-            needs you.
+            Firetower is a control plane for coding agents, on a server you own. It
+            installs a worker on every machine you can SSH into, decides where each agent
+            runs, gives it its own branch and worktree, and supervises all of them until
+            one needs a human.
           </p>
 
           <div className="flex flex-wrap gap-2.5 font-mono text-[14px] tracking-[0.04em]">

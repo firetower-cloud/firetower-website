@@ -1,14 +1,15 @@
 /* ── The pinned stage the four-layer stack is taken apart on ──────────────
-   Four and a half screens of scrolling, one screen of sticky viewport: an
-   intro, then one stop per layer, then half a screen of hold on the agents
-   before the section unpins. The drawing sits right of centre and the words
-   sit in the page's left gutter, with the ground colour laid back over the
-   overlap so the two never fight.
+   Six screens of scrolling, one screen of sticky viewport: an intro, then
+   1.15 screens per layer — more than one swipe, so a gesture can never carry
+   you past a layer — then a hold on the agents before the section unpins.
+   The drawing sits right of centre and the words sit in the page's left
+   gutter, with the ground colour laid back over the overlap so the two never
+   fight.
    ─────────────────────────────────────────────────────────────────────── */
 
 .track {
   position: relative;
-  height: min(450vh, 4050px);
+  height: min(600vh, 5400px);
   background: var(--color-ground);
 }
 

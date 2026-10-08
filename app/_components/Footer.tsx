@@ -75,8 +75,7 @@ export function Footer() {
           <div className="flex flex-[1_1_280px] flex-col gap-3">
             <p className="max-w-[300px] text-[15px] leading-[1.6] text-dim">{TAGLINE}</p>
             <p className="max-w-[340px] font-mono text-[12px] leading-[1.7] text-mute">
-              {LICENSE}. © {AUTHOR}. If you run a modified Firetower as a network service, you
-              have to publish your changes.
+              {LICENSE}. © {AUTHOR}.
             </p>
           </div>
 
