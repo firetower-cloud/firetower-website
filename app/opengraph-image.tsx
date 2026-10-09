@@ -13,6 +13,6 @@ export const alt = OG_ALT;
 export default function Image() {
   return renderOgImage({
     eyebrow: "Control plane for coding agents",
-    title: "Run any coding agent, on your own servers, from anywhere.",
+    title: "Run every agent, on every machine, from one tower.",
   });
 }
