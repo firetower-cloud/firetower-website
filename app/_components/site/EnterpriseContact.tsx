@@ -1,6 +1,6 @@
-import { DISCORD_URL } from "../../_lib/site";
+import { ENTERPRISE_BOOKING_URL } from "../../_lib/site";
 
-/** Use the site's established contact channel until a dedicated sales inbox is chosen. */
+/** Shared booking destination for every Enterprise contact action. */
 export function EnterpriseContact({
   label = "Discuss your deployment",
 }: {
@@ -9,7 +9,7 @@ export function EnterpriseContact({
   return (
     <a
       className="button"
-      href={DISCORD_URL}
+      href={ENTERPRISE_BOOKING_URL}
       target="_blank"
       rel="noopener noreferrer"
     >

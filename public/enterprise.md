@@ -55,7 +55,7 @@ Bring identity, access and operational requirements to the first conversation. T
 
 ## Contact and next steps
 
-- [Discuss your deployment](https://discord.gg/Y2HYVEhSc): The current contact channel is Firetower's Discord.
+- [Discuss your deployment](https://calendly.com/kevin-westlabs/firetower-enterprise): Book an Enterprise call with Kevin.
 - [Enterprise page](https://usefiretower.com/enterprise)
 - [Self-hosting guide](https://usefiretower.com/docs/install-firetower)
 - [Documentation](https://usefiretower.com/docs)
