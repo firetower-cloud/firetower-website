@@ -4,13 +4,13 @@ import { ENTERPRISE_TITLE, ENTERPRISE_DESCRIPTION } from "../enterprise";
 import { localizedHref, type Locale } from "./index";
 
 export const frenchHomeTitle =
-  "Firetower — Vos équipes d’agents IA, sur votre infrastructure";
+  "Firetower — Vos équipes d’agents IA sur votre infrastructure";
 export const frenchHomeDescription =
-  "Faites travailler vos équipes d’agents IA 24 h/24 sur votre infrastructure. Partagez compétences et abonnements, avec les agents et modèles de votre choix.";
+  "Faites travailler vos équipes d’agents IA 24 h/24 sur votre infrastructure. Partagez vos compétences et vos abonnements. Choisissez vos agents et vos modèles.";
 export const frenchEnterpriseTitle =
-  "Firetower Entreprise — Déploiement, workflows et support";
+  "Firetower Entreprise — Déploiement, workflows et assistance";
 export const frenchEnterpriseDescription =
-  "Déployez Firetower avec l’équipe produit. Configurez vos workflows d’agents, formez vos équipes et bénéficiez d’un accompagnement sur votre infrastructure.";
+  "Déployez Firetower sur votre infrastructure avec l’équipe produit. Faites-vous accompagner pour configurer vos workflows et former vos équipes.";
 
 export function marketingMetadata(
   locale: Locale,

@@ -172,7 +172,7 @@ export function enterpriseLd(locale: Locale = "en") {
         "@type": "Service", "@id": `${url}#service`, url,
         name: locale === "fr" ? "Accompagnement Firetower Entreprise" : "Firetower Enterprise services", description,
         provider: { "@id": ORG_ID },
-        serviceType: locale === "fr" ? ["Déploiement et prise en main", "Mise en place de workflows d’agents", "Support technique"] : ["Deployment and onboarding", "Agent workflow implementation", "Technical support"],
+        serviceType: locale === "fr" ? ["Déploiement et prise en main", "Mise en place de workflows d’agents", "Assistance technique"] : ["Deployment and onboarding", "Agent workflow implementation", "Technical support"],
       },
       {
         "@type": "BreadcrumbList", "@id": `${url}#breadcrumbs`,

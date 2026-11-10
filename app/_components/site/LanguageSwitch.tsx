@@ -75,7 +75,7 @@ export function LanguageSwitch({ locale }: { locale: Locale }) {
           lang="fr"
           aria-label="Version française"
         >
-          <span>Vous préférez le français ?</span>
+          <span>Vous préférez le français ?</span>
           <a
             href={french}
             hrefLang="fr"

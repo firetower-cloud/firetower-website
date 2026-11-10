@@ -33,7 +33,7 @@ Firetower remains free to self-host. Optional services cover deployment and onbo
 English is the default. The homepage and Enterprise offer are also available in French. Documentation is currently published in English.
 
 - [French website](${SITE_URL}/fr): Présentation du produit et téléchargements.
-- [French Enterprise page](${SITE_URL}/fr/enterprise): Déploiement, workflows et support.
+- [French Enterprise page](${SITE_URL}/fr/enterprise): Déploiement, workflows et assistance.
 
 ## Optional
 
