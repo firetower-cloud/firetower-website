@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { DocPage } from "../../_components/site/DocPage";
+import { DocPage } from "../../../_components/site/DocPage";
 import { DOCS, docMeta } from "../_lib/nav";
 export const dynamicParams = false;
 export function generateStaticParams() {

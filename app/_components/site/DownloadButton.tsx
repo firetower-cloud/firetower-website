@@ -1,4 +1,5 @@
 "use client";
+import { translator, type LocalizedProps } from "../../_lib/i18n";
 import {
   useEffect,
   useId,
@@ -58,7 +59,8 @@ const devicePlatform = (): Platform => {
   );
 };
 const serverPlatform = (): Platform => "unknown";
-export function DownloadButton() {
+export function DownloadButton({ locale = "en" }: LocalizedProps) {
+  const t = translator(locale);
   const os = useSyncExternalStore(subscribe, devicePlatform, serverPlatform);
   const [downloads, setDownloads] = useState<Download[]>(
     snapshot as Download[],
@@ -137,7 +139,7 @@ export function DownloadButton() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {preferred.label}
+          {t(preferred.label)}
         </a>
       ) : (
         <button
@@ -147,13 +149,13 @@ export function DownloadButton() {
           aria-haspopup="menu"
           onClick={() => (open ? setOpen(false) : expand())}
         >
-          Download Firetower
+          {t("Download Firetower")}
         </button>
       )}
       <button
         className="button download-toggle"
         ref={toggle}
-        aria-label="Choose a download platform"
+        aria-label={t("Choose a download platform")}
         aria-expanded={open}
         aria-controls={id}
         aria-haspopup="menu"
@@ -175,11 +177,11 @@ export function DownloadButton() {
         className="download-options"
         id={id}
         role="menu"
-        aria-label="Download Firetower"
+        aria-label={t("Download Firetower")}
         hidden={!open}
       >
         <div className="download-panel-title" role="presentation">
-          Download Firetower
+          {t("Download Firetower")}
         </div>
         {downloads.map((d) => (
           <a
@@ -192,9 +194,9 @@ export function DownloadButton() {
             onClick={() => setOpen(false)}
           >
             <span>
-              <b>{d.name}</b>
+              <b>{d.name === t("iPhone and iPad") ? t(d.name) : d.name}</b>
               <small>
-                {d.detail}
+                {t(d.detail)}
                 {d.version ? ` · ${d.version}` : ""}
               </small>
             </span>
@@ -203,10 +205,12 @@ export function DownloadButton() {
         ))}
         <p className="download-platform-note">
           {os === "linux"
-            ? "A Linux desktop build is not available. Workers support Linux."
-            : "Choose the device you want to use."}{" "}
+            ? t(
+                "A Linux desktop build is not available. Workers support Linux.",
+              )
+            : t("Choose the device you want to use.")}{" "}
           <a href={RELEASES_URL} target="_blank" rel="noopener noreferrer">
-            All releases
+            {t("All releases")}
           </a>
         </p>
       </div>

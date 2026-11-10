@@ -1,22 +1,27 @@
 /* Approved website design, implemented as React components. */
+import { translator, type LocalizedProps } from "../../_lib/i18n";
 import Link from "next/link";
 import { DownloadButton } from "./DownloadButton";
 import { ProductImage } from "./ProductImage";
-export function Hero() {
+export function Hero({ locale = "en" }: LocalizedProps) {
+  const t = translator(locale);
   return (
     <section className="hero shell" id="home">
       <div className="hero-intro">
         <svg className="hero-emblem" viewBox="0 0 64 80" aria-hidden="true">
           <use href="#tower" />
         </svg>
-        <h1>Run AI coding teams on your own infrastructure, 24/7.</h1>
+        <h1>{t("Run AI coding teams on your own infrastructure, 24/7.")}</h1>
         <p className="hero-support">
-          Built for enterprise. Unopinionated harness, model agnostic.
+          {t("Built for enterprise. Unopinionated harness, model agnostic.")}
         </p>
         <div className="hero-actions">
-          <DownloadButton />
-          <Link className="button outline features-link" href="/docs/install-firetower">
-            Self-host in 5 min
+          <DownloadButton locale={locale} />
+          <Link
+            className="button outline features-link"
+            href="/docs/install-firetower"
+          >
+            {t("Self-host in 5 min")}
           </Link>
         </div>
       </div>
@@ -25,13 +30,15 @@ export function Hero() {
           <ProductImage
             name="launch"
             mobileName="launch-mobile"
-            alt="Firetower workspace with an agent team, its plan and generated artifacts"
+            alt={t(
+              "Firetower workspace with an agent team, its plan and generated artifacts",
+            )}
             priority
           />
         </div>
       </div>
       <div className="agents-strip">
-        <p>Work with the agents you choose.</p>
+        <p>{t("Work with the agents you choose.")}</p>
         <div className="engines">
           <span className="engine">
             <svg

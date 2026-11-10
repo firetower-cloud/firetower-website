@@ -1,4 +1,4 @@
-import { DOCS, SECTION_ORDER } from "../docs/_lib/nav";
+import { DOCS, SECTION_ORDER } from "../(en)/docs/_lib/nav";
 import { NAME, SITE_URL, SUMMARY, REPO_URL, LICENSE, DISCORD_URL } from "../_lib/site";
 
 /** Generated from the same manifest as the documentation navigation. */
@@ -27,6 +27,13 @@ Firetower remains free to self-host. Optional services cover deployment and onbo
 
 - [Enterprise offer](${SITE_URL}/enterprise.md): Scope, pilot deliverables and support options in Markdown.
 - [Enterprise page](${SITE_URL}/enterprise): Discuss a deployment with the Firetower team.
+
+## Languages
+
+English is the default. The homepage and Enterprise offer are also available in French. Documentation is currently published in English.
+
+- [French website](${SITE_URL}/fr): Présentation du produit et téléchargements.
+- [French Enterprise page](${SITE_URL}/fr/enterprise): Déploiement, workflows et support.
 
 ## Optional
 

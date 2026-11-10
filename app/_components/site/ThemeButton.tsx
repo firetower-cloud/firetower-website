@@ -1,9 +1,11 @@
 "use client";
-export function ThemeButton() {
+import { translator, type LocalizedProps } from "../../_lib/i18n";
+export function ThemeButton({ locale = "en" }: LocalizedProps) {
+  const t = translator(locale);
   return (
     <button
       className="theme-button"
-      aria-label="Toggle light or dark theme"
+      aria-label={t("Toggle light or dark theme")}
       onClick={() => {
         const theme =
           document.documentElement.dataset.theme === "dark" ? "light" : "dark";

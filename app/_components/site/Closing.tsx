@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 /* Approved website design, implemented as React components. */
+import { translator, type LocalizedProps } from "../../_lib/i18n";
 import { DownloadButton } from "./DownloadButton";
-export function Closing() {
+export function Closing({ locale = "en" }: LocalizedProps) {
+  const t = translator(locale);
   return (
     <section className="shell">
       <div className="closing">
@@ -13,14 +15,16 @@ export function Closing() {
         />
         <div className="closing-content">
           <h2>
-            Bring your agent teams <br />
-            to Firetower.
+            {t("Bring your agent teams")}
+            <br />
+            {t("to Firetower.")}
           </h2>
           <p>
-            Your infrastructure. Your accounts. <br />
-            One place to manage the work.
+            {t("Your infrastructure. Your accounts.")}
+            <br />
+            {t("One place to manage the work.")}
           </p>
-          <DownloadButton />
+          <DownloadButton locale={locale} />
         </div>
       </div>
     </section>

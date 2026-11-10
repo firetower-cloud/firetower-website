@@ -1,17 +1,18 @@
+import type { Locale } from "../_lib/i18n";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
-import { JsonLd } from "./_components/JsonLd";
-import { Analytics } from "./_components/Analytics";
+import "../globals.css";
+import { JsonLd } from "../_components/JsonLd";
+import { Analytics } from "../_components/Analytics";
 import {
   organizationLd,
   softwareApplicationLd,
   webSiteLd,
-} from "./_lib/structured-data";
-import { META_DESCRIPTION, NAME, SITE_URL, TAGLINE } from "./_lib/site";
+} from "../_lib/structured-data";
+import { META_DESCRIPTION, NAME, SITE_URL, TAGLINE } from "../_lib/site";
 
 const dmSans = localFont({
-  src: "../public/fonts/dm-sans.woff2",
+  src: "../../public/fonts/dm-sans.woff2",
   variable: "--font-dm-sans",
   weight: "100 1000",
   display: "swap",
@@ -63,13 +64,15 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
-export default function RootLayout({
+export function SiteDocument({
   children,
+  locale = "en",
 }: {
   children: React.ReactNode;
+  locale?: Locale;
 }) {
   return (
-    <html lang="en" className={dmSans.variable} suppressHydrationWarning>
+    <html lang={locale} className={dmSans.variable} suppressHydrationWarning>
       <head>
         <link rel="describedby" href="/llms.txt" type="text/plain" />
         <script
@@ -80,7 +83,7 @@ export default function RootLayout({
       </head>
       <body>
         <JsonLd data={organizationLd()} />
-        <JsonLd data={webSiteLd()} />
+        <JsonLd data={webSiteLd(locale)} />
         <JsonLd data={softwareApplicationLd()} />
         {children}
         <Analytics />

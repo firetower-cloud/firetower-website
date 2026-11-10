@@ -27,7 +27,7 @@ const plain = (s: string) =>
     .trim();
 
 function headingsIn(slug: string): Heading[] {
-  const file = join(process.cwd(), "app", "docs", slug, "page.mdx");
+  const file = join(process.cwd(), "app", "(en)", "docs", slug, "page.mdx");
   let source: string;
   try {
     source = readFileSync(file, "utf8");

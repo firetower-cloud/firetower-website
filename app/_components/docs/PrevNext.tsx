@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { neighbours } from "../../docs/_lib/nav";
-import { href } from "../../docs/_lib/nav";
+import { neighbours } from "../../(en)/docs/_lib/nav";
+import { href } from "../../(en)/docs/_lib/nav";
 
 /**
  * The way onwards, at the foot of every page.

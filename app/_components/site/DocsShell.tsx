@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { DOCS, SECTION_ORDER, href } from "../../docs/_lib/nav";
+import { DOCS, SECTION_ORDER, href } from "../../(en)/docs/_lib/nav";
 import { ThemeButton } from "./ThemeButton";
 type SearchEntry = {
   href: string;

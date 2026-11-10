@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import manifest from "../../../content/docs-manifest.json";
-import { SITE_URL } from "../../_lib/site";
+import manifest from "../../../../content/docs-manifest.json";
+import { SITE_URL } from "../../../_lib/site";
 export type Doc = (typeof manifest)[number];
 export const DOCS: Doc[] = manifest;
 export const SECTION_ORDER = [...new Set(DOCS.map((d) => d.section))];

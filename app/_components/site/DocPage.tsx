@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import Link from "next/link";
-import { findDoc, neighbours, href } from "../../docs/_lib/nav";
+import { findDoc, neighbours, href } from "../../(en)/docs/_lib/nav";
 import { DocBody } from "./DocBody";
 import { JsonLd } from "../JsonLd";
 import { docLd } from "../../_lib/structured-data";

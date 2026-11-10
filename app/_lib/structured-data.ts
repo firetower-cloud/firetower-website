@@ -1,3 +1,5 @@
+import { localizedHref, type Locale } from "./i18n";
+import { frenchHomeTitle, frenchHomeDescription, frenchEnterpriseTitle, frenchEnterpriseDescription } from "./i18n/metadata";
 /**
  * schema.org / JSON-LD for the site.
  *
@@ -11,7 +13,7 @@
  */
 import { AUTHOR, NAME, REPO_URL, SITE_URL, SUMMARY, TAGLINE } from "./site";
 import { ENTERPRISE_TITLE, ENTERPRISE_DESCRIPTION } from "./enterprise";
-import { findDoc, href, trail } from "../docs/_lib/nav";
+import { findDoc, href, trail } from "../(en)/docs/_lib/nav";
 
 export const ORG_ID = `${SITE_URL}/#organization`;
 export const SITE_ID = `${SITE_URL}/#website`;
@@ -35,16 +37,16 @@ export function organizationLd() {
   };
 }
 
-export function webSiteLd() {
+export function webSiteLd(locale: Locale = "en") {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": SITE_ID,
     name: NAME,
     url: SITE_URL,
-    description: TAGLINE,
+    description: locale === "fr" ? frenchHomeDescription : TAGLINE,
     publisher: { "@id": ORG_ID },
-    inLanguage: "en",
+    inLanguage: ["en", "fr"],
   };
 }
 
@@ -85,20 +87,21 @@ export function softwareApplicationLd() {
 }
 
 /** Product landing page. */
-export function webPageLd() {
+export function webPageLd(locale: Locale = "en") {
+  const url = SITE_URL + (locale === "fr" ? "/fr" : "");
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "WebPage",
-        "@id": HOME_ID,
-        url: SITE_URL,
-        name: `${NAME} — ${TAGLINE}`,
-        description: SUMMARY,
-        inLanguage: "en",
+        "@id": locale === "fr" ? `${url}#webpage` : HOME_ID,
+        url,
+        name: locale === "fr" ? frenchHomeTitle : `${NAME} — ${TAGLINE}`,
+        description: locale === "fr" ? frenchHomeDescription : SUMMARY,
+        inLanguage: locale,
         isPartOf: { "@id": SITE_ID },
         about: { "@id": APP_ID },
-        primaryImageOfPage: { "@type": "ImageObject", url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630 },
+        primaryImageOfPage: { "@type": "ImageObject", url: `${url}/opengraph-image`, width: 1200, height: 630 },
       },
     ],
   };
@@ -150,30 +153,32 @@ export function docLd(slug: string) {
 }
 
 /** Paid services are distinct from the free software described by APP_ID. */
-export function enterpriseLd() {
-  const url = `${SITE_URL}/enterprise`;
+export function enterpriseLd(locale: Locale = "en") {
+  const url = SITE_URL + localizedHref("/enterprise", locale);
+  const title = locale === "fr" ? frenchEnterpriseTitle : ENTERPRISE_TITLE;
+  const description = locale === "fr" ? frenchEnterpriseDescription : ENTERPRISE_DESCRIPTION;
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "WebPage", "@id": `${url}#webpage`, url,
-        name: ENTERPRISE_TITLE, description: ENTERPRISE_DESCRIPTION,
-        inLanguage: "en", isPartOf: { "@id": SITE_ID },
+        name: title, description,
+        inLanguage: locale, isPartOf: { "@id": SITE_ID },
         mainEntity: { "@id": `${url}#service` },
         breadcrumb: { "@id": `${url}#breadcrumbs` },
         primaryImageOfPage: { "@type": "ImageObject", url: `${url}/opengraph-image`, width: 1200, height: 630 },
       },
       {
         "@type": "Service", "@id": `${url}#service`, url,
-        name: "Firetower Enterprise services", description: ENTERPRISE_DESCRIPTION,
+        name: locale === "fr" ? "Accompagnement Firetower Entreprise" : "Firetower Enterprise services", description,
         provider: { "@id": ORG_ID },
-        serviceType: ["Deployment and onboarding", "Agent workflow implementation", "Technical support"],
+        serviceType: locale === "fr" ? ["Déploiement et prise en main", "Mise en place de workflows d’agents", "Support technique"] : ["Deployment and onboarding", "Agent workflow implementation", "Technical support"],
       },
       {
         "@type": "BreadcrumbList", "@id": `${url}#breadcrumbs`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: NAME, item: SITE_URL },
-          { "@type": "ListItem", position: 2, name: "Enterprise", item: url },
+          { "@type": "ListItem", position: 1, name: NAME, item: SITE_URL + (locale === "fr" ? "/fr" : "") },
+          { "@type": "ListItem", position: 2, name: locale === "fr" ? "Entreprise" : "Enterprise", item: url },
         ],
       },
     ],

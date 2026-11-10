@@ -209,6 +209,26 @@ const installMarkdown = read("docs/install-firetower.md");
 if (!installMarkdown.includes("curl -fsSL https://usefiretower.com/install.sh | sh")) fail("Markdown", "installer command lost in conversion");
 if (!read("docs/requirements.md").includes("|")) fail("Markdown", "requirements table lost in conversion");
 
+/* Both languages must be fully rendered and advertise reciprocal alternates. */
+for (const [english, french] of [["/", "/fr"], ["/enterprise", "/fr/enterprise"]]) {
+  for (const [path, language] of [[english, "en"], [french, "fr"]]) {
+    const html = read(path === "/" ? "index.html" : path.slice(1) + ".html");
+    if (!html.includes(`<html lang="${language}"`)) fail(path, "wrong static document language");
+    const alternates = [...html.matchAll(/<link rel="alternate" hrefLang="([^"]+)" href="([^"]+)"/g)];
+    for (const [lang, target] of [["en", english], ["fr", french], ["x-default", english]]) {
+      if (!alternates.some(m => m[1] === lang && new URL(m[2]).href === new URL(HOST + target).href)) fail(path, `missing ${lang} alternate`);
+    }
+    if (html.includes("http://localhost:")) fail(path, "localhost URL in published HTML");
+    const graphs = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].flatMap(([, raw]) => { const data = JSON.parse(raw); return data["@graph"] ?? [data]; });
+    if (!graphs.some(node => node["@type"] === "WebPage" && node.inLanguage === language && new URL(node.url).href === new URL(HOST + path).href)) fail(path, "missing localized WebPage structured data");
+  }
+}
+if (!read("fr.html").includes("Faites travailler vos équipes")) fail("/fr", "French content is not present in static HTML");
+if (!read("fr/enterprise.html").includes("Notre expertise.")) fail("/fr/enterprise", "French offer is not present in static HTML");
+for (const path of ["/fr", "/fr/enterprise"]) {
+  if (!read("llms.txt").includes(HOST + path)) fail("llms.txt", `missing ${path}`);
+}
+
 done();
 
 function done() {

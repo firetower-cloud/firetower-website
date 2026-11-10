@@ -18,6 +18,8 @@ import createMDX from "@next/mdx";
  */
 const nextConfig: NextConfig = {
   output: "export",
+  // Separate language roots need a shared static 404 document.
+  experimental: { globalNotFound: true },
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   poweredByHeader: false,
   compress: true,

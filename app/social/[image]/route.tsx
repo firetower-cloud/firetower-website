@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { DOCS } from "../../docs/_lib/nav";
+import { DOCS } from "../../(en)/docs/_lib/nav";
 import { renderOgImage } from "../../_lib/og";
 export const dynamic = "force-static";
 export const dynamicParams = false;
