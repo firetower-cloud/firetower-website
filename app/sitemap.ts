@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    { url: `${SITE_URL}/enterprise`, changeFrequency: "monthly", priority: 0.9 },
     ...DOCS.map((d) => ({
       url: `${SITE_URL}${href(d.slug)}`,
       changeFrequency: "monthly" as const,

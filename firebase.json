@@ -194,6 +194,19 @@
         ]
       },
       {
+        "source": "/enterprise/@(opengraph-image|twitter-image)",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "image/png"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600, must-revalidate"
+          }
+        ]
+      },
+      {
         "//": "Next fingerprints everything under _next/static, so these URLs can never change contents.",
         "source": "/_next/static/**",
         "headers": [
@@ -248,6 +261,23 @@
       },
       {
         "source": "/docs/**/*.md",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/markdown; charset=utf-8"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          },
+          {
+            "key": "Link",
+            "value": "</llms.txt>; rel=\"describedby\""
+          }
+        ]
+      },
+      {
+        "source": "/enterprise.md",
         "headers": [
           {
             "key": "Content-Type",

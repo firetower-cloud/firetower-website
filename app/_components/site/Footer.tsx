@@ -4,6 +4,7 @@ export function Footer() {
     <footer className="shell site-footer">
       <span>© {new Date().getFullYear()} Westlabs LLC</span>
       <nav aria-label="Footer">
+        <Link href="/enterprise">Enterprise</Link>
         <Link href="/docs">Documentation</Link>
         <a href="https://github.com/firetower-cloud/firetower">GitHub</a>
         <a href="https://discord.gg/Y2HYVEhSc">Contact us</a>

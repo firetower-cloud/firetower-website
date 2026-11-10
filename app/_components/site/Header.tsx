@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { ThemeButton } from "./ThemeButton";
 import { DownloadButton } from "./DownloadButton";
+import { EnterpriseContact } from "./EnterpriseContact";
 import { DISCORD_URL, REPO_URL } from "../../_lib/site";
-export function Header() {
+export function Header({ enterprise = false }: { enterprise?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <header className="topbar">
@@ -26,7 +27,7 @@ export function Header() {
         >
           <Link href="/#tour">Product</Link>
           <Link href="/#architecture">Infrastructure</Link>
-          <Link href="/#enterprise">Enterprise</Link>
+          <Link href="/enterprise" aria-current={enterprise ? "page" : undefined}>Enterprise</Link>
           <Link href="/docs">Docs</Link>
           <div className="nav-community">
             <a
@@ -57,7 +58,7 @@ export function Header() {
         </div>
         <div className="nav-end">
           <ThemeButton />
-          <DownloadButton />
+          {enterprise ? <EnterpriseContact /> : <DownloadButton />}
           <button
             className="menu"
             aria-label={open ? "Close navigation" : "Open navigation"}

@@ -21,6 +21,13 @@ The Markdown guides below are generated from the published documentation on each
 
 ${SECTION_ORDER.map((section) => `## ${section}\n\n${DOCS.filter((d) => d.section === section).map((d) => `- [${d.title}](${SITE_URL}/docs/${d.slug || "index"}.md): ${d.description}`).join("\n")}`).join("\n\n")}
 
+## Enterprise services
+
+Firetower remains free to self-host. Optional services cover deployment and onboarding, scoped agent workflow implementation, and ongoing technical support. Support coverage and responsibilities are agreed per engagement; infrastructure and AI provider costs remain separate.
+
+- [Enterprise offer](${SITE_URL}/enterprise.md): Scope, pilot deliverables and support options in Markdown.
+- [Enterprise page](${SITE_URL}/enterprise): Discuss a deployment with the Firetower team.
+
 ## Optional
 
 - [Complete documentation](${SITE_URL}/llms-full.txt): All documentation in one Markdown file. Prefer individual guides for focused questions.

@@ -21,6 +21,7 @@ export const META_DESCRIPTION = "Run AI coding teams on your own infrastructure,
 
 export const REPO_URL = "https://github.com/firetower-cloud/firetower";
 export const DISCORD_URL = "https://discord.gg/Y2HYVEhSc";
+export const ENTERPRISE_BOOKING_URL = "https://calendly.com/kevin-westlabs/firetower-enterprise";
 export const REPO_RAW = "https://raw.githubusercontent.com/firetower-cloud/firetower/main";
 export const LICENSE = "AGPL-3.0-only";
 export const AUTHOR = "Westlabs LLC";

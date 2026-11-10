@@ -9,6 +9,7 @@ const redirects = new Map(
 );
 const routes = new Map([
   ["/", "out/index.html"],
+  ["/enterprise", "out/enterprise.html"],
   ...manifest.map((d) => [
     d.slug ? "/docs/" + d.slug : "/docs",
     "out/docs" + (d.slug ? "/" + d.slug : "") + ".html",

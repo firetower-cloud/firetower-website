@@ -8,10 +8,12 @@ export const X_SIZE = { width: 1200, height: 600 };
 export const OG_CONTENT_TYPE = "image/png";
 export const OG_ALT = "Firetower — Run AI coding teams on your own infrastructure, 24/7.";
 
-export function renderOgImage({ title, description, section, path = "usefiretower.com", format = "og" }: {
+export function renderOgImage({ title, description, section, label = section ? "Documentation" : undefined, footer, path = "usefiretower.com", format = "og" }: {
   title: string;
   description?: string;
   section?: string;
+  label?: string;
+  footer?: string;
   path?: string;
   format?: "og" | "x";
 }) {
@@ -24,7 +26,7 @@ export function renderOgImage({ title, description, section, path = "usefiretowe
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "#F8F8F7", color: "#111110", padding: "48px 64px 36px", fontFamily: "DM Sans", position: "relative" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <img src={data(wordmark)} width={256} height={50} alt="Firetower" />
-        {docs && <span style={{ fontSize: 21, color: "#5C5B58" }}>Documentation</span>}
+        {docs && <span style={{ fontSize: 21, color: "#5C5B58" }}>{label}</span>}
       </div>
       <img src={data(symbol)} width={200} height={250} alt="" style={{ position: "absolute", right: 52, top: docs ? 225 : 198 }} />
       <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", flex: 1, paddingTop: 18, paddingBottom: 22, maxWidth: 850 }}>
@@ -33,7 +35,7 @@ export function renderOgImage({ title, description, section, path = "usefiretowe
         {description && <div style={{ marginTop: 22, fontSize: 24, lineHeight: 1.4, color: "#5C5B58", maxWidth: 790 }}>{description}</div>}
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #C7C6C2", paddingTop: 22, fontSize: 18, color: "#5C5B58" }}>
-        <span>{docs ? "Firetower docs" : "Built for enterprise. Unopinionated harness, model agnostic."}</span>
+        <span>{footer ?? (docs ? "Firetower docs" : "Built for enterprise. Unopinionated harness, model agnostic.")}</span>
         <span>{path}</span>
       </div>
     </div>,
