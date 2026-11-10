@@ -1,0 +1,43 @@
+<aside class="callout"><strong>Recommended: track the work in a draft PR</strong><p>For GitHub projects, ask your lead agent to use the <code>gh</code> CLI to create a draft pull request and keep it updated as the team works. Have the agents record progress, checks and review findings there. Firetower also lets you inspect the diff and ship changes from the app.</p></aside>
+<div class="code"><div class="code-top"><span>Example request</span><button class="copy" type="button">Copy</button></div><pre><code>Use gh to open a draft PR for this task.
+Keep it updated with changes, checks and findings from every agent.
+Leave it as a draft until I have reviewed it.</code></pre></div>
+<p>Open the workspace, then select <strong>Diff</strong> in the right panel to inspect changed files.</p>
+<figure class="product-figure tutorial-overview"><button type="button" class="image-expand" data-image="guide-review-page" data-image-title="Workspace conversation and Diff panel" aria-label="Enlarge: Workspace conversation and Diff panel"><span class="themed-image"><img class="image-light" src="/product/guide-review-page-light.webp" alt="Workspace conversation and Diff panel" width="1770" height="1275" loading="lazy" decoding="async"><img class="image-dark" src="/product/guide-review-page-dark.webp" alt="Workspace conversation and Diff panel" width="1770" height="1275" loading="lazy" decoding="async"></span></button><figcaption>Workspace conversation and Diff panel. Desktop app · sample data. Select to enlarge.</figcaption></figure>
+<h2 id="section-0">Review the work</h2>
+<ol class="steps">
+  <li>
+    <strong> Read the agent’s summary. </strong>
+    Compare the result with the original request.
+  </li>
+  <li>
+    <strong> Inspect the changed files. </strong>
+    Check for unrelated edits, sensitive data and behavior changes.
+  </li>
+  <li>
+    <strong> Verify the checks. </strong>
+    Review test results and rerun anything needed in the workspace.
+  </li>
+  <li>
+    <strong> Request revisions. </strong>
+    Keep the feedback concrete and review the updated diff.
+  </li>
+</ol>
+<h2 id="section-1">Ship through your git host</h2>
+<p>
+  Use the workspace’s shipping flow to create or update a pull request or merge
+  request. Your connected git identity needs permission to push and create the
+  request. Complete code review and merge through your team’s normal process.
+</p>
+<h2 id="section-2">If shipping fails</h2>
+<ul>
+  <li>Check whether your git token expired or lost repository access.</li>
+  <li>Check write permissions and provider token scopes.</li>
+  <li>Resolve branch conflicts before retrying.</li>
+  <li>Confirm you are acting in your own agent conversation.</li>
+</ul>
+<p>
+  Work without a repository?
+  <a href="/docs/workspaces"> Download the result </a>
+  instead of using a git shipping flow.
+</p>

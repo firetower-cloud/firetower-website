@@ -1,0 +1,30 @@
+{
+  "repository": "firetower-cloud/firetower",
+  "commit": "3e3ea484bff0c20fc5b1a07b862b9bb6f53aac04",
+  "links": [
+    {
+      "source": "README.md:19",
+      "url": "https://usefiretower.com/docs"
+    },
+    {
+      "source": "README.md:87",
+      "url": "https://usefiretower.com/docs"
+    },
+    {
+      "source": "install/install.sh:46",
+      "url": "https://usefiretower.com/docs"
+    },
+    {
+      "source": "install/install.sh:59",
+      "url": "https://usefiretower.com/docs/self-hosting"
+    },
+    {
+      "source": "install/worker.sh:63",
+      "url": "https://usefiretower.com/docs"
+    },
+    {
+      "source": "web/components/Shell.tsx:153",
+      "url": "https://www.usefiretower.com/docs"
+    }
+  ]
+}

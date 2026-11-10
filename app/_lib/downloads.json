@@ -1,0 +1,41 @@
+[
+  {
+    "os": "mac",
+    "name": "macOS",
+    "detail": "Universal · Apple silicon and Intel",
+    "label": "Download for macOS",
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.28.1/Firetower_0.28.1_macos.dmg",
+    "version": "0.28.1"
+  },
+  {
+    "os": "windows",
+    "name": "Windows",
+    "detail": "64-bit installer · .exe",
+    "label": "Download for Windows",
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.28.1/Firetower_0.28.1_x64-setup.exe",
+    "version": "0.28.1"
+  },
+  {
+    "os": "windows-msi",
+    "name": "Windows MSI",
+    "detail": "64-bit package · .msi",
+    "label": "Download Windows MSI",
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.28.1/Firetower_0.28.1_x64_en-US.msi",
+    "version": "0.28.1"
+  },
+  {
+    "os": "android",
+    "name": "Android",
+    "detail": "Android app · .apk",
+    "label": "Download for Android",
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/mobile-v0.14.0/firetower-0.14.0.apk",
+    "version": "0.14.0"
+  },
+  {
+    "os": "ios",
+    "name": "iPhone and iPad",
+    "detail": "Beta through TestFlight",
+    "label": "Join iOS beta",
+    "url": "https://testflight.apple.com/join/uhgjMk1y"
+  }
+]

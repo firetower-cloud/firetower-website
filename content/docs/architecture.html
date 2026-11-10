@@ -1,0 +1,94 @@
+<h2 id="section-0">The parts of an installation</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Machine</dt>
+    <dd>
+      A physical or virtual computer where your agents run. One machine can host
+      several workspaces.
+    </dd>
+  </div>
+  <div>
+    <dt>Worker</dt>
+    <dd>
+      The Firetower program installed on a machine. It starts agents and manages
+      their working files.
+    </dd>
+  </div>
+  <div>
+    <dt>Control plane</dt>
+    <dd>
+      The server that coordinates work and manages accounts, credentials and
+      access.
+    </dd>
+  </div>
+  <div>
+    <dt>Client</dt>
+    <dd>The desktop or mobile app you use to start work and review results.</dd>
+  </div>
+</dl>
+<div class="architecture">
+  <div>
+    <small> Your devices </small>
+    <strong> Desktop &amp; mobile </strong>
+    <span> Start, review and continue work </span>
+  </div>
+  <span class="connector"> ↕ </span>
+  <div>
+    <small> Your infrastructure </small>
+    <strong> Control plane </strong>
+    <span> Accounts, access and coordination </span>
+  </div>
+  <span class="connector"> ↕ SSH </span>
+  <div>
+    <small> Your worker machines </small>
+    <strong> Workers → agent processes </strong>
+    <span> Repositories, tools and execution </span>
+  </div>
+</div>
+<h2 id="section-1">What happens when something disconnects?</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>What continues</th>
+        <th>What you lose temporarily</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>You close the app</td>
+        <td>Agents already running on a worker</td>
+        <td>Live visibility until you reconnect</td>
+      </tr>
+      <tr>
+        <td>The control plane restarts</td>
+        <td>Existing agent processes on other machines</td>
+        <td>Coordination, new starts and server-side actions</td>
+      </tr>
+      <tr>
+        <td>A worker machine stops</td>
+        <td>Work on other machines</td>
+        <td>Every process on the stopped machine</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  Agent processes run under tmux and can outlive the connection to the control
+  plane. A lost machine does not automatically move its work to another machine.
+</p>
+<h2 id="section-2">Where work lives</h2>
+<p>
+  The control plane stores shared state and credentials. Each worker keeps the
+  working files and executes tools as its SSH account. A separate VM is the
+  isolation boundary when work must not share host access.
+</p>
+<aside class="callout">
+  <strong> A new installation starts empty </strong>
+  <p>
+    Installing the control plane does not create a worker.
+    <a href="/docs/machines"> Add a machine </a>
+    before starting your first task.
+  </p>
+</aside>

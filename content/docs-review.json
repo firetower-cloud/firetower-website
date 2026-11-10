@@ -1,0 +1,352 @@
+[
+  {
+    "id": "start",
+    "sources": [
+      "firetower/docs/which-surface.md",
+      "firetower-website/app/docs/_lib/nav.ts"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "join",
+    "sources": [
+      "firetower/web/components/GetTheApp.tsx",
+      "firetower/docs/which-surface.md",
+      "firetower/docs/host-execution.md"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "first-run",
+    "sources": [
+      "firetower/desktop/src/ui/NewWorkspace.tsx",
+      "firetower/docs/host-execution.md",
+      "firetower/docs/workspaces-without-a-repository.md"
+    ],
+    "validation": "Walk the current composer from a clean user account. Confirm launch controls and screenshot it. No task was run against a live installation for this draft.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "concepts",
+    "sources": [
+      "firetower/desktop/src/ui/config/Roles.tsx",
+      "firetower/docs/host-execution.md",
+      "firetower/docs/teams-and-directories.md",
+      "firetower/crates/ft-server/src/delegate.rs"
+    ],
+    "validation": "Conceptual diagrams use an illustrative checkout task. They describe relationships, not screenshots of live activity.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "concepts-agents",
+    "sources": [
+      "firetower/desktop/src/ui/config/Roles.tsx",
+      "firetower/desktop/src/ui/config/Skills.tsx",
+      "firetower/docs/agent-accounts.md"
+    ],
+    "validation": "Examples are illustrative. Confirm agent/model options against the launch release. The expandable image is the supplied redesign, not a release screenshot.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "concepts-work",
+    "sources": [
+      "firetower/crates/ft-server/src/delegate.rs",
+      "firetower/docs/delegation.md",
+      "firetower/docs/workspaces-without-a-repository.md"
+    ],
+    "validation": "Sub-workspace describes delegated work with placement new, not an arbitrary manual folder or unlimited workspace nesting. Current code takes precedence over older delegation plans.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "architecture",
+    "sources": [
+      "firetower/docs/host-execution.md",
+      "firetower/docs/updates.md"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "concepts-access",
+    "sources": [
+      "firetower/docs/teams-and-directories.md",
+      "firetower/web/components/org/Access.tsx",
+      "firetower/docs/host-execution.md",
+      "firetower-website/app/docs/permissions/workspaces/page.mdx"
+    ],
+    "validation": "Illustrative team and resources. Validate exact per-resource actions before publication. Do not imply that an organization administrator owns personal resources or that sharing a workspace transfers a conversation.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "concepts-results",
+    "sources": [
+      "firetower/docs/trackers.md",
+      "firetower/docs/workspaces-without-a-repository.md",
+      "firetower/crates/ft-server/src/api/artifacts.rs",
+      "firetower/desktop/src/ui/PreviewTab.tsx"
+    ],
+    "validation": "Conceptual distinction only; signed-link access and preview lifecycle still need the validation listed on their practical guides.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "requirements",
+    "sources": [
+      "firetower-cli/package.json",
+      "firetower/docs/host-execution.md",
+      "firetower-website/app/docs/self-hosting/app/install/page.mdx"
+    ],
+    "validation": "Publish tested server and worker sizing after measuring representative workloads. Validate supported Linux distributions and all outbound endpoints.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "install",
+    "sources": [
+      "firetower-cli/src/commands/install.ts",
+      "firetower-cli/src/cli.ts",
+      "firetower-cli/README.md",
+      "firetower-cli/src/certificates.ts",
+      "firetower-website/app/docs/self-hosting/app/install/page.mdx"
+    ],
+    "validation": "Commands and wizard sequence checked against the current CLI source. Still needs a clean-server installation, DNS/TLS test and first-task walkthrough against the launch release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "networking",
+    "sources": [
+      "firetower-cli/src/shape.ts",
+      "firetower-cli/src/cli.ts",
+      "firetower/docs/host-execution.md",
+      "firetower-website/app/docs/self-hosting/app/install/page.mdx"
+    ],
+    "validation": "Needs an explicit firewall and outbound-host reference, custom-CA coverage, and tested reverse-proxy examples. Do not claim air-gapped installation or public-preview isolation without testing.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "machines",
+    "sources": [
+      "firetower/docs/host-execution.md"
+    ],
+    "validation": "Confirm Add a machine, Install the worker and readiness labels in the launch UI. Capture separate SSH-failure and missing-dependency screenshots.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "worker-help",
+    "sources": [
+      "firetower/docs/host-execution.md",
+      "firetower/docs/workspace-teardown.md"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "accounts",
+    "sources": [
+      "firetower/docs/agent-accounts.md",
+      "firetower/docs/host-execution.md"
+    ],
+    "validation": "Complete the connection matrix for Claude Code, Codex, Cursor Agent, Kimi and Mistral Vibe against the chosen release. Do not imply every agent uses OAuth or has the same model controls.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "fallback",
+    "sources": [
+      "firetower/docs/agent-accounts.md"
+    ],
+    "validation": "Test one same-agent continuation and one cross-agent handoff. Capture quota-exhaustion, no-target and switch-failed states.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "git",
+    "sources": [
+      "firetower/docs/git-hosts.md",
+      "firetower/crates/ft-server/src/providers.rs"
+    ],
+    "validation": "Confirm provider scopes and GitLab device-flow detection against release code and provider documentation. Test a private repository for each supported host.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "git-admin",
+    "sources": [
+      "firetower/docs/git-hosts.md"
+    ],
+    "validation": "Split provider-specific setup into tested subguides as needed. GitLab and GitHub Enterprise registration fields need release-specific screenshots. No unverified client-secret or token-expiry instruction is included.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "trackers",
+    "sources": [
+      "firetower/docs/trackers.md"
+    ],
+    "validation": "Test token failure and a Linear issue without a repository. Verify the new navigation label for Trackers.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "repo-setup",
+    "sources": [
+      "firetower/desktop/src/ui/config/Repos.tsx"
+    ],
+    "validation": "Run a clean clone on a new worker. Validate setup scripts, a missing secret and a failing setup command. Capture the redesigned repository settings.",
+    "originalStatus": "Specification"
+  },
+  {
+    "id": "workspaces",
+    "sources": [
+      "firetower/docs/workspaces-without-a-repository.md",
+      "firetower/docs/workspace-teardown.md",
+      "firetower/docs/teams-and-directories.md"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "profiles",
+    "sources": [
+      "firetower/desktop/src/ui/config/Roles.tsx",
+      "firetower/crates/ft-server/src/api/roles.rs"
+    ],
+    "validation": "Current code has an explicit Operator/Manager delegation control. The old design comment saying “a team alone makes a manager” is stale. Screenshot the actual saved profile, not that comment.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "teams",
+    "sources": [
+      "firetower/desktop/src/ui/config/Roles.tsx",
+      "firetower/docs/delegation.md"
+    ],
+    "validation": "Run a Manager with two Operators on both placements. Verify permissions, handback and failure states in the launch release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "skills",
+    "sources": [
+      "firetower/desktop/src/ui/config/Skills.tsx",
+      "firetower/desktop/src/ui/AddSkill.tsx",
+      "firetower/desktop/src/ui/config/Roles.tsx"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "runs",
+    "sources": [
+      "firetower/docs/agent-accounts.md",
+      "firetower/docs/host-execution.md",
+      "firetower/docs/workspace-teardown.md"
+    ],
+    "validation": "Verify exact pause, stop, end and resume controls. The draft intentionally does not invent lifecycle buttons or an automatic restart guarantee.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "review",
+    "sources": [
+      "firetower/docs/git-hosts.md",
+      "firetower-website/app/docs/permissions/workspaces/page.mdx"
+    ],
+    "validation": "Capture the current shipping sheet and conflict state. Verify commit, push and request steps for each host; do not imply automatic merge.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "artifacts",
+    "sources": [
+      "firetower/crates/ft-server/src/api/artifacts.rs",
+      ".firetower/attachments/firetower-redesign-v102.html"
+    ],
+    "validation": "Verify library retention, export options and sharing against the launch release. Do not use the old scoped artifacts design document as evidence of shipped behavior.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "previews",
+    "sources": [
+      "firetower/desktop/src/ui/PreviewTab.tsx"
+    ],
+    "validation": "Run a real service, open its preview from a second device and test link expiry and access from outside the private network. Distinguish a live preview from a stored artifact.",
+    "originalStatus": "Specification"
+  },
+  {
+    "id": "people",
+    "sources": [
+      "firetower/web/components/org/People.tsx",
+      "firetower/web/components/org/Teams.tsx",
+      "firetower/docs/teams-and-directories.md"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "sharing",
+    "sources": [
+      "firetower/docs/teams-and-directories.md",
+      "firetower/web/components/org/Access.tsx",
+      "firetower-website/app/docs/permissions/sharing/page.mdx"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "permissions",
+    "sources": [
+      "firetower/docs/teams-and-directories.md",
+      "firetower-website/app/docs/permissions/workspaces/page.mdx"
+    ],
+    "validation": "Publish a tested per-resource action matrix. A three-row overview cannot substitute for the exact permissions of secrets, accounts, skills and workspaces.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "shared-accounts",
+    "sources": [
+      "firetower/docs/agent-accounts.md",
+      "firetower/docs/teams-and-directories.md"
+    ],
+    "validation": "Validate the exact grant needed to consume an account and the connector’s lifecycle on offboarding. Provider licensing is not asserted by this product guide.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "data",
+    "sources": [
+      "firetower/crates/ft-server/src/auth.rs",
+      "firetower/web/components/org/Settings.tsx",
+      "firetower/docs/workspace-teardown.md"
+    ],
+    "validation": "Inspect every data path and demonstrate deletion. Confirm artifact storage and backup coverage. No compliance certification, full audit-trail or configurable-retention claim without evidence.",
+    "originalStatus": "Specification"
+  },
+  {
+    "id": "updates",
+    "sources": [
+      "firetower/docs/updates.md",
+      "firetower-cli/src/commands/upgrade.ts"
+    ],
+    "validation": "Validate upgrades from the currently deployed version. Exercise custom Compose/Caddy changes, a failed backup and an interrupted update. Do not equate image rollback with database rollback.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "backups",
+    "sources": [
+      "firetower-cli/src/commands/lifecycle.ts",
+      "firetower/docs/updates.md"
+    ],
+    "validation": "CLI output and UI backup differences checked in source. End-to-end restore is not verified. Confirm all persistent volumes and artifact storage paths for the launch release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "troubleshoot",
+    "sources": [
+      "firetower-cli/src/cli.ts",
+      "firetower-cli/src/commands/doctor.ts",
+      "firetower-cli/src/commands/lifecycle.ts"
+    ],
+    "validation": "Confirm the steps and labels against the release selected for launch. Replace prototype images with screenshots of that release.",
+    "originalStatus": "Draft"
+  },
+  {
+    "id": "restore",
+    "sources": [
+      "firetower-cli/src/commands/lifecycle.ts",
+      "firetower/docs/updates.md"
+    ],
+    "validation": "Complete a clean recovery rehearsal, including a missing-key failure and version mismatch. The installer CLI has no restore command. Do not publish speculative SQL import commands as a tested runbook.",
+    "originalStatus": "Specification"
+  }
+]

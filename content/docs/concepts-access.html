@@ -1,0 +1,108 @@
+<figure class="concept-figure">
+  <div class="concept-figure-title">Share a pool with a company team</div>
+  <div class="access-example-team">
+    <span> Company team </span>
+    <strong> Engineering </strong>
+    <small> Ada · Sam · Maya </small>
+  </div>
+  <div class="concept-connector">
+    <span aria-hidden="true"> ↓ </span>
+    <span> Editor access </span>
+  </div>
+  <div class="access-example-directory">
+    <span> Firetower directory </span>
+    <strong> Engineering resources </strong>
+    <div class="resource-pills">
+      <span> Worker machine </span>
+      <span> Reviewer profile </span>
+      <span> Review skill </span>
+    </div>
+  </div>
+  <figcaption>
+    The grant gives this team access to resources in this directory. Exact
+    actions depend on the resource type.
+  </figcaption>
+</figure>
+<h2 id="section-0">People, resources and directories</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Person / company team</dt>
+    <dd>
+      A person has a Firetower account. A company team groups people so access
+      can be granted once for the group.
+    </dd>
+  </div>
+  <div>
+    <dt>Resource</dt>
+    <dd>
+      Something you can share, such as a machine, workspace, profile, skill,
+      artifact or agent account.
+    </dd>
+  </div>
+  <div>
+    <dt>Directory</dt>
+    <dd>
+      A container for shared resources in Firetower. It is an access boundary,
+      not a folder on a worker’s disk.
+    </dd>
+  </div>
+  <div>
+    <dt>Grant</dt>
+    <dd>
+      Access given to a person or company team, directly on a resource or
+      through its directory.
+    </dd>
+  </div>
+</dl>
+<h2 id="section-1">Access levels</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Level</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Viewer</td>
+        <td>Read the resource and its visible activity.</td>
+      </tr>
+      <tr>
+        <td>Editor</td>
+        <td>
+          Use or work with the resource. On workspaces, this includes terminal
+          access.
+        </td>
+      </tr>
+      <tr>
+        <td>Directory Admin</td>
+        <td>Manage the directory, its contents and who can access it.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="section-2">Ownership and sharing</h2>
+<p>
+  Moving a resource into a directory transfers ownership to that directory.
+  Adding a direct Viewer or Editor grant keeps the existing owner.
+</p>
+<p>
+  An organization Admin manages the installation and people. That role does not
+  automatically expose everyone’s private resources. The person who started a
+  session controls its messages and approvals. Colleagues with the appropriate
+  access can start their own sessions in that workspace.
+</p>
+<h2 id="section-3">Secrets and execution access</h2>
+<p>
+  The vault stores credentials and secrets. Sharing a saved resource and
+  approving an agent action are separate decisions. Agent tools run with the
+  worker’s SSH-account access; use a separate machine or VM when work needs
+  isolation.
+</p>
+<div class="concept-next">
+  <span> Put it into practice </span>
+  <a href="/docs/sharing"> Share a resource </a>
+  <a href="/docs/permissions"> Check permissions </a>
+  <a href="/docs/people"> Manage people and teams </a>
+</div>

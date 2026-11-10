@@ -1,0 +1,136 @@
+<figure class="concept-figure">
+  <div class="concept-figure-title">
+    One workspace can hold several sessions
+  </div>
+  <div class="workspace-example">
+    <div class="workspace-example-title">
+      <span> Workspace </span>
+      <strong> Checkout fix </strong>
+      <small> Example: one repository and shared branch </small>
+    </div>
+    <div class="session-pair">
+      <div>
+        <span aria-hidden="true" class="session-dot"> </span>
+        <strong> Lead session </strong>
+        <small> Coordinates the fix </small>
+      </div>
+      <div>
+        <span aria-hidden="true" class="session-dot"> </span>
+        <strong> Reviewer session </strong>
+        <small> Reads the same files </small>
+      </div>
+    </div>
+  </div>
+  <div class="subworkspace-example">
+    <div aria-hidden="true" class="subworkspace-stem">↳</div>
+    <div>
+      <span> Sub-workspace · separate placement </span>
+      <strong> Test the checkout fix </strong>
+      <small> QA session · separate working files and branch </small>
+    </div>
+  </div>
+  <figcaption>
+    Example with a repository. The reviewer shares the lead’s workspace; QA runs
+    in a sub-workspace.
+  </figcaption>
+</figure>
+<h2 id="section-0">The four concepts</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Workspace</dt>
+    <dd>
+      A working directory on a machine, with its files and associated sessions.
+      It can have a repository or contain work without git.
+    </dd>
+  </div>
+  <div>
+    <dt>Session</dt>
+    <dd>
+      One agent conversation and execution context. It can contain several
+      turns, tool calls and approvals. Several sessions can work in one
+      workspace.
+    </dd>
+  </div>
+  <div>
+    <dt>Subagent</dt>
+    <dd>
+      An agent session started by a lead to handle part of the task. It returns
+      its result to the lead.
+    </dd>
+  </div>
+  <div>
+    <dt>Sub-workspace</dt>
+    <dd>
+      A separate workspace created for delegated work. It appears beneath the
+      lead’s work and has its own files and, for git-backed work, branch.
+    </dd>
+  </div>
+</dl>
+<h2 id="section-1">Two places for delegated work</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Placement</th>
+        <th>What it means</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Same workspace</td>
+        <td>
+          A separate session uses the lead’s files and branch. Changes are
+          shared immediately.
+        </td>
+      </tr>
+      <tr>
+        <td>Its own workspace</td>
+        <td>
+          A separate workspace holds the delegated work. Its changes may need to
+          be integrated.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  A subagent does not always create a sub-workspace. A sub-workspace is also not
+  a folder nested inside the lead’s files.
+</p>
+<details>
+  <summary>See delegated work in the redesigned app</summary>
+  <figure>
+    <button
+      aria-label="Enlarge: Lead and delegated work"
+      class="image-expand"
+      data-image="team"
+    >
+      <span class="themed-image">
+        <img
+          alt="Lead and delegated work"
+          class="image-light"
+          decoding="async"
+          loading="lazy"
+          src="/product/team-light.webp"
+         width="1920" height="1236" />
+        <img
+          alt="Lead and delegated work"
+          class="image-dark"
+          decoding="async"
+          loading="lazy"
+          src="/product/team-dark.webp"
+         width="1920" height="1236" />
+      </span>
+    </button>
+    <figcaption>
+      Lead and delegated work · supplied redesign prototype, not a release
+      screenshot
+    </figcaption>
+  </figure>
+</details>
+<div class="concept-next">
+  <span> Put it into practice </span>
+  <a href="/docs/workspaces"> Create a workspace </a>
+  <a href="/docs/runs"> Manage a run </a>
+  <a href="/docs/teams"> Build an agent team </a>
+</div>

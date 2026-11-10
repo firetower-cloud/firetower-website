@@ -1,0 +1,49 @@
+<h2 id="section-0">Where information lives</h2>
+<ul>
+  <li>
+    <strong> Control plane: </strong>
+    shared state, conversation records and encrypted credentials.
+  </li>
+  <li>
+    <strong> Worker machines: </strong>
+    repository mirrors, workspace files, local event logs and running agents.
+  </li>
+  <li>
+    <strong> Agent providers: </strong>
+    requests sent by the coding agent under the account you selected.
+  </li>
+  <li>
+    <strong> Git hosts: </strong>
+    repository operations and changes you push.
+  </li>
+</ul>
+<p>
+  Self-hosting controls where Firetower runs. It does not make a cloud model
+  local. Review each agent provider’s data policy and the tools available to
+  that agent.
+</p>
+<h2 id="section-1">Protect credentials</h2>
+<p>
+  Keep the root key separate from database backups. Limit access to the
+  control-plane host and to worker SSH accounts. A worker executes with its
+  account’s filesystem and network permissions.
+</p>
+<p>
+  Use
+  <a href="/docs/sharing"> resource sharing </a>
+  to control who can use an account. Rotate or revoke credentials at their
+  provider when access must end.
+</p>
+<h2 id="section-2">Review telemetry</h2>
+<p>
+  Open Settings in the administration site to review Telemetry. The panel shows
+  its current state and the payload preview. An administrator can turn it on or
+  off for the organization.
+</p>
+<h2 id="section-3">Export before cleanup</h2>
+<p>
+  Save needed files and ship changes before ending a workspace. Workspace
+  teardown can remove its working directory and conversation records. Do not
+  rely on workspace history as a long-term archive.
+</p>
+<p>See <a href="/docs/backups">Back up Firetower</a> to protect installation data.</p>

@@ -1,0 +1,76 @@
+<h2 id="section-0">Collect the basics</h2>
+<p>
+  Run these on the control-plane server. Use the directory chosen at
+  installation.
+</p>
+<div class="code">
+  <div class="code-top">
+    <span> On the control-plane server </span>
+    <button class="copy" type="button">Copy</button>
+  </div>
+  <pre><code>firetower --dir /opt/firetower status
+firetower --dir /opt/firetower doctor
+firetower --dir /opt/firetower logs</code></pre>
+</div>
+<h2 id="section-1">Follow the symptom</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Problem</th>
+        <th>Start with</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>App cannot reach the server</td>
+        <td>Open the URL in a browser; check VPN, DNS and TLS</td>
+      </tr>
+      <tr>
+        <td>Server is reachable but sign-in fails</td>
+        <td>
+          Account status, temporary-password flow and trusted-proxy
+          configuration
+        </td>
+      </tr>
+      <tr>
+        <td>No machine can start work</td>
+        <td>
+          <a href="/docs/machines"> Worker setup </a>
+          and
+          <a href="/docs/machines#section-5"> readiness </a>
+        </td>
+      </tr>
+      <tr>
+        <td>Only one provider fails</td>
+        <td>
+          <a href="/docs/accounts"> Agent credentials </a>
+          or
+          <a href="/docs/git"> git-host authorization </a>
+        </td>
+      </tr>
+      <tr>
+        <td>A run waits unexpectedly</td>
+        <td>Permission requests, quota failure and worker connectivity</td>
+      </tr>
+      <tr>
+        <td>An upgrade stopped</td>
+        <td>
+          <a href="/docs/updates"> The update step and its recorded error </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="section-2">Prepare a useful report</h2>
+<ul>
+  <li>Include the time, affected component and versions.</li>
+  <li>Describe what you expected and the exact error.</li>
+  <li>Include relevant diagnostic output after checking it for secrets.</li>
+  <li>Say whether the failure affects everyone, one machine or one account.</li>
+</ul>
+<p>
+  Do not include
+  <code> .env </code>
+  , root keys, provider tokens or private repository content in a public report.
+</p>

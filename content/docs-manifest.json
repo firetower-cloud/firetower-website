@@ -1,0 +1,913 @@
+[
+  {
+    "id": "start",
+    "slug": "",
+    "title": "Firetower documentation",
+    "description": "Set up your workspace. Run your first agent team. Keep your installation healthy.",
+    "section": "Start here",
+    "audience": "Everyone",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "From setup to your first result"
+      },
+      {
+        "id": "section-1",
+        "title": "Find the right guide"
+      }
+    ]
+  },
+  {
+    "id": "join",
+    "slug": "join",
+    "title": "Download and connect",
+    "description": "Connect the app to an installation your company already runs.",
+    "section": "Start here",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "Connect from your computer"
+      },
+      {
+        "id": "section-2",
+        "title": "If you cannot connect"
+      }
+    ]
+  },
+  {
+    "id": "first-run",
+    "slug": "first-run",
+    "title": "Run your first task",
+    "description": "Start with a small change you can review.",
+    "section": "Start here",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "Start the work"
+      },
+      {
+        "id": "section-2",
+        "title": "Check the result"
+      }
+    ]
+  },
+  {
+    "id": "concepts",
+    "slug": "concepts",
+    "title": "Key concepts",
+    "description": "Understand what runs the work, where it runs and who can access it.",
+    "section": "Key concepts",
+    "audience": "Everyone",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Learn the vocabulary"
+      },
+      {
+        "id": "section-1",
+        "title": "Three distinctions to remember"
+      }
+    ],
+    "navTitle": "Overview"
+  },
+  {
+    "id": "concepts-agents",
+    "slug": "concepts-agents",
+    "title": "Agents, profiles and skills",
+    "description": "Choose the agent, give it a role and equip it for the task.",
+    "section": "Key concepts",
+    "audience": "Everyone",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Agent, model and account"
+      },
+      {
+        "id": "section-1",
+        "title": "Profile, skill and team"
+      }
+    ]
+  },
+  {
+    "id": "concepts-work",
+    "slug": "concepts-work",
+    "title": "Workspaces and sessions",
+    "description": "A workspace holds files. A session is an agent working with them.",
+    "section": "Key concepts",
+    "audience": "Everyone",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "The four concepts"
+      },
+      {
+        "id": "section-1",
+        "title": "Two places for delegated work"
+      }
+    ]
+  },
+  {
+    "id": "architecture",
+    "slug": "architecture",
+    "title": "Machines and infrastructure",
+    "description": "Your app controls the work. Your machines execute it.",
+    "section": "Key concepts",
+    "audience": "Everyone",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "The parts of an installation"
+      },
+      {
+        "id": "section-1",
+        "title": "What happens when something disconnects?"
+      },
+      {
+        "id": "section-2",
+        "title": "Where work lives"
+      }
+    ]
+  },
+  {
+    "id": "concepts-access",
+    "slug": "concepts-access",
+    "title": "Sharing and permissions",
+    "description": "Decide who can see, use and manage each resource.",
+    "section": "Key concepts",
+    "audience": "Everyone",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "People, resources and directories"
+      },
+      {
+        "id": "section-1",
+        "title": "Access levels"
+      },
+      {
+        "id": "section-2",
+        "title": "Ownership and sharing"
+      },
+      {
+        "id": "section-3",
+        "title": "Secrets and execution access"
+      }
+    ]
+  },
+  {
+    "id": "concepts-results",
+    "slug": "concepts-results",
+    "title": "Tasks and results",
+    "description": "A task describes the goal. Its results can be code, a document or a running preview.",
+    "section": "Key concepts",
+    "audience": "Everyone",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "From request to code"
+      },
+      {
+        "id": "section-1",
+        "title": "Artifact versus preview"
+      }
+    ]
+  },
+  {
+    "id": "requirements",
+    "slug": "requirements",
+    "title": "Requirements",
+    "description": "Prepare the server, network and worker machines separately.",
+    "section": "Deploy Firetower",
+    "audience": "Administrator",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Control-plane server"
+      },
+      {
+        "id": "section-1",
+        "title": "Worker machines"
+      },
+      {
+        "id": "section-2",
+        "title": "People and devices"
+      }
+    ]
+  },
+  {
+    "id": "install",
+    "slug": "install-firetower",
+    "title": "Install Firetower",
+    "description": "Deploy the control plane on a Linux server, then connect your first worker.",
+    "section": "Deploy Firetower",
+    "audience": "Administrator",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Prepare private access"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Run the installer"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Complete the wizard"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Sign in"
+      },
+      {
+        "id": "section-5",
+        "title": "If DNS or certificates take longer"
+      }
+    ]
+  },
+  {
+    "id": "machines",
+    "slug": "machines",
+    "title": "Add a worker machine",
+    "description": "Give Firetower a machine on which it can run agents.",
+    "section": "Deploy Firetower",
+    "audience": "Machine owner",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "open-machines",
+        "title": "1. Open Machines"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Enter the machine details"
+      },
+      {
+        "id": "section-2",
+        "title": "3. Authorize Firetower’s SSH key"
+      },
+      {
+        "id": "section-3",
+        "title": "4. Install the worker"
+      },
+      {
+        "id": "section-4",
+        "title": "5. Install your agents"
+      },
+      {
+        "id": "section-5",
+        "title": "6. Check readiness in the app"
+      }
+    ]
+  },
+  {
+    "id": "accounts",
+    "slug": "accounts",
+    "title": "Connect an agent account",
+    "description": "Use an agent subscription or supported API credential for your work.",
+    "section": "Connect your tools",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Choose your agent"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Sign in to your subscription"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Choose the default"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Check the saved connection"
+      }
+    ]
+  },
+  {
+    "id": "fallback",
+    "slug": "fallback",
+    "title": "Configure account fallback",
+    "description": "Choose which accounts a run may use when its current allowance is exhausted.",
+    "section": "Connect your tools",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Open fallback settings"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Choose accounts in order"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Save the fallback list"
+      },
+      {
+        "id": "section-4",
+        "title": "What happens at the limit"
+      }
+    ]
+  },
+  {
+    "id": "git",
+    "slug": "git",
+    "title": "Connect a git host",
+    "description": "Connect your own identity to GitHub, GitLab, Gitea or Forgejo.",
+    "section": "Connect your tools",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Choose your git host"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Approve the connection"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Confirm your identity"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Find your repository"
+      },
+      {
+        "id": "section-5",
+        "title": "Other sign-in methods"
+      }
+    ]
+  },
+  {
+    "id": "git-admin",
+    "slug": "git-admin",
+    "title": "Configure company git hosts",
+    "description": "Register the instances your organization uses.",
+    "section": "Connect your tools",
+    "audience": "Administrator",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Choose the provider"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Set the address and sign-in method"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Add the host"
+      }
+    ]
+  },
+  {
+    "id": "trackers",
+    "slug": "trackers",
+    "title": "Connect tasks and issues",
+    "description": "Bring an issue into a workspace with its source context.",
+    "section": "Connect your tools",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Connect the tracker"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Check the connection"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Choose an issue"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Review and start the work"
+      }
+    ]
+  },
+  {
+    "id": "repo-setup",
+    "slug": "repo-setup",
+    "title": "Configure a repository",
+    "description": "Make a repository reproducible on a worker.",
+    "section": "Connect your tools",
+    "audience": "Repository maintainer",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Before you start"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Open the repository"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Save the setup command"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Add environment variables"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Review the saved configuration"
+      }
+    ]
+  },
+  {
+    "id": "workspaces",
+    "slug": "workspaces",
+    "title": "Workspaces and repositories",
+    "description": "Choose where files live and how changes are isolated.",
+    "section": "Run work",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Choose whether to use a repository"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Start without a repository"
+      },
+      {
+        "id": "add-repository-later",
+        "title": "3. Add a repository after work has started"
+      },
+      {
+        "id": "section-2",
+        "title": "Share the place, own the conversation"
+      }
+    ]
+  },
+  {
+    "id": "profiles",
+    "slug": "profiles",
+    "title": "Create an agent profile",
+    "description": "Save the instructions and defaults for a repeatable role.",
+    "section": "Run work",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Ask an AI to create a profile"
+      },
+      {
+        "id": "profile-settings",
+        "title": "2. Set its role and workspace"
+      },
+      {
+        "id": "profile-runtime",
+        "title": "3. Choose how it runs"
+      },
+      {
+        "id": "profile-skills",
+        "title": "4. Choose the skills it loads"
+      },
+      {
+        "id": "section-1",
+        "title": "5. Review instructions and save"
+      }
+    ]
+  },
+  {
+    "id": "teams",
+    "slug": "teams",
+    "title": "Build an agent team",
+    "description": "Give a lead a clear objective and specialists it can delegate to.",
+    "section": "Run work",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Create the specialists"
+      },
+      {
+        "id": "section-1",
+        "title": "Create the lead"
+      },
+      {
+        "id": "section-2",
+        "title": "Review the team’s output"
+      }
+    ]
+  },
+  {
+    "id": "skills",
+    "slug": "skills",
+    "title": "Import and share skills",
+    "description": "Give agents reusable instructions and supporting files.",
+    "section": "Run work",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "create-with-ai",
+        "title": "1. Create a skill with AI"
+      },
+      {
+        "id": "section-0",
+        "title": "2. Import an existing skill"
+      },
+      {
+        "id": "review-import",
+        "title": "3. Review before importing"
+      },
+      {
+        "id": "find-imported",
+        "title": "4. Find the skill in your library"
+      },
+      {
+        "id": "section-1",
+        "title": "Update a skill"
+      },
+      {
+        "id": "section-2",
+        "title": "Share a skill"
+      },
+      {
+        "id": "section-3",
+        "title": "Check what an agent loads"
+      }
+    ]
+  },
+  {
+    "id": "runs",
+    "slug": "runs",
+    "title": "Manage a run",
+    "description": "Follow progress, answer requests and keep work moving.",
+    "section": "Run work",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Follow the lead’s conversation"
+      },
+      {
+        "id": "follow-sub-workspaces",
+        "title": "2. Open a teammate or sub-workspace"
+      },
+      {
+        "id": "return-to-lead",
+        "title": "3. Return to the lead"
+      },
+      {
+        "id": "section-1",
+        "title": "Continue from another device"
+      },
+      {
+        "id": "section-2",
+        "title": "Change accounts"
+      },
+      {
+        "id": "section-3",
+        "title": "Finish the work"
+      }
+    ]
+  },
+  {
+    "id": "review",
+    "slug": "review",
+    "title": "Review and ship changes",
+    "description": "Turn an agent’s work into a change your team can accept.",
+    "section": "Run work",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Review the work"
+      },
+      {
+        "id": "section-1",
+        "title": "Ship through your git host"
+      },
+      {
+        "id": "section-2",
+        "title": "If shipping fails"
+      }
+    ]
+  },
+  {
+    "id": "artifacts",
+    "slug": "artifacts",
+    "title": "Review artifacts",
+    "description": "Open a visual result and leave feedback on the part that matters.",
+    "section": "Run work",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Open an artifact"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Select an element and write a note"
+      },
+      {
+        "id": "send-feedback",
+        "title": "3. Send the feedback to an agent"
+      },
+      {
+        "id": "section-2",
+        "title": "Share the artifact"
+      }
+    ]
+  },
+  {
+    "id": "previews",
+    "slug": "previews",
+    "title": "Run and share a preview",
+    "description": "Open the service an agent is building and give feedback.",
+    "section": "Run work",
+    "audience": "Team member",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Open the running application"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Annotate the page"
+      },
+      {
+        "id": "send-preview-notes",
+        "title": "3. Send the notes and check the result"
+      },
+      {
+        "id": "section-2",
+        "title": "Share access"
+      },
+      {
+        "id": "section-3",
+        "title": "If the preview stops"
+      }
+    ]
+  },
+  {
+    "id": "people",
+    "slug": "people",
+    "title": "People and company teams",
+    "description": "Give each person an account and group access by responsibility.",
+    "section": "Manage your organization",
+    "audience": "Administrator",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Add a person"
+      },
+      {
+        "id": "section-1",
+        "title": "Create a company team"
+      },
+      {
+        "id": "section-2",
+        "title": "Reset a password"
+      }
+    ]
+  },
+  {
+    "id": "sharing",
+    "slug": "sharing",
+    "title": "Share resources",
+    "description": "Give a company team access to machines, skills, profiles and work.",
+    "section": "Manage your organization",
+    "audience": "Resource owner",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Open the permissions dialog"
+      },
+      {
+        "id": "share-with-person",
+        "title": "2. Share with an individual"
+      },
+      {
+        "id": "section-1",
+        "title": "3. Or move it into a shared directory"
+      },
+      {
+        "id": "section-2",
+        "title": "What changes?"
+      },
+      {
+        "id": "share-subscription",
+        "title": "Share a subscription the same way"
+      }
+    ]
+  },
+  {
+    "id": "permissions",
+    "slug": "permissions",
+    "title": "Permission levels",
+    "description": "Understand what a person can read, use and administer.",
+    "section": "Manage your organization",
+    "audience": "Everyone",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Directory and resource access"
+      },
+      {
+        "id": "section-1",
+        "title": "Company roles are different"
+      },
+      {
+        "id": "section-2",
+        "title": "Workspace access is not conversation ownership"
+      },
+      {
+        "id": "section-3",
+        "title": "Verify access"
+      }
+    ]
+  },
+  {
+    "id": "shared-accounts",
+    "slug": "shared-accounts",
+    "title": "Share agent subscriptions",
+    "description": "Let a team use a connected account through controlled access.",
+    "section": "Manage your organization",
+    "audience": "Account owner",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Share the connection"
+      },
+      {
+        "id": "section-1",
+        "title": "Understand the allowance"
+      },
+      {
+        "id": "section-2",
+        "title": "Maintain the account"
+      }
+    ]
+  },
+  {
+    "id": "data",
+    "slug": "data",
+    "title": "Data, secrets and retention",
+    "description": "Explain where company data goes and what deletion means.",
+    "section": "Manage your organization",
+    "audience": "Security administrator",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Where information lives"
+      },
+      {
+        "id": "section-1",
+        "title": "Protect credentials"
+      },
+      {
+        "id": "section-2",
+        "title": "Review telemetry"
+      },
+      {
+        "id": "section-3",
+        "title": "Export before cleanup"
+      }
+    ]
+  },
+  {
+    "id": "updates",
+    "slug": "updates",
+    "title": "Update Firetower",
+    "description": "Review the impact, take a backup and update compatible components.",
+    "section": "Operate Firetower",
+    "audience": "Administrator",
+    "headings": [
+      {
+        "id": "check-for-updates",
+        "title": "Check for updates"
+      },
+      {
+        "id": "section-0",
+        "title": "1. Update the control plane"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Update the workers"
+      },
+      {
+        "id": "section-2",
+        "title": "3. Update the app"
+      }
+    ]
+  },
+  {
+    "id": "backups",
+    "slug": "backups",
+    "title": "Back up Firetower",
+    "description": "Protect the database, credentials and files needed for recovery.",
+    "section": "Operate Firetower",
+    "audience": "Administrator",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Create a backup"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Check completion"
+      },
+      {
+        "id": "section-2",
+        "title": "3. Keep the rest of the recovery set"
+      },
+      {
+        "id": "section-3",
+        "title": "Test recovery"
+      }
+    ]
+  },
+  {
+    "id": "troubleshoot",
+    "slug": "troubleshoot",
+    "title": "Troubleshoot an installation",
+    "description": "Locate the failing layer before changing configuration.",
+    "section": "Operate Firetower",
+    "audience": "Administrator",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Collect the basics"
+      },
+      {
+        "id": "section-1",
+        "title": "Follow the symptom"
+      },
+      {
+        "id": "section-2",
+        "title": "Prepare a useful report"
+      }
+    ]
+  },
+  {
+    "id": "restore",
+    "slug": "restore",
+    "title": "Restore and recover",
+    "description": "Recover a deployment with its matching database and root key.",
+    "section": "Operate Firetower",
+    "audience": "Administrator",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Keep the recovery set together"
+      },
+      {
+        "id": "section-1",
+        "title": "Prepare an isolated environment"
+      },
+      {
+        "id": "section-2",
+        "title": "Get help with the restore"
+      },
+      {
+        "id": "section-3",
+        "title": "Validate before reconnecting"
+      }
+    ]
+  }
+]

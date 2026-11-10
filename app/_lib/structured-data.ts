@@ -9,15 +9,13 @@
  * inventing them is both a policy violation and the kind of thing that gets
  * rich results turned off for a whole domain.
  */
-import { AUTHOR, LICENSE, NAME, REPO_URL, SITE_URL, SUMMARY, TAGLINE } from "./site";
-import { LIFECYCLE } from "./lifecycle";
+import { AUTHOR, NAME, REPO_URL, SITE_URL, SUMMARY, TAGLINE } from "./site";
 import { findDoc, href, trail } from "../docs/_lib/nav";
 
 export const ORG_ID = `${SITE_URL}/#organization`;
 export const SITE_ID = `${SITE_URL}/#website`;
 const APP_ID = `${SITE_URL}/#software`;
 const HOME_ID = `${SITE_URL}/#webpage`;
-const HOWTO_ID = `${SITE_URL}/#lifecycle`;
 
 /** Profiles that are about this project, and nothing else. A link to a
  *  directory's homepage is not a profile and weakens the signal. */
@@ -32,6 +30,7 @@ export function organizationLd() {
     url: SITE_URL,
     description: `${AUTHOR} makes Firetower, an open-source control plane for running coding agents on your own servers.`,
     sameAs: SAME_AS,
+    logo: { "@type": "ImageObject", url: `${SITE_URL}/icons/firetower-512.png`, width: 512, height: 512 },
   };
 }
 
@@ -59,15 +58,14 @@ export function softwareApplicationLd() {
     url: SITE_URL,
     applicationCategory: "DeveloperApplication",
     applicationSubCategory: "Developer tooling",
-    operatingSystem: "Linux, macOS, Docker",
+    operatingSystem: "macOS, Windows, iOS, Android; Linux server",
     license: "https://spdx.org/licenses/AGPL-3.0-only.html",
-    softwareLicense: LICENSE,
     isAccessibleForFree: true,
-    codeRepository: REPO_URL,
-    downloadUrl: REPO_URL,
+    sameAs: REPO_URL,
+    installUrl: `${SITE_URL}/docs/join`,
+    softwareHelp: { "@type": "CreativeWork", url: `${SITE_URL}/docs` },
     publisher: { "@id": ORG_ID },
-    // Free software still needs an Offer node; without one, search engines
-    // have no statement that the price is zero and will not say so.
+    // This describes the open-source software, not hosting or agent-provider fees.
     offers: {
       "@type": "Offer",
       price: "0",
@@ -76,27 +74,16 @@ export function softwareApplicationLd() {
     },
     featureList: [
       "Run coding agents on your own servers over SSH",
-      "Inbox for sessions that are blocked on you",
+      "Agent profiles, teams and shared skills",
       "Per-session git worktrees and repository mirrors",
-      "Live agent terminal in the browser",
+      "Shared subscriptions with opt-in account fallback",
       "Encrypted credentials with envelope encryption",
       "Diff, push, and open a pull request",
     ],
   };
 }
 
-/**
- * The homepage as a page, rather than as the site.
- *
- * `WebSite` describes the whole domain and `SoftwareApplication` describes the
- * product; neither says "this document, at this URL, is about that product",
- * which is the statement a search engine needs to connect a result to the
- * graph. The docs already have this via `docLd` — the homepage was the one
- * route without it.
- *
- * The breadcrumb has a single item on purpose. A one-item trail is valid, and
- * it makes the root of the hierarchy explicit rather than implied.
- */
+/** Product landing page. */
 export function webPageLd() {
   return {
     "@context": "https://schema.org",
@@ -110,66 +97,13 @@ export function webPageLd() {
         inLanguage: "en",
         isPartOf: { "@id": SITE_ID },
         about: { "@id": APP_ID },
-        primaryImageOfPage: { "@id": `${SITE_URL}/opengraph-image` },
-        breadcrumb: { "@id": `${SITE_URL}/#home-breadcrumbs` },
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${SITE_URL}/#home-breadcrumbs`,
-        itemListElement: [{ "@type": "ListItem", position: 1, name: NAME, item: SITE_URL }],
+        primaryImageOfPage: { "@type": "ImageObject", url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630 },
       },
     ],
   };
 }
 
-/**
- * The session lifecycle, as a HowTo.
- *
- * Built from the same `LIFECYCLE` array the homepage renders, so the schema
- * cannot describe a sequence the page does not show. This is the one piece of
- * genuinely procedural content on the site, and it is the part an answer
- * engine is most likely to be asked to reproduce — "what does Firetower
- * actually do when you give it a task".
- *
- * `k` and `v` are joined for `text` because apart they are a fragment and a
- * qualifier; together they are the sentence the page reads as.
- */
-export function howToLd() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    "@id": HOWTO_ID,
-    name: "What Firetower does with one sentence of work",
-    description:
-      "Give Firetower a sentence describing some work and it picks a host, cuts a branch, opens a worktree, starts tmux and runs your coding agent there — then keeps it running and tells you when it needs you.",
-    inLanguage: "en",
-    isPartOf: { "@id": HOME_ID },
-    about: { "@id": APP_ID },
-    // What you bring: a machine, and the sentence itself.
-    supply: [
-      { "@type": "HowToSupply", name: "A server you can reach over SSH" },
-      { "@type": "HowToSupply", name: "A git repository" },
-      { "@type": "HowToSupply", name: "A task, in a sentence" },
-    ],
-    tool: [{ "@type": "HowToTool", name: NAME }],
-    step: LIFECYCLE.map((s, i) => ({
-      "@type": "HowToStep",
-      position: i + 1,
-      name: s.k,
-      text: `${NAME} ${s.k} ${s.v}.`,
-      url: `${SITE_URL}/#how`,
-    })),
-  };
-}
-
-/**
- * A documentation page: what it is, and where it sits.
- *
- * `TechArticle` rather than `Article` — these are instructions for operating
- * software, and the distinction is the one search engines use to decide
- * whether a page belongs in a how-to result. The breadcrumb is what puts
- * "Docs › Install" under the link instead of a bare URL.
- */
+/** Documentation article and its position in the site. */
 export function docLd(slug: string) {
   const doc = findDoc(slug);
   const url = `${SITE_URL}${href(slug)}`;
@@ -178,9 +112,21 @@ export function docLd(slug: string) {
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: doc.title,
+        isPartOf: { "@id": SITE_ID },
+        breadcrumb: { "@id": `${url}#breadcrumbs` },
+        mainEntity: { "@id": `${url}#article` },
+      },
+      {
         "@type": "TechArticle",
         "@id": `${url}#article`,
         headline: doc.title,
+        mainEntityOfPage: { "@id": `${url}#webpage` },
+        image: `${SITE_URL}/social/docs-${doc.id}-og.png`,
+        author: { "@id": ORG_ID },
         description: doc.description,
         url,
         inLanguage: "en",

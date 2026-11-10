@@ -40,7 +40,6 @@ function useCurrent(headings: Heading[]): string | null {
       window.removeEventListener("scroll", at);
       window.removeEventListener("resize", at);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ids]);
 
   return current;

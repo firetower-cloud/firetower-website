@@ -1,0 +1,161 @@
+{
+  "workflows": [
+    {
+      "ticket": "Incoming tasks",
+      "title": "Make the backlog actionable.",
+      "request": "Review new issues. Group duplicates and identify what needs investigation.",
+      "plan": "I’ll separate clear requests from missing context, then bring back a prioritised summary.",
+      "roles": [
+        [
+          "Triage",
+          "Classify the work"
+        ],
+        [
+          "Investigation",
+          "Find the context"
+        ],
+        [
+          "Review",
+          "Check the next steps"
+        ]
+      ],
+      "result": "Triage report and proposed next steps"
+    },
+    {
+      "ticket": "ENG-482 / Ticket to code",
+      "title": "Fix the quota meter rounding.",
+      "request": "The quota meter turns amber too early. Investigate the cause and prepare a fix.",
+      "plan": "I’ll have one agent trace the calculation, another update the implementation, and a reviewer check the change.",
+      "roles": [
+        [
+          "Investigation",
+          "Trace the threshold"
+        ],
+        [
+          "Implementation",
+          "Make the change"
+        ],
+        [
+          "Review",
+          "Verify the result"
+        ]
+      ],
+      "result": "Code change, tests and a pull-request draft"
+    },
+    {
+      "ticket": "Release validation",
+      "title": "Give the release a second look.",
+      "request": "Check the latest changes. Reproduce failures and report anything that needs attention.",
+      "plan": "I’ll split the checks across specialists and collect the evidence in one review.",
+      "roles": [
+        [
+          "QA lead",
+          "Define the checks"
+        ],
+        [
+          "Testing",
+          "Run and reproduce"
+        ],
+        [
+          "Review",
+          "Summarise failures"
+        ]
+      ],
+      "result": "Test results and a review summary"
+    },
+    {
+      "ticket": "Security review",
+      "title": "Find the risk. Show the evidence.",
+      "request": "Review this change for security issues. Explain the impact and suggest fixes.",
+      "plan": "I’ll trace the changed paths, investigate potential weaknesses and review each finding.",
+      "roles": [
+        [
+          "Analysis",
+          "Inspect the change"
+        ],
+        [
+          "Investigation",
+          "Validate the evidence"
+        ],
+        [
+          "Review",
+          "Prioritise findings"
+        ]
+      ],
+      "result": "Security findings and suggested fixes"
+    },
+    {
+      "ticket": "Documentation update",
+      "title": "Keep the guide in step with the code.",
+      "request": "Update the setup guide for this change. Check every example against the implementation.",
+      "plan": "I’ll compare the existing guide with the code, prepare the changes and ask a reviewer to check them.",
+      "roles": [
+        [
+          "Research",
+          "Read the implementation"
+        ],
+        [
+          "Writing",
+          "Update the guide"
+        ],
+        [
+          "Review",
+          "Check the examples"
+        ]
+      ],
+      "result": "Updated documentation, ready for review"
+    }
+  ],
+  "resources": {
+    "skills": {
+      "kind": "Skill",
+      "name": "Code review",
+      "description": "Review changes against company standards. Return findings with evidence and suggested fixes.",
+      "summary": "Share a skill once. Make the same practices available to teams across the company.",
+      "audience": "Everyone",
+      "sub": "All people in Northwind",
+      "icon": "✳",
+      "permission": "Use"
+    },
+    "profiles": {
+      "kind": "Agent profile",
+      "name": "Security reviewer",
+      "description": "A saved role with its instructions, skills and access ready for the next task.",
+      "summary": "Reuse specialist profiles across tasks. Keep each agent’s responsibilities and access clear.",
+      "audience": "Engineering",
+      "sub": "People in the Engineering team",
+      "icon": "◇",
+      "permission": "Use"
+    },
+    "accounts": {
+      "kind": "Connected subscription",
+      "name": "Claude Code · Engineering",
+      "description": "A connected account made available to the teams that need it. Usage draws on this account’s quota.",
+      "summary": "Share access to connected accounts. Keep credentials and permissions managed in one place.",
+      "audience": "Engineering",
+      "sub": "People in the Engineering team",
+      "icon": "◎",
+      "permission": "Use"
+    },
+    "workspaces": {
+      "kind": "Workspace",
+      "name": "Platform launch",
+      "description": "A shared place for the team’s sessions, files and agent work.",
+      "summary": "Give teammates access to a workspace so they can follow progress and work together.",
+      "audience": "Engineering",
+      "sub": "People in the Engineering team",
+      "icon": "▤",
+      "permission": "Editor"
+    },
+    "artifacts": {
+      "kind": "Artifact",
+      "name": "Release readiness report",
+      "description": "A report produced by the agent team, shared for review.",
+      "summary": "Share reports, prototypes and other artifacts with the people who need to review them.",
+      "audience": "Product team",
+      "sub": "People in the Product team",
+      "icon": "▧",
+      "permission": "Viewer"
+    }
+  }
+}

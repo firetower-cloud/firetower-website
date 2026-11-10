@@ -1,0 +1,46 @@
+<h2 id="section-0">Keep the recovery set together</h2>
+<p>
+  Record the Firetower and CLI versions used for each backup. You need the
+  database dump, its matching root key, deployment configuration, and any worker
+  files you need to recover.
+</p>
+<p>
+  A database dump alone cannot decrypt credentials. The installer CLI has no
+  restore command.
+</p>
+<h2 id="section-1">Prepare an isolated environment</h2>
+<ul>
+  <li>Keep the original backup unchanged. Work from a copy.</li>
+  <li>Use an isolated server that cannot contact production workers.</li>
+  <li>
+    Preserve the source versions and configuration before planning upgrades.
+  </li>
+  <li>
+    Include separately stored files and persistent volumes in the recovery plan.
+  </li>
+</ul>
+<h2 id="section-2">Get help with the restore</h2>
+<p>
+  <a href="https://discord.gg/Y2HYVEhSc"> Contact us </a>
+  with your versions, backup method and the error you are recovering from. Do
+  not send root keys, passwords or database dumps through chat.
+</p>
+<p>
+  The exact import and volume-recovery steps depend on your deployment. Rehearse
+  them in the isolated environment before replacing production.
+</p>
+<h2 id="section-3">Validate before reconnecting</h2>
+<ul>
+  <li>Sign in and confirm the expected people and resources.</li>
+  <li>Confirm stored credentials can be decrypted.</li>
+  <li>Reconnect one worker deliberately and run a small task.</li>
+  <li>
+    Check repository access and recovered files before reconnecting the rest of
+    the fleet.
+  </li>
+</ul>
+<p>
+  Start with
+  <a href="/docs/backups"> Back up Firetower </a>
+  to prepare your recovery set.
+</p>

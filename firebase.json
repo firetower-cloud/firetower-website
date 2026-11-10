@@ -12,91 +12,176 @@
     "trailingSlash": false,
     "redirects": [
       {
-        "//": "The control-plane installer: Docker and Node if missing, the CLI, then firetower install. Same rolling release as the worker's script.",
         "source": "/install.sh",
         "destination": "https://github.com/firetower-cloud/firetower/releases/download/worker-latest/install.sh",
         "type": 302
       },
       {
-        "//": "The worker installer. The script is a release asset of the firetower repository, on a rolling `worker-latest` release the release job keeps current \u2014 GitHub's own `latest` is whichever package released last. The site holds no copy, so it can never be out of step with the binaries the script downloads.",
         "source": "/worker.sh",
         "destination": "https://github.com/firetower-cloud/firetower/releases/download/worker-latest/worker.sh",
         "type": 302
       },
       {
-        "//": "The docs moved under /docs/self-hosting when the cloud option appeared, and split again into install and upgrade. A redirect is one line; a 404 in somebody's bookmark is not. Next's own redirects() cannot do this \u2014 an export has no server to run it.",
         "source": "/docs/self-host",
-        "destination": "/docs/self-hosting",
+        "destination": "/docs/architecture",
         "type": 301
       },
       {
-        "source": "/docs/install",
-        "destination": "/docs/self-hosting/app/install",
-        "type": 301
-      },
-      {
-        "//": "The domain page is gone: the certificate, the records and the two ways to be reached are all on the install page now, which is where somebody following /docs/domain wanted to end up anyway.",
         "source": "/docs/domain",
-        "destination": "/docs/self-hosting/app/install",
+        "destination": "/docs/install-firetower",
         "type": 301
       },
       {
         "source": "/docs/self-hosting/domain",
-        "destination": "/docs/self-hosting/app/install",
+        "destination": "/docs/install-firetower",
         "type": 301
       },
       {
         "source": "/docs/hosts",
-        "destination": "/docs/self-hosting/machines/install",
+        "destination": "/docs/machines",
         "type": 301
       },
       {
-        "//": "Daily operations, Connect repositories and Secrets were all removed. Nothing replaces them one-for-one, so these land on the page that explains the parts rather than on a 404.",
         "source": "/docs/operations",
-        "destination": "/docs/self-hosting",
+        "destination": "/docs/architecture",
         "type": 301
       },
       {
         "source": "/docs/self-hosting/operations",
-        "destination": "/docs/self-hosting",
+        "destination": "/docs/architecture",
         "type": 301
       },
       {
         "source": "/docs/repositories",
-        "destination": "/docs/self-hosting",
+        "destination": "/docs/repo-setup",
         "type": 301
       },
       {
         "source": "/docs/secrets",
-        "destination": "/docs/self-hosting",
+        "destination": "/docs/data",
         "type": 301
       },
       {
         "source": "/docs/self-hosting/install",
-        "destination": "/docs/self-hosting/app/install",
+        "destination": "/docs/install-firetower",
         "type": 301
       },
       {
         "source": "/docs/self-hosting/machines",
-        "destination": "/docs/self-hosting/machines/install",
+        "destination": "/docs/machines",
         "type": 301
       },
       {
-        "//": "The two upgrade pages became one Update page: upgrading is done on the Updates screen now, and splitting the deployment from the workers put the same screen on two pages.",
         "source": "/docs/self-hosting/app/upgrade",
-        "destination": "/docs/update",
+        "destination": "/docs/updates",
         "type": 301
       },
       {
         "source": "/docs/self-hosting/machines/upgrade",
-        "destination": "/docs/update",
+        "destination": "/docs/updates",
+        "type": 301
+      },
+      {
+        "source": "/docs/self-hosting",
+        "destination": "/docs/architecture",
+        "type": 301
+      },
+      {
+        "source": "/docs/self-hosting/app/install",
+        "destination": "/docs/install-firetower",
+        "type": 301
+      },
+      {
+        "source": "/docs/self-hosting/machines/install",
+        "destination": "/docs/machines",
+        "type": 301
+      },
+      {
+        "source": "/docs/connect-github",
+        "destination": "/docs/git",
+        "type": 301
+      },
+      {
+        "source": "/docs/getting-started",
+        "destination": "/docs/join",
+        "type": 301
+      },
+      {
+        "source": "/docs/permissions/people",
+        "destination": "/docs/people",
+        "type": 301
+      },
+      {
+        "source": "/docs/permissions/sharing",
+        "destination": "/docs/sharing",
+        "type": 301
+      },
+      {
+        "source": "/docs/permissions/workspaces",
+        "destination": "/docs/workspaces",
+        "type": 301
+      },
+      {
+        "source": "/docs/organise",
+        "destination": "/docs/sharing",
+        "type": 301
+      },
+      {
+        "source": "/docs/update",
+        "destination": "/docs/updates",
+        "type": 301
+      },
+      {
+        "//": "Use a fresh canonical URL so previously cached /docs/install redirects cannot form a loop.",
+        "source": "/docs/install",
+        "destination": "/docs/install-firetower",
+        "type": 301
+      },
+      {
+        "source": "/docs/networking",
+        "destination": "/docs/install-firetower",
+        "type": 301
+      },
+      {
+        "source": "/docs/worker-help",
+        "destination": "/docs/machines",
+        "type": 301
+      },
+      {
+        "source": "/docs/recipes",
+        "destination": "/docs/runs",
+        "type": 301
+      },
+      {
+        "source": "/docs/cli",
+        "destination": "/docs/install-firetower",
+        "type": 301
+      },
+      {
+        "source": "/docs/capacity",
+        "destination": "/docs/requirements",
+        "type": 301
+      },
+      {
+        "source": "/docs/mobile",
+        "destination": "/docs/join",
+        "type": 301
+      },
+      {
+        "source": "/docs/offboarding",
+        "destination": "/docs/people",
+        "type": 301
+      },
+      {
+        "source": "/docs/identity",
+        "destination": "/docs/people",
         "type": 301
       }
     ],
     "headers": [
       {
-        "//": "Next's metadata routes emit real PNGs with no file extension, so Hosting would serve them as application/octet-stream and every social preview would break. Set the type explicitly. The URLs carry a build hash, so they are safe to cache forever.",
-        "source": "/@(opengraph-image|apple-icon|icon)",
+        "//": "Metadata images use stable URLs. Serve PNG and revalidate after an hour so a brand update does not remain cached for a year.",
+        "source": "/@(opengraph-image|twitter-image|apple-icon|icon)",
         "headers": [
           {
             "key": "Content-Type",
@@ -104,7 +189,7 @@
           },
           {
             "key": "Cache-Control",
-            "value": "public, max-age=31536000, immutable"
+            "value": "public, max-age=3600, must-revalidate"
           }
         ]
       },
@@ -119,12 +204,12 @@
         ]
       },
       {
-        "//": "Fonts and extension-bearing images are content-addressed by the build too.",
+        "//": "Public assets keep stable filenames, so revalidate them after an hour. Only _next/static assets are content-addressed.",
         "source": "**/*.@(woff|woff2|ttf|otf|eot|png|jpg|jpeg|gif|webp|avif|ico)",
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "public, max-age=31536000, immutable"
+            "value": "public, max-age=3600, must-revalidate"
           }
         ]
       },
@@ -153,7 +238,33 @@
         ]
       },
       {
-        "//": "Baseline hardening. Google Analytics is the only cross-origin thing the site loads, and none of these headers touch it \u2014 there is deliberately no CSP here, because adding one that forgets googletagmanager.com breaks measurement silently.",
+        "source": "/docs-search.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/docs/**/*.md",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/markdown; charset=utf-8"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          },
+          {
+            "key": "Link",
+            "value": "</llms.txt>; rel=\"describedby\""
+          }
+        ]
+      },
+      {
+        "//": "Baseline hosting headers.",
         "source": "**",
         "headers": [
           {

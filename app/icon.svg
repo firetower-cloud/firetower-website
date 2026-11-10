@@ -1,10 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="32" height="32">
-  <rect width="20" height="20" rx="4.5" fill="#0b0b0c"/>
-  <g fill="none" stroke="#ededef" transform="translate(0.6 0.4) scale(0.94)">
-    <path d="M4.4 18.4L7 9.6M15.6 18.4L13 9.6" stroke-width="1.3" stroke-linecap="round"/>
-    <path d="M6.1 14.4h7.8" stroke-width="1.1" stroke-linecap="round" opacity=".55"/>
-    <path d="M6.4 9.4h7.2v-3H6.4z" stroke-width="1.3" stroke-linejoin="round"/>
-    <path d="M4.8 6.4L10 2.2l5.2 4.2" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-  <circle cx="10" cy="8" r="1.5" fill="#ffb23f"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><style>.ground{fill:#f8f8f7}.tower{color:#111110}@media(prefers-color-scheme:dark){.ground{fill:#161615}.tower{color:#f0f0ec}}</style><rect class="ground" width="80" height="80" rx="16"/><g class="tower" transform="translate(8 0)"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="butt" stroke-linejoin="miter"><path d="M7 25 32 7l25 18H7Z"/><path d="M17 25v19h30V25M23 44 13 73M41 44l10 29M18 59h28"/></g><rect x="29" y="31" width="6" height="6" fill="currentColor"/></g></svg>
