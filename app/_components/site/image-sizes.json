@@ -1,0 +1,406 @@
+{
+  "artifacts": {
+    "width": 1920,
+    "height": 1236
+  },
+  "artifacts-mobile": {
+    "width": 520,
+    "height": 700
+  },
+  "home": {
+    "width": 1920,
+    "height": 1236
+  },
+  "home-mobile": {
+    "width": 660,
+    "height": 700
+  },
+  "launch": {
+    "width": 1920,
+    "height": 1236
+  },
+  "launch-mobile": {
+    "width": 516,
+    "height": 1098
+  },
+  "profiles": {
+    "width": 1920,
+    "height": 1236
+  },
+  "profiles-mobile": {
+    "width": 520,
+    "height": 700
+  },
+  "setup-account": {
+    "width": 768,
+    "height": 554
+  },
+  "setup-fallback": {
+    "width": 768,
+    "height": 669
+  },
+  "setup-git": {
+    "width": 1770,
+    "height": 1275
+  },
+  "setup-machine": {
+    "width": 864,
+    "height": 716
+  },
+  "setup-repository": {
+    "width": 1770,
+    "height": 1275
+  },
+  "setup-trackers": {
+    "width": 1770,
+    "height": 1275
+  },
+  "team": {
+    "width": 1920,
+    "height": 1236
+  },
+  "team-mobile": {
+    "width": 400,
+    "height": 720
+  },
+  "tour-ship": {
+    "width": 1920,
+    "height": 1275
+  },
+  "tour-ship-mobile": {
+    "width": 705,
+    "height": 1020
+  },
+  "tour-trackers-mobile": {
+    "width": 957,
+    "height": 566
+  },
+  "setup-account-choose": {
+    "width": 1287,
+    "height": 1173
+  },
+  "setup-account-codex-code": {
+    "width": 768,
+    "height": 621
+  },
+  "setup-account-codex-start": {
+    "width": 768,
+    "height": 398
+  },
+  "setup-account-confirm": {
+    "width": 768,
+    "height": 422
+  },
+  "setup-account-saved": {
+    "width": 1287,
+    "height": 1218
+  },
+  "setup-account-token": {
+    "width": 768,
+    "height": 554
+  },
+  "setup-fallback-controls": {
+    "width": 1013,
+    "height": 146
+  },
+  "setup-fallback-order": {
+    "width": 768,
+    "height": 669
+  },
+  "setup-fallback-saved": {
+    "width": 1013,
+    "height": 146
+  },
+  "setup-git-admin-provider": {
+    "width": 672,
+    "height": 527
+  },
+  "setup-git-admin-saved": {
+    "width": 1287,
+    "height": 566
+  },
+  "setup-git-admin-settings": {
+    "width": 672,
+    "height": 717
+  },
+  "setup-git-choose": {
+    "width": 1287,
+    "height": 465
+  },
+  "setup-git-code": {
+    "width": 552,
+    "height": 459
+  },
+  "setup-git-connected": {
+    "width": 1287,
+    "height": 590
+  },
+  "setup-git-repos": {
+    "width": 1287,
+    "height": 1374
+  },
+  "setup-machine-address": {
+    "width": 864,
+    "height": 716
+  },
+  "setup-machine-agents": {
+    "width": 864,
+    "height": 387
+  },
+  "setup-machine-install": {
+    "width": 864,
+    "height": 393
+  },
+  "setup-machine-key": {
+    "width": 864,
+    "height": 812
+  },
+  "setup-machine-ready": {
+    "width": 1155,
+    "height": 725
+  },
+  "setup-repository-choose": {
+    "width": 1287,
+    "height": 1115
+  },
+  "setup-repository-env": {
+    "width": 1155,
+    "height": 585
+  },
+  "setup-repository-saved": {
+    "width": 1155,
+    "height": 639
+  },
+  "setup-repository-script": {
+    "width": 1155,
+    "height": 570
+  },
+  "setup-tracker-connected": {
+    "width": 1287,
+    "height": 566
+  },
+  "setup-tracker-key": {
+    "width": 1287,
+    "height": 566
+  },
+  "setup-tracker-start": {
+    "width": 1122,
+    "height": 1290
+  },
+  "setup-tracker-tasks": {
+    "width": 1770,
+    "height": 1350
+  },
+  "setup-machine-page": {
+    "width": 1770,
+    "height": 1140
+  },
+  "setup-account-page": {
+    "width": 1770,
+    "height": 1350
+  },
+  "guide-artifacts-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-join-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-people-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-previews-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-profiles-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-review-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-runs-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-sharing-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-skills-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-updates-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "guide-workspaces-page": {
+    "width": 1770,
+    "height": 1275
+  },
+  "setup-fallback-page": {
+    "width": 1770,
+    "height": 1350
+  },
+  "setup-git-admin-page": {
+    "width": 1770,
+    "height": 1350
+  },
+  "setup-git-page": {
+    "width": 1770,
+    "height": 1350
+  },
+  "setup-repository-page": {
+    "width": 1770,
+    "height": 1350
+  },
+  "setup-tracker-page": {
+    "width": 1770,
+    "height": 1350
+  },
+  "guide-artifact-annotate": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-artifact-notes": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-artifact-open": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-backup-done": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-backup-start": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-preview-annotate": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-preview-notes": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-preview-open": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-profile-create-ai": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-profile-instructions": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-profile-runtime": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-profile-settings": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-profile-skills": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-runs-child": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-runs-team": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-sharing-directories": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-sharing-directory": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-sharing-entry": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-sharing-modal": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-sharing-person": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-skill-create-menu": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-skill-import-review": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-skill-imported": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-skill-upload": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-updates-app": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-updates-check": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-updates-control": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-updates-control-plan": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-updates-workers": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-updates-workers-plan": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-workspace-add-later": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-workspace-no-repo": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-workspace-with-repo": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-shared-account-entry": {
+    "width": 1920,
+    "height": 1350
+  },
+  "guide-shared-account-permissions": {
+    "width": 1920,
+    "height": 1350
+  }
+}

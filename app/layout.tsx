@@ -1,49 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "./_components/JsonLd";
 import { Analytics } from "./_components/Analytics";
-import { organizationLd, softwareApplicationLd, webSiteLd } from "./_lib/structured-data";
+import {
+  organizationLd,
+  softwareApplicationLd,
+  webSiteLd,
+} from "./_lib/structured-data";
 import { META_DESCRIPTION, NAME, SITE_URL, TAGLINE } from "./_lib/site";
 
-/**
- * The brand's two faces. Geist for everything that is read, Geist Mono for
- * everything that is a reading — labels, counters, commands, status. The
- * split is the whole typographic idea: prose is set like prose and the
- * instrument panel is set like an instrument panel, and nothing is in
- * between.
- *
- * Both are loaded as variable fonts — one file each, every weight from 100 to
- * 900 — so asking for 600 in a heading costs nothing extra. next/font fetches
- * them at build time and self-hosts the result, so there is still no CDN in
- * the request path, only in the build.
- */
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist",
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-});
-
-/**
- * The third face exists for one job: the ASCII scenes.
- *
- * Those are character grids positioned in `ch` and `em` down to the cell, so
- * the face has to have an advance width that is exactly 0.6em and glyphs
- * that still read at 11px. JetBrains Mono has both, and it is checked in
- * rather than fetched because the hero is the first thing painted and a
- * character grid in a fallback metric is not a drawing, it is a smear.
- */
-const jetbrains = localFont({
-  src: "../public/fonts/jetbrains-mono.woff2",
-  variable: "--font-jetbrains",
-  weight: "100 800",
+const dmSans = localFont({
+  src: "../public/fonts/dm-sans.woff2",
+  variable: "--font-dm-sans",
+  weight: "100 1000",
   display: "swap",
 });
 
@@ -56,19 +26,10 @@ export const metadata: Metadata = {
   description: META_DESCRIPTION,
   applicationName: NAME,
   category: "technology",
-  keywords: [
-    "coding agent control plane",
-    "self-hosted coding agents",
-    "run coding agents on your own server",
-    "agent orchestration",
-    "tmux agent sessions",
-    "git worktree agents",
-    "open source developer tools",
-  ],
   authors: [{ name: "Westlabs LLC" }],
   creator: "Westlabs LLC",
   publisher: "Westlabs LLC",
-  alternates: { canonical: "/", types: { "text/markdown": "/llms.txt" } },
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: SITE_URL,
@@ -80,24 +41,43 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `${NAME} — ${TAGLINE}`,
-    description:
-      "Give it a server you can SSH into. It cuts the branch, runs the agent, and tells you the moment it needs you.",
+    description: META_DESCRIPTION,
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b0b0c",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F8F8F7" },
+    { media: "(prefers-color-scheme: dark)", color: "#161615" },
+  ],
+  colorScheme: "light dark",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable} ${jetbrains.variable}`}>
+    <html lang="en" className={dmSans.variable} suppressHydrationWarning>
+      <head>
+        <link rel="describedby" href="/llms.txt" type="text/plain" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{document.documentElement.dataset.theme=localStorage.getItem('firetower-theme')==='dark'?'dark':'light'}catch{}`,
+          }}
+        />
+      </head>
       <body>
         <JsonLd data={organizationLd()} />
         <JsonLd data={webSiteLd()} />

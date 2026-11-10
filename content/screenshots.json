@@ -1,0 +1,110 @@
+{
+  "homepage": {
+    "source": "Approved firetower-redesign v102 artifact",
+    "data": "Illustrative product content"
+  },
+  "setup": {
+    "sourceRepository": "firetower-cloud/firetower",
+    "sourceCommit": "3e3ea484bff0c20fc5b1a07b862b9bb6f53aac04",
+    "method": "Actual desktop components rendered with the application mock server and sample API responses in an isolated temporary copy.",
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "pages": [
+      "machines",
+      "accounts",
+      "fallback",
+      "git",
+      "trackers",
+      "repo-setup"
+    ],
+    "liveProcedureTested": false
+  },
+  "workflowTour": {
+    "sourceRepository": "firetower-cloud/firetower",
+    "sourceCommit": "3e3ea484bff0c20fc5b1a07b862b9bb6f53aac04",
+    "method": "Actual desktop components rendered with the application mock server and sample API responses in an isolated temporary copy. Ship form filled without submitting.",
+    "pages": [
+      "tour-ship",
+      "tour-ship-mobile",
+      "tour-trackers-mobile"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "walkthroughs": {
+    "sourceRepository": "firetower-cloud/firetower",
+    "sourceCommit": "3e3ea484bff0c20fc5b1a07b862b9bb6f53aac04",
+    "method": "Actual desktop components in an isolated temporary copy. Stateful sample API responses show each setup stage. No live infrastructure or provider credentials used. External sign-in approval simulated; task composer not submitted.",
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "pages": [
+      "machines",
+      "accounts",
+      "fallback",
+      "git",
+      "git-admin",
+      "trackers",
+      "repo-setup"
+    ],
+    "liveProcedureTested": false
+  },
+  "tutorialEntryScreens": {
+    "method": "Full desktop screenshots from the same isolated app and mock API as the walkthroughs. Fallback has a documentation-only SVG arrow captured over the actual control. Administration entry screens show the desktop link to the web administration site, not an editable desktop administration UI.",
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "pages": [
+      "join",
+      "first-run",
+      "workspaces",
+      "profiles",
+      "teams",
+      "skills",
+      "runs",
+      "review",
+      "artifacts",
+      "previews",
+      "people",
+      "sharing",
+      "shared-accounts",
+      "updates",
+      "machines",
+      "accounts",
+      "fallback",
+      "git",
+      "git-admin",
+      "trackers",
+      "repo-setup",
+      "backups"
+    ]
+  },
+  "detailedTutorials": {
+    "sourceRepository": "firetower-cloud/firetower",
+    "method": "Actual desktop components rendered with sample API responses in an isolated temporary copy. Artifact and preview annotation screenshots use the actual picker script and a sample checkout page. Native app update availability is simulated for browser capture; no update is installed. Boxes and arrows are SVG overlays positioned at the actual controls before browser capture.",
+    "pages": [
+      "workspaces",
+      "profiles",
+      "skills",
+      "runs",
+      "review",
+      "artifacts",
+      "previews",
+      "sharing",
+      "backups",
+      "updates",
+      "shared-accounts"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "liveProcedureTested": false
+  }
+}

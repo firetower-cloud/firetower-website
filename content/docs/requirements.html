@@ -1,0 +1,50 @@
+<h2 id="section-0">Control-plane server</h2>
+<div class="table-wrap"><table><thead><tr><th>Setup</th><th>CPU</th><th>Memory</th><th>Storage</th></tr></thead><tbody><tr><th scope="row">Minimum</th><td>2 vCPU</td><td>2 GB</td><td>20 GB</td></tr><tr><th scope="row">Recommended</th><td>2 vCPU</td><td>4 GB</td><td>40 GB</td></tr></tbody></table></div>
+<ul>
+  <li>
+    A Linux server you administer, with SSH access and root or sudo for
+    installation.
+  </li>
+  <li>
+    Docker with the Compose plugin. Node.js 20 or later for the installer CLI.
+    The bootstrap script can install these prerequisites.
+  </li>
+  <li>
+    A domain, access to its DNS records and a DNS provider API token for
+    certificate issuance.
+  </li>
+  <li>
+    Network access to download deployment files, container images and
+    certificate dependencies.
+  </li>
+</ul>
+<h2 id="section-1">Worker machines</h2>
+<p>Firetower runs agents directly, without a container per agent. CPU and memory needs depend on your agents, tasks and how many run at once.</p>
+<p>A Mac mini with 16 GB of memory is a practical starting point. A VPS with 8 GB or less can also work for lighter tasks. Builds, tests and large repositories may need more.</p>
+<aside class="callout"><strong>Keep workers separate from the control plane</strong><p>Do not run your agents on the same VPS as the control plane. Use a separate machine for agent work.</p></aside>
+<p>
+  Workers support macOS and Linux on arm64 and x86_64. On Windows, run the
+  worker inside WSL2.
+</p>
+<ul>
+  <li>
+    SSH reachable from the control plane, using a dedicated account for agent
+    work.
+  </li>
+  <li>git, tmux, a POSIX shell, curl and tar.</li>
+  <li>The coding agents and project tools needed by your tasks.</li>
+  <li>Access to your git hosts, agent providers and project dependencies.</li>
+</ul>
+<aside class="callout">
+  <strong> Separate requirements </strong>
+  <p>
+    Workers do not need Node.js or Docker just to run the Firetower worker. An
+    agent or your project may need them.
+  </p>
+</aside>
+<h2 id="section-2">People and devices</h2>
+<p>
+  Provide a reachable HTTPS URL and a Firetower account for each person. Install
+  the company VPN on every device that needs private access.
+</p>
+<p>Next: <a href="/docs/install-firetower">install Firetower</a>.</p>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { REPO_URL } from "../_lib/site";
 import { duration, rng } from "../_lib/ascii";
@@ -452,12 +453,11 @@ export function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-2.5 font-mono text-[14px] tracking-[0.04em]">
-            <a
-              href="/docs/getting-started"
+            <Link href="/docs/getting-started"
               className="rounded-[3px] bg-ember px-[22px] py-[15px] font-semibold text-ink transition-opacity hover:opacity-90"
             >
               SELF-HOST IN 5 MIN &gt;
-            </a>
+            </Link>
             <a
               href={REPO_URL}
               target="_blank"

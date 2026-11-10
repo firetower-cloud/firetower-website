@@ -1,318 +1,90 @@
 # Firetower website
 
-The marketing site — one page, statically generated, no runtime.
+The public website and documentation, built with Next.js and exported as static files for Firebase Hosting. The approved identity uses DM Sans, the tower mark, and a light default with a persistent dark option.
 
-This is a separate repository from the product. It deliberately shares the
-application's design system rather than inventing a second one: the palette in
-`app/globals.css` is lifted from `firetower/web/app/globals.css`, the three
-faces in `public/fonts` are the same files, and the tower mark and status
-signals in `app/_components/Mark.tsx` are the application's own glyphs.
+## Development
 
-Nothing enforces that — when the product's palette moves, move this one with
-it by hand.
-
-## Running it
+Use Node.js 24, matching CI.
 
 ```sh
-npm install
-npm run dev      # http://localhost:3000
-npm run build    # every route prerendered
+npm ci
+npm run dev
 npm run lint
+npm test
+npm run build
+npm run check:seo
+npm run check:content
+npm run check:app-links
 ```
 
-## Layout
+The production files are in `out/`. `npm start` is not a server for a static export; serve `out/` with clean URLs or use the Firebase Hosting emulator. The development server defaults to port 3000.
 
-```
-app/
-  page.tsx              the landing page — sections in reading order
-  layout.tsx            fonts, sitewide metadata, sitewide JSON-LD
-  globals.css           the design system: palette, display face, motion
-  _components/          Nav, Hero, Inbox, Workflow, Anywhere, How, Lifecycle, Footer, Mark
-  _components/Lifecycle.tsx    what happens when you start a workspace, one screen, step by step
-  _components/Anywhere.tsx     close your laptop: the copy, and the phone tour (`PhoneTour` from Workflow) beside it
-  _components/BinaryField.tsx  the canvas field behind the hero
-  _components/Blueprint.tsx    the ASCII architecture diagram
-  _components/Macbook.tsx      the laptop the demo sits in
-  _components/Demo.tsx         the interactive demo (the only stateful thing)
-  _components/Screen.tsx       the app's shell and its inbox
-  _lib/site.ts          canonical origin, product copy, links
-  _lib/structured-data.ts  Organization, WebSite, SoftwareApplication
-  _lib/og.tsx           the social card renderer
-  sitemap.ts robots.ts manifest.ts opengraph-image.tsx apple-icon.tsx icon.svg
-```
+## Where to edit
 
-## Things worth knowing before editing
-
-**The domain lives in one place.** `SITE_URL` in `app/_lib/site.ts` is the
-canonical URL, the `metadataBase` every relative image resolves against, the
-host in `robots.txt` and the prefix in the sitemap. Changing the domain is that
-line and nothing else.
-
-**The page moves from product to process to architecture.** The screen shows
-what Firetower is, the workflow shows what the user does, and "How it fits
-together" explains where the work actually runs. Everything else was cut. If
-you add a section back, add its structured data with it and not before —
-`FAQPage` schema outlived the FAQ by about a minute here, and schema that does
-not match visible copy is a penalty rather than a bonus.
-
-**There is no install section, so every call to action leaves the site** for
-the README's *Running it* heading. If that heading is ever renamed, three
-links break silently: the nav button, the hero, and the footer.
-
-**Keep client code at the interactive boundary.** `Copy` (the clipboard
-button), `BinaryField` (the hero background) and `Workflow` (the tour) are the
-client components. Everything else is a server component and the page should
-stay readable as HTML.
-
-**The tour is the Mac app, drawn in markup, not a mockup of one.** Every
-screen in `Workflow.tsx` is copied from `desktop/src/ui` in the product repo —
-the title bar and server strip, the rail's two-line workspace rows, TasksPage,
-the New workspace sheet, the bring-up list, the "Waiting on you" card, the
-preview tab's notes column, the inspector's Commit tab — with the app's own
-tokens scoped inside `.window` and its own marks (`lucide-react`, the same set
-the app uses; the GitHub, Linear and Claude marks are the app's paths). What is
-added is only motion: a cursor doing what you would do. If a screen changes in
-the app, change it here; do not invent one.
-
-Below 720px the same tour is the **phone client** (`mobile/app`): three tabs
-and a stack, the New workspace form with its picker sheet, the conversation
-with the Changes strip and the Approval card, the repository as a page. The
-phone has no preview or annotation, so its third step shows the repository's
-Diff page instead — the closest screen that exists, not an invented one.
-
-**The hero background is a canvas on purpose.** The obvious build is a few
-thousand `<span>`s with CSS on them, but an inline element cannot be
-composited on its own, so lighting one under the cursor repaints the whole
-text layer beneath it. The canvas paints the field once (~1.4 ms) and every
-redraw afterwards touches only the cells that changed — the ones under the
-pointer and the ones it just left. Measured at **0.032 ms per pointer move**.
-It is `aria-hidden` decoration, so having no server-rendered markup costs
-nothing.
-
-Four things in there are easy to break:
-
-- The font family is read back off the element with
-  `getComputedStyle(...).fontFamily`. `getPropertyValue("--font-mono")`
-  returns the literal `var(...)` text, and assigning that to `ctx.font` is
-  invalid — the canvas silently stays on 10px sans-serif.
-- The pointer's light is scaled by each cell's own falloff. Without that,
-  running the cursor over the headline lights up the glyphs hiding behind
-  the words.
-- The falloff is baked into each glyph's alpha rather than applied as a CSS
-  mask — a mask over a canvas is another layer to blend every frame.
-- The pointer redraws from the event, on a 16 ms throttle, not inside
-  `requestAnimationFrame`. The work is bounded, so coalescing buys nothing,
-  and rAF is suspended in a background tab.
-
-Every cell holds a glyph even where the field looks blank: the pointer's
-light is what reveals them, which is what makes the pool read as a beam
-rather than a brightness control. Ambient blooms (a handful of glyphs
-fading in and out on their own) are the one thing still on rAF, and they
-are disabled under `prefers-reduced-motion`, as is the whole loop.
-
-**The diagram has a section to itself, centred.** It used to sit in the hero,
-where it had to stay small enough not to push the fold down and had no room
-for a word of context. It now leads "How it fits together", with a legend
-underneath for `*`, `o` and `ssh`. Two boxes labelled Firetower and Worker
-used to open that section, saying the same thing in less detail — the drawing
-replaced them rather than joining them.
-
-**The diagram's shape is the argument.** One app on the left, two
-machines stacked on the right, and a single trunk labelled `ssh` that forks to
-reach both — with the sessions listed inside the machine that runs them. An
-earlier version drew `INBOX | FIRETOWER | YOUR HOSTS` as three equal panels in
-a row, which claimed two things that are false: that there is a system called
-Inbox sitting beside Firetower, and that separate machines are rows in one
-box. The inbox is a screen in the app, so it is a row inside the app panel. If
-you restructure this, keep the one-to-many.
-
-**The connector is a fork rather than two wires, and that is not decoration.**
-Two independent wires only work while the app panel happens to be tall enough
-to have a row at each machine's height. It is not, and every edit to the app's
-copy changes whether it is — so the second wire silently ends up dangling
-beside nothing. The fork does not care: the trunk leaves the app at its own
-middle, the branches meet the machines wherever they are, and `hub()` derives
-all of it. Add a third machine and it still works.
-
-Keep prose out of the `<pre>`. It cannot wrap in there, so on a phone a long
-line sets the block's width and makes the whole figure scroll sideways.
-
-**It is generated, and it is pure ASCII.** Both of those are load-bearing:
-
-- The natural frame is `┌─┐│└┘`, and those glyphs are missing from the
-  subsetted mono face. They come back from a fallback at **1.55× the cell
-  width** — measured — which bows every border out of true. Printable ASCII
-  is the only set guaranteed to be one cell wide in any monospace font, so
-  that is the whole palette. If you add a character, measure it first.
-- Rows are described by what they are (`session`, `host`, `text`) and
-  rendered with the padding computed. Typed-out art drifts a column the
-  moment somebody edits a label, and colouring by character would tint the
-  "o" in "grove-01" the same as a status mark.
-
-Every line in a block must come out the same length — including the caption
-under each panel, which is easy to forget because it sits outside the frame.
-`fit()` clamps an over-long label so the failure is a truncated word rather
-than a bent diagram. To check, count `[...new Set(lines.map(l => l.length))]`
-in the console; it should have exactly one entry.
-
-The travelling `*` on each wire is a positioned span animated with `steps()`.
-Use the default (`jump-end`) timing: `steps(n, start)` shifts every tick one
-cell along, which parks the last one on the closing bracket instead of the
-final dot.
-
-**The screen is a working demo, not a picture.** `Demo.tsx` opens on the
-composer with three sessions under it, one in each state that matters, and
-each opens into the screen the real product would give it:
-
-The home screen leads with the composer, then a card for anything blocked —
-name, question in the agent's own words, and one ember button into it — then a
-plain list for everything else. A blocked session as a row is a coloured dot
-you have to open a terminal to understand, and opening the terminal is most of
-the cost of being interrupted.
-
-| State | What the session screen does |
+| Path | Purpose |
 | --- | --- |
-| Working | A terminal that never finishes, and `← Go back to sessions` |
-| Needs you | The question it stopped on, and a box to answer it — type anything and it goes back to work |
-| Ended | The Changes tab: a real diff, and a rail that commits, pushes and opens a pull request |
+| `app/page.tsx` | Homepage section order |
+| `app/_components/site/` | Current homepage and documentation components |
+| `app/globals.css` | Shared brand tokens, theme, typography and image viewer |
+| `app/_components/site/home.css` | Scoped homepage styles |
+| `app/docs/docs.css` | Scoped documentation styles |
+| `content/docs/*.html` | Documentation article bodies, rendered into each page at build time |
+| `content/docs-manifest.json` | Titles, descriptions, navigation, audiences and section anchors |
+| `content/docs-review.json` | Internal source evidence and procedure validation still to perform |
+| `public/product/` | Local WebP screenshots in light and dark variants |
+| `app/_lib/site.ts` | Product copy, canonical origin and external links |
+| `firebase.json` | Hosting, cache headers, installer links and legacy documentation redirects |
 
-Launching your own adds a fourth. Everything is fake and none of it is a
-recording — at 1250px a video would be soft, and the controls being real is
-the part hardest to describe in a sentence.
+The previous ASCII website components remain in `app/_components/` for reference; the active homepage imports from `app/_components/site/`. Do not add new content to the old components.
 
-**The working agent never finishes, and that is the argument.** A demo that
-wraps up in eight seconds demonstrates a task; this one demonstrates the
-product, which is what you do with the twenty minutes while the task runs.
-Everything that is working keeps working while you are elsewhere in the demo,
-because that is the claim. Output comes from `activity(i, seed)`, derived from
-the tick index so the stream is endless without being random, seeded per
-session so two never print the same thing, and capped at `KEEP` lines so an
-hour-old tab is not a leak.
+## Documentation
 
-Copy and the diff live in `DemoData.ts`, apart from the layout, so they can be
-read and edited without scrolling past markup.
+Each manifest entry has one HTML body. The index uses `/docs`; other entries use `/docs/{slug}`. Next.js renders all documentation pages at build time with metadata, structured data, navigation and section links. Bodies are trusted repository content, never submitted user HTML.
 
-The vocabulary is the product's own: the checklist labels are the ones the
-control plane sends (`components/Steps.tsx` in the app), and the chips are the
-composer's, glyphs included. If those change in the product, change them here.
+Keep heading IDs and the manifest's `headings` entries in sync. `npm run build` and `npm run dev` regenerate the local search index and agent-readable Markdown. Search downloads that index only when opened. Product images can be enlarged, commands can be copied, and the sidebar adapts to smaller screens.
 
-The terminal shows what the agent actually prints on start: the welcome box,
-then a line per tool call with its result indented underneath. The box is
-drawn with a CSS border rather than the `╭─╮` characters it really uses —
-those come back from a fallback face at 1.55× the cell width here and bow it
-out of true, the same trap as the ASCII diagram.
+Legacy addresses redirect at the hosting layer. Next.js redirects cannot run on a static export. Keep `firebase.json` destinations aligned with the manifest. `check:content` checks exported links, assets, anchors and redirect targets; `check:seo` checks metadata, sitemap coverage and structured data.
 
-Three things that will bite:
+Source review does not replace a clean installation test. Before publishing release-specific operational procedures, complete the relevant checks recorded in `content/docs-review.json`. The recovery page intentionally offers preparation and support guidance rather than unverified database import commands.
 
-- Every phase has to fit the lid. The terminal pane and the inbox are both
-  sized by hand for this reason; see the measuring note below.
+## SEO and agent-readable documentation
 
-- The demo session needs a name no other fake session uses, or it appears
-  twice in the sidebar and twice in the inbox it lands in.
-- The terminal's output pane is a fixed height and scrolls itself to the
-  newest line. A pane that grows as lines arrive shunts the "it needs you"
-  bar down the screen while you are reading it; on a phone the transcript is
-  taller than the frame, so it has to follow the tail.
-- **Every state has to finish inside the lid's solid region**, and they are
-  different heights. The fade starts at 82% of the frame, so after touching
-  any of this, measure the bottom of: the last session row (home), the reply
-  box (needs you), the footer (working), and the action rail (ended). All four
-  must clear `height * 0.82` at **390, 660, 760, 1024 and 1250** — the middle
-  widths are the ones that catch you, because that is where the diff is
-  already tall but the rail has not moved beside it yet. It is why the session
-  header drops its metadata line on a phone, why the branch chip is `md:` and
-  not `sm:`, and why the action rail lays its buttons out in a row on a phone.
-  The pane scrolls when a state is taller than the lid, so nothing is ever
-  unreachable — but the primary control of each state (`Open agent`, `Send`,
-  `Commit and push`, the back link) must still land above the fade without
-  scrolling.
+The export includes a canonical sitemap, robots.txt, unique page metadata and social cards, and Organization, WebSite, SoftwareApplication and documentation structured data. Stable image URLs revalidate after an hour; hashed Next.js assets remain immutable.
 
-**Third-party names.** The agent dropdown lists Claude Code, Codex and Open
-Code, with only Claude Code selectable — the others carry the product's own
-`· unavailable here` suffix, which is what the real composer does with an
-agent that is not installed on the chosen machine. The diagram names agents
-and cloud providers for the same reason. The prose everywhere else still says
-"any coding agent", deliberately: it is the claim, not an omission.
+`/llms.txt` gives agents a concise product explanation and a grouped guide index. `/docs/{slug}.md` (or `/docs/index.md`) contains the same documentation as the HTML page, including commands, tables and screenshot links. `/llms-full.txt` combines all guides. `scripts/build-docs-markdown.mjs` generates these from the HTML bodies; do not edit generated Markdown. HTML pages advertise the index, and each documentation page advertises its Markdown alternate. This helps agents read the site; it does not guarantee search rankings or inclusion in AI answers.
 
-**The screen leads, and it carries no heading.** The demo sits directly after
-the hero, full width, with no eyebrow or title above it — the fastest way to
-explain this thing is to show the one screen you spend your time in, and a
-caption for something the reader can already see is just noise. The diagram
-follows it, unnumbered, because it is the only section left to number.
+`check:seo` validates all indexable pages, unique titles/descriptions, canonical URLs, sitemap coverage, social cards, JSON-LD and Markdown exports. `check:app-links` verifies the app link snapshot in `content/app-doc-links.json`. To audit a current app checkout instead:
 
-**The laptop has no bottom.** Sides and top only; the lid runs off the end of
-the section and dissolves into the page under a `mask-image`. That is why its
-height is a fixed number rather than an aspect ratio — with the bottom edge
-gone there is nothing left to be out of proportion, so the only question is
-how much of the dashboard to show. (Drawn in full it came out at 1.19:1,
-which reads as a monitor and undoes the frame entirely.) The fade holds solid
-to 58% and is gone by 100%: earlier eats the session cards, later leaves a
-hard edge that reads as a clipping bug.
+```sh
+npm run check:app-links -- ../firetower
+```
 
-**No screenshots.** The dashboard, terminal and phone are drawn in markup with
-the real components' classes. They stay sharp at any density and never go stale,
-but they will drift from the product if nobody moves them, so treat them as
-illustrations rather than documentation.
+The snapshot records the audited app commit. Update it when app links change. The app currently links to `/docs` and the installer to `/docs/self-hosting`; the latter redirects to `/docs/architecture`. The `www` host redirect is managed by the existing hosting domain configuration, separate from path redirects.
 
-**No third-party product names.** The copy says "any coding agent" throughout,
-matching the repository's README. That is a deliberate constraint, not an
-oversight.
+After deployment, verify indexing and Core Web Vitals in Search Console and submit `https://usefiretower.com/sitemap.xml`. Local checks cannot establish production indexing or real-user performance.
 
-**The docs are MDX, and the manifest is the source of truth.**
-`app/docs/_lib/nav.ts` drives the sidebar, the mobile rail, the index cards,
-the previous/next links, the breadcrumbs, the per-page metadata and the
-sitemap. Adding a page is one entry plus one `page.mdx`; there is no way to
-ship a page that the sitemap does not know about. Slugs may nest
-(`self-hosting/install`) and `trail()` turns a nested slug into breadcrumbs by
-keeping only the segments that are real pages.
+## Downloads
 
-**Install instructions say which machine each command is for.** `<Where>`
-labels every block on the install page, because the commonest way to get lost
-in self-hosting docs is not knowing whether the terminal in front of you is
-the right one. `<Tabs>` carries Compose-versus-Docker without doubling the
-page; every panel stays in the DOM and inactive ones are hidden, so both
-versions are in the HTML a crawler reads.
+`DownloadButton` detects the visitor's platform, including iPad desktop mode, and offers all supported alternatives. Unsupported or unknown platforms get the platform chooser.
 
-**Compose is always the first tab**, and any command shown for one tool is
-shown for both. A step that only works with Compose is a step that strands
-everyone who chose the other tab.
+The resolver reads GitHub's release list and selects stable `desktop-v*` and `mobile-v*` packages separately. It only uses asset URLs actually returned by GitHub. It excludes signatures, drafts and prereleases. iOS uses the existing TestFlight invitation. Results are cached locally for six hours, with one request shared by the page's buttons.
 
-**A `.env` file is read literally.** `POSTGRES_PASSWORD=$(openssl rand ...)`
-in one is stored as that string — the substitution never happens. Docs that
-show a `.env` must show pasted values; only the shell blocks may generate
-them inline. Shipped that bug once here already.
+If GitHub is unavailable or rate-limited, the checked-in snapshot remains usable. Refresh that fallback periodically:
 
-**The shape is Start → Self-hosting → Using Firetower**, because there will be
-a second way to run this. `/docs/getting-started` is the fork: host it
-yourself, or Firetower Cloud when it exists. When cloud arrives it becomes a
-third section beside Self-hosting, and nothing else has to move — which is why
-the operational pages live under `/docs/self-hosting/` rather than at the root.
-Old flat URLs redirect in `next.config.ts`.
+```sh
+npm run sync:downloads
+```
 
-**Turbopack limits the MDX pipeline.** remark/rehype plugins must be named as
-strings with serializable options — a JavaScript function cannot be handed to
-Rust. That is why `rehype-pretty-code` is configured with nothing but a theme
-name, and why the copy button's raw text is recovered by walking the rendered
-children in `CodeBlock` instead of by a plugin that stashes it on the node.
+This does not require a GitHub token or a website backend. Unit tests cover release selection, asset validation and device detection.
 
-**A component that renders a `p` cannot wrap MDX prose.** MDX parses the text
-inside a JSX block as markdown and gives it its own paragraph, so a `p` there
-nests a `p` in a `p` — the browser un-nests it, the server does not, and every
-docs page throws a hydration mismatch. `Lede` is a `div` for this reason.
+## Images and branding
 
-**Do not colour a diagram character by character.** `-` is a frame in `+---+`
-and a hyphen in "firetower-worker"; `v` is a letter in "event". `Diagram`
-matches *runs* — a pipe, a plus, or two or more dashes — so a label can
-contain any of them without being repainted. Same trap as the landing page's
-ASCII, caught twice now.
+The homepage product views come from the approved v102 redesign. Workflow, sharing, phone and fallback examples are illustrative. The setup and workflow guides use step-by-step screenshots of real desktop components with sample API data, in both themes. Sharing, backup and update screenshots highlight the controls to use. Artifact and preview examples use the actual annotation picker. Native app update availability is simulated for capture; screenshots do not demonstrate a live installation, provider sign-in, backup or upgrade. Capturing them did not change the application repository.
 
-**Do not cap a display heading with `ch`.** `ch` is the width of "0", which
-in a condensed uppercase face is nothing like the average letter — a
-`max-w-[22ch]` reads as roughly half the room it sounds like, and both section
-titles were silently wrapping to three and four lines because of it. They are
-broken by hand now, with a second break that only applies below `sm`, so each
-one is two lines from 360px to 1600px.
+Images and fonts are served locally. `image-sizes.json` reserves the correct image dimensions before loading. DM Sans is licensed under the SIL Open Font License. Agent logos retain their owners' branding; Cursor and Mistral artwork came from their official brand pages.
 
-**Grid items need `min-w-0`.** A `<pre>` inside a grid item will widen the
-whole page on narrow screens without it. Worth remembering if a section with
-a two-column layout ever comes back.
+## Deployment
+
+The existing GitHub Actions workflow deploys pull requests to expiring Firebase preview channels. A merge to `main` or a manual workflow run publishes the production site. Firebase uses project `firetower-prod-506201`, target `prod`, and the mappings in `.firebaserc`.
+
+Run lint, unit tests, build, SEO and content checks before publishing. This implementation does not automatically deploy from a local development session.

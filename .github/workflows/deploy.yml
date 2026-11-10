@@ -43,6 +43,9 @@ jobs:
       - name: lint
         run: npm run lint
 
+      - name: test download selection
+        run: npm test
+
       - name: build
         run: npm run build
 
@@ -54,6 +57,12 @@ jobs:
         # weeks later, in Search Console. scripts/check-seo.mjs turns both
         # back into build errors. Run it locally with `npm run check:seo`.
         run: npm run check:seo
+
+      - name: check content links and legacy redirects
+        run: npm run check:content
+
+      - name: check app documentation links
+        run: npm run check:app-links
 
       - uses: google-github-actions/auth@v2
         with:

@@ -1,0 +1,101 @@
+<figure class="concept-figure">
+  <div class="concept-figure-title">
+    One task can produce several kinds of result
+  </div>
+  <div class="concept-task">
+    <span> Task </span>
+    <strong> Fix and explain the checkout timeout </strong>
+  </div>
+  <div class="concept-connector">
+    <span aria-hidden="true"> ↓ </span>
+    <span> Work happens in sessions and workspaces </span>
+  </div>
+  <div class="concept-outputs">
+    <div>
+      <strong> Code change </strong>
+      <span> A branch and pull request </span>
+    </div>
+    <div>
+      <strong> Artifact </strong>
+      <span> A saved visual explanation </span>
+    </div>
+    <div>
+      <strong> Preview </strong>
+      <span> The running application </span>
+    </div>
+  </div>
+  <figcaption>
+    Choose the result the task needs. Not every task needs a repository or a
+    preview.
+  </figcaption>
+</figure>
+<h2 id="section-0">From request to code</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Task</dt>
+    <dd>
+      The goal given to an agent. It can start as your request or an issue from
+      a connected tracker.
+    </dd>
+  </div>
+  <div>
+    <dt>Repository</dt>
+    <dd>
+      The git project an agent works on. A workspace checks out working files
+      from it.
+    </dd>
+  </div>
+  <div>
+    <dt>Branch</dt>
+    <dd>
+      A line of changes in git. A separate git-backed workspace gives work its
+      own branch.
+    </dd>
+  </div>
+  <div>
+    <dt>Pull / merge request</dt>
+    <dd>
+      The reviewable change submitted to your git host. Your team reviews and
+      merges it through its normal process.
+    </dd>
+  </div>
+</dl>
+<h2 id="section-1">Artifact versus preview</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Artifact</th>
+        <th>Preview</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>What it is</td>
+        <td>A saved, versioned result</td>
+        <td>A running service in a workspace</td>
+      </tr>
+      <tr>
+        <td>Example</td>
+        <td>A report or website prototype</td>
+        <td>The app the agent is building</td>
+      </tr>
+      <tr>
+        <td>What it depends on</td>
+        <td>The stored artifact and its access policy</td>
+        <td>The running service and its worker</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  An artifact is not the running application. A preview is not an archive. Save
+  or export the outputs you need before ending the workspace.
+</p>
+<div class="concept-next">
+  <span> Put it into practice </span>
+  <a href="/docs/trackers"> Start from an issue </a>
+  <a href="/docs/review"> Review and ship </a>
+  <a href="/docs/artifacts"> Review an artifact </a>
+</div>
