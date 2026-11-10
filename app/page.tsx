@@ -4,6 +4,7 @@ import { Hero } from "./_components/site/Hero";
 import { Workflows } from "./_components/site/Workflows";
 import { ProductTour } from "./_components/site/ProductTour";
 import { Architecture } from "./_components/site/Architecture";
+import { EnterpriseCallout } from "./_components/site/EnterpriseCallout";
 import { Enterprise } from "./_components/site/Enterprise";
 import { Subscriptions } from "./_components/site/Subscriptions";
 import { FAQ } from "./_components/site/FAQ";
@@ -34,6 +35,7 @@ export default function Home() {
         <ProductTour />
         <Architecture />
         <Enterprise />
+        <EnterpriseCallout />
         <Workflows />
         <Subscriptions />
         <FAQ />

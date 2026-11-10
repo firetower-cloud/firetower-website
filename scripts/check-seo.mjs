@@ -23,6 +23,10 @@ const read = (p) => readFileSync(`${OUT}/${p}`, "utf8");
 /* ── The files the site's own metadata promises exist ─────────────────── */
 for (const f of [
   "index.html",
+  "enterprise.html",
+  "enterprise.md",
+  "enterprise/opengraph-image",
+  "enterprise/twitter-image",
   "robots.txt",
   "sitemap.xml",
   "llms.txt",
@@ -65,8 +69,6 @@ for (const slug of slugs) {
   if (!locs.includes(url))
     fail(
       "sitemap.xml",
-  "llms.txt",
-  "llms-full.txt",
       `nav.ts has "${slug}" but the sitemap does not list ${url}`,
     );
 }
@@ -166,6 +168,23 @@ if (!robots.includes(`${HOST}/sitemap.xml`))
   fail("robots.txt", "does not point at the sitemap");
 if (/^Disallow: \/$/m.test(robots))
   fail("robots.txt", "disallows the whole site");
+
+/* The Enterprise page must stay independently shareable and discoverable. */
+const enterprise = read("enterprise.html");
+const enterpriseUrl = `${HOST}/enterprise`;
+if (!locs.includes(enterpriseUrl)) fail("sitemap.xml", "missing Enterprise page");
+if (!enterprise.includes(`<meta property="og:url" content="${enterpriseUrl}"`)) fail("enterprise", "wrong OpenGraph URL");
+if (!enterprise.includes(`type="text/markdown" href="${HOST}/enterprise.md"`)) fail("enterprise", "missing Markdown alternate");
+if (!read("llms.txt").includes(`${HOST}/enterprise.md`)) fail("llms.txt", "missing Enterprise offer");
+if (!read("enterprise.md").startsWith("# Firetower Enterprise\n")) fail("enterprise.md", "missing title");
+const enterpriseGraphs = [...enterprise.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].flatMap(([, raw]) => {
+  const data = JSON.parse(raw); return data["@graph"] ?? [data];
+});
+const service = enterpriseGraphs.find((n) => n["@type"] === "Service");
+if (!service || service.url !== enterpriseUrl || service.provider?.["@id"] !== `${HOST}/#organization`) fail("enterprise", "missing service/provider relationship");
+if (service && "offers" in service) fail("enterprise", "service pricing must not be fabricated");
+const home = read("index.html");
+if (!home.includes('class="enterprise-services-callout shell"') || !home.includes('href="/enterprise"')) fail("home", "missing Enterprise integration");
 
 /* Agent-facing content must stay complete and usable after docs edits. */
 const index = read("llms.txt");

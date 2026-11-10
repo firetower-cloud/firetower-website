@@ -10,6 +10,7 @@
  * rich results turned off for a whole domain.
  */
 import { AUTHOR, NAME, REPO_URL, SITE_URL, SUMMARY, TAGLINE } from "./site";
+import { ENTERPRISE_TITLE, ENTERPRISE_DESCRIPTION } from "./enterprise";
 import { findDoc, href, trail } from "../docs/_lib/nav";
 
 export const ORG_ID = `${SITE_URL}/#organization`;
@@ -143,6 +144,37 @@ export function docLd(slug: string) {
           name: step.name,
           item: step.url,
         })),
+      },
+    ],
+  };
+}
+
+/** Paid services are distinct from the free software described by APP_ID. */
+export function enterpriseLd() {
+  const url = `${SITE_URL}/enterprise`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage", "@id": `${url}#webpage`, url,
+        name: ENTERPRISE_TITLE, description: ENTERPRISE_DESCRIPTION,
+        inLanguage: "en", isPartOf: { "@id": SITE_ID },
+        mainEntity: { "@id": `${url}#service` },
+        breadcrumb: { "@id": `${url}#breadcrumbs` },
+        primaryImageOfPage: { "@type": "ImageObject", url: `${url}/opengraph-image`, width: 1200, height: 630 },
+      },
+      {
+        "@type": "Service", "@id": `${url}#service`, url,
+        name: "Firetower Enterprise services", description: ENTERPRISE_DESCRIPTION,
+        provider: { "@id": ORG_ID },
+        serviceType: ["Deployment and onboarding", "Agent workflow implementation", "Technical support"],
+      },
+      {
+        "@type": "BreadcrumbList", "@id": `${url}#breadcrumbs`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: NAME, item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Enterprise", item: url },
+        ],
       },
     ],
   };
