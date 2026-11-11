@@ -14,3 +14,6 @@ next-env.d.ts
 # Agent-readable documentation generated before dev/build
 /public/docs/
 /public/llms-full.txt
+
+/public/fr/docs/
+/public/fr/llms-full.txt

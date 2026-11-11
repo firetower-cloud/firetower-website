@@ -46,7 +46,8 @@ if (!locs.length) fail("sitemap.xml", "lists no URLs at all");
 if (new Set(locs).size !== locs.length) fail("sitemap.xml", "duplicate URLs");
 
 for (const loc of locs) {
-  if (new URL(loc).origin !== HOST) fail("sitemap.xml", `${loc} is not on ${HOST}`);
+  if (new URL(loc).origin !== HOST)
+    fail("sitemap.xml", `${loc} is not on ${HOST}`);
   const path = loc.slice(HOST.length);
   // cleanUrls: /docs is served from docs.html, / from index.html.
   const file = `${OUT}${path || "/index"}.html`;
@@ -84,11 +85,14 @@ const descriptions = new Set();
 for (const page of pages) {
   const html = readFileSync(page, "utf8");
   const at = page.slice(OUT.length);
-  const expected = HOST + (at === "/index.html" ? "/" : at.replace(/\.html$/, ""));
-  if (/<meta name="(?:robots|googlebot)" content="[^"]*noindex/i.test(html)) fail(at, "page has noindex");
-  if (!html.includes('rel="describedby" href="/llms.txt"')) fail(at, "missing agent index discovery link");
-  if (!locs.some((loc) => new URL(loc).href === expected)) fail(at, "missing from sitemap");
-
+  const expected =
+    HOST + (at === "/index.html" ? "/" : at.replace(/\.html$/, ""));
+  if (/<meta name="(?:robots|googlebot)" content="[^"]*noindex/i.test(html))
+    fail(at, "page has noindex");
+  if (!html.includes('rel="describedby" href="/llms.txt"'))
+    fail(at, "missing agent index discovery link");
+  if (!locs.some((loc) => new URL(loc).href === expected))
+    fail(at, "missing from sitemap");
 
   const canonicals = [
     ...html.matchAll(/<link rel="canonical" href="([^"]*)"/g),
@@ -98,7 +102,8 @@ for (const page of pages) {
   else if (canonicals.length > 1)
     fail(at, `${canonicals.length} canonical links`);
 
-  if (canonicals[0] && new URL(canonicals[0][1]).href !== expected) fail(at, "canonical points to a different page");
+  if (canonicals[0] && new URL(canonicals[0][1]).href !== expected)
+    fail(at, "canonical points to a different page");
 
   const title = html.match(/<title>([^<]*)<\/title>/);
   if (!title?.[1]?.trim()) fail(at, "empty or missing <title>");
@@ -107,8 +112,8 @@ for (const page of pages) {
   if (!desc?.[1]?.trim()) fail(at, "empty or missing meta description");
   if (titles.has(title?.[1])) fail(at, "duplicate title");
   if (descriptions.has(desc?.[1])) fail(at, "duplicate description");
-  titles.add(title?.[1]); descriptions.add(desc?.[1]);
-
+  titles.add(title?.[1]);
+  descriptions.add(desc?.[1]);
 
   // Exactly one h1. Zero and a page has no stated subject; two and it has two.
   const h1s = (html.match(/<h1[\s>]/g) || []).length;
@@ -139,26 +144,59 @@ for (const page of pages) {
 const socialUrls = { og: new Set(), twitter: new Set() };
 for (const page of pages) {
   const html = readFileSync(page, "utf8");
-  for (const [kind, attribute, height] of [["og", "property", 630], ["twitter", "name", 600]]) {
-    const matches = [...html.matchAll(new RegExp(`<meta ${attribute}="${kind}:image" content="([^"]+)"`, "g"))];
-    if (matches.length !== 1) { fail(page, `${kind} must have exactly one share image`); continue; }
+  for (const [kind, attribute, height] of [
+    ["og", "property", 630],
+    ["twitter", "name", 600],
+  ]) {
+    const matches = [
+      ...html.matchAll(
+        new RegExp(`<meta ${attribute}="${kind}:image" content="([^"]+)"`, "g"),
+      ),
+    ];
+    if (matches.length !== 1) {
+      fail(page, `${kind} must have exactly one share image`);
+      continue;
+    }
     const url = new URL(matches[0][1]);
-    if (url.origin !== HOST) { fail(page, `${kind} image is not on the canonical host`); continue; }
+    if (url.origin !== HOST) {
+      fail(page, `${kind} image is not on the canonical host`);
+      continue;
+    }
     const image = `${OUT}${url.pathname}`;
-    if (!existsSync(image)) { fail(page, `${kind} image is missing: ${url.pathname}`); continue; }
+    if (!existsSync(image)) {
+      fail(page, `${kind} image is missing: ${url.pathname}`);
+      continue;
+    }
     const bytes = readFileSync(image);
-    if (bytes.subarray(1, 4).toString() !== "PNG" || bytes.readUInt32BE(16) !== 1200 || bytes.readUInt32BE(20) !== height)
+    if (
+      bytes.subarray(1, 4).toString() !== "PNG" ||
+      bytes.readUInt32BE(16) !== 1200 ||
+      bytes.readUInt32BE(20) !== height
+    )
       fail(page, `${kind} image must be a 1200 × ${height} PNG`);
-    if (bytes.length >= 5 * 1024 * 1024) fail(page, `${kind} image exceeds 5 MB`);
-    if (socialUrls[kind].has(url.pathname)) fail(page, `${kind} reuses another page’s image`);
+    if (bytes.length >= 5 * 1024 * 1024)
+      fail(page, `${kind} image exceeds 5 MB`);
+    if (socialUrls[kind].has(url.pathname))
+      fail(page, `${kind} reuses another page’s image`);
     socialUrls[kind].add(url.pathname);
-    if (!html.includes(`${attribute}="${kind}:image:alt" content="`)) fail(page, `${kind} image has no alt text`);
+    if (!html.includes(`${attribute}="${kind}:image:alt" content="`))
+      fail(page, `${kind} image has no alt text`);
   }
-  const ogTitle = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1];
-  const xTitle = html.match(/<meta name="twitter:title" content="([^"]+)"/)?.[1];
-  if (ogTitle !== xTitle) fail(page, "OpenGraph and X titles describe different pages");
+  const ogTitle = html.match(
+    /<meta property="og:title" content="([^"]+)"/,
+  )?.[1];
+  const xTitle = html.match(
+    /<meta name="twitter:title" content="([^"]+)"/,
+  )?.[1];
+  if (ogTitle !== xTitle)
+    fail(page, "OpenGraph and X titles describe different pages");
 }
-for (const asset of ["favicon.ico", "icon.svg", "icons/firetower-192.png", "icons/firetower-512.png"]) {
+for (const asset of [
+  "favicon.ico",
+  "icon.svg",
+  "icons/firetower-192.png",
+  "icons/firetower-512.png",
+]) {
   if (!existsSync(`${OUT}/${asset}`)) fail(asset, "missing brand icon");
 }
 
@@ -172,42 +210,173 @@ if (/^Disallow: \/$/m.test(robots))
 /* The Enterprise page must stay independently shareable and discoverable. */
 const enterprise = read("enterprise.html");
 const enterpriseUrl = `${HOST}/enterprise`;
-if (!locs.includes(enterpriseUrl)) fail("sitemap.xml", "missing Enterprise page");
-if (!enterprise.includes(`<meta property="og:url" content="${enterpriseUrl}"`)) fail("enterprise", "wrong OpenGraph URL");
-if (!enterprise.includes(`type="text/markdown" href="${HOST}/enterprise.md"`)) fail("enterprise", "missing Markdown alternate");
-if (!read("llms.txt").includes(`${HOST}/enterprise.md`)) fail("llms.txt", "missing Enterprise offer");
-if (!read("enterprise.md").startsWith("# Firetower Enterprise\n")) fail("enterprise.md", "missing title");
-const enterpriseGraphs = [...enterprise.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].flatMap(([, raw]) => {
-  const data = JSON.parse(raw); return data["@graph"] ?? [data];
+if (!locs.includes(enterpriseUrl))
+  fail("sitemap.xml", "missing Enterprise page");
+if (!enterprise.includes(`<meta property="og:url" content="${enterpriseUrl}"`))
+  fail("enterprise", "wrong OpenGraph URL");
+if (!enterprise.includes(`type="text/markdown" href="${HOST}/enterprise.md"`))
+  fail("enterprise", "missing Markdown alternate");
+if (!read("llms.txt").includes(`${HOST}/enterprise.md`))
+  fail("llms.txt", "missing Enterprise offer");
+if (!read("enterprise.md").startsWith("# Firetower Enterprise\n"))
+  fail("enterprise.md", "missing title");
+const enterpriseGraphs = [
+  ...enterprise.matchAll(
+    /<script type="application\/ld\+json">(.*?)<\/script>/gs,
+  ),
+].flatMap(([, raw]) => {
+  const data = JSON.parse(raw);
+  return data["@graph"] ?? [data];
 });
 const service = enterpriseGraphs.find((n) => n["@type"] === "Service");
-if (!service || service.url !== enterpriseUrl || service.provider?.["@id"] !== `${HOST}/#organization`) fail("enterprise", "missing service/provider relationship");
-if (service && "offers" in service) fail("enterprise", "service pricing must not be fabricated");
+if (
+  !service ||
+  service.url !== enterpriseUrl ||
+  service.provider?.["@id"] !== `${HOST}/#organization`
+)
+  fail("enterprise", "missing service/provider relationship");
+if (service && "offers" in service)
+  fail("enterprise", "service pricing must not be fabricated");
 const home = read("index.html");
-if (!home.includes('class="enterprise-services-callout shell"') || !home.includes('href="/enterprise"')) fail("home", "missing Enterprise integration");
+if (
+  !home.includes('class="enterprise-services-callout shell"') ||
+  !home.includes('href="/enterprise"')
+)
+  fail("home", "missing Enterprise integration");
 
 /* Agent-facing content must stay complete and usable after docs edits. */
 const index = read("llms.txt");
 const full = read("llms-full.txt");
-if (!index.startsWith("# Firetower\n")) fail("llms.txt", "missing project heading");
+if (!index.startsWith("# Firetower\n"))
+  fail("llms.txt", "missing project heading");
 for (const doc of manifest) {
   const file = `docs/${doc.slug || "index"}.md`;
   if (!index.includes(`${HOST}/${file}`)) fail("llms.txt", `missing ${file}`);
-  if (!existsSync(`${OUT}/${file}`)) { fail(file, "missing Markdown export"); continue; }
+  if (!existsSync(`${OUT}/${file}`)) {
+    fail(file, "missing Markdown export");
+    continue;
+  }
   const md = read(file);
   if (!md.startsWith(`# ${doc.title}\n`)) fail(file, "wrong title");
-  if (!full.includes(md)) fail("llms-full.txt", `missing full contents of ${file}`);
-  if (/<(?:button|script|style|img)[\s>]/i.test(md)) fail(file, "unconverted interface markup");
+  if (!full.includes(md))
+    fail("llms-full.txt", `missing full contents of ${file}`);
+  if (/<(?:button|script|style|img)[\s>]/i.test(md))
+    fail(file, "unconverted interface markup");
   const html = read(`docs${doc.slug ? "/" + doc.slug : ""}.html`);
-  if (!html.includes(`type="text/markdown" href="${HOST}/${file}"`)) fail(file, "missing Markdown alternate link");
-  for (const [, target] of md.matchAll(/\]\((https:\/\/usefiretower\.com[^)]+)\)/g)) {
+  if (!html.includes(`type="text/markdown" href="${HOST}/${file}"`))
+    fail(file, "missing Markdown alternate link");
+  for (const [, target] of md.matchAll(
+    /\]\((https:\/\/usefiretower\.com[^)]+)\)/g,
+  )) {
     const url = new URL(target);
-    if (![`${OUT}${url.pathname}`, `${OUT}${url.pathname}.html`].some(existsSync)) fail(file, `broken Markdown link ${target}`);
+    if (
+      ![`${OUT}${url.pathname}`, `${OUT}${url.pathname}.html`].some(existsSync)
+    )
+      fail(file, `broken Markdown link ${target}`);
   }
 }
 const installMarkdown = read("docs/install-firetower.md");
-if (!installMarkdown.includes("curl -fsSL https://usefiretower.com/install.sh | sh")) fail("Markdown", "installer command lost in conversion");
-if (!read("docs/requirements.md").includes("|")) fail("Markdown", "requirements table lost in conversion");
+if (
+  !installMarkdown.includes(
+    "curl -fsSL https://usefiretower.com/install.sh | sh",
+  )
+)
+  fail("Markdown", "installer command lost in conversion");
+if (!read("docs/requirements.md").includes("|"))
+  fail("Markdown", "requirements table lost in conversion");
+
+/* Both languages must be fully rendered and advertise reciprocal alternates. */
+for (const [english, french] of [
+  ["/", "/fr"],
+  ["/enterprise", "/fr/enterprise"],
+  ...manifest.map((d) => {
+    const path = "/docs" + (d.slug ? "/" + d.slug : "");
+    return [path, "/fr" + path];
+  }),
+]) {
+  for (const [path, language] of [
+    [english, "en"],
+    [french, "fr"],
+  ]) {
+    const html = read(path === "/" ? "index.html" : path.slice(1) + ".html");
+    if (!html.includes(`<html lang="${language}"`))
+      fail(path, "wrong static document language");
+    const alternates = [
+      ...html.matchAll(
+        /<link rel="alternate" hrefLang="([^"]+)" href="([^"]+)"/g,
+      ),
+    ];
+    for (const [lang, target] of [
+      ["en", english],
+      ["fr", french],
+      ["x-default", english],
+    ]) {
+      if (
+        !alternates.some(
+          (m) =>
+            m[1] === lang && new URL(m[2]).href === new URL(HOST + target).href,
+        )
+      )
+        fail(path, `missing ${lang} alternate`);
+    }
+    if (html.includes("http://localhost:"))
+      fail(path, "localhost URL in published HTML");
+    const graphs = [
+      ...html.matchAll(
+        /<script type="application\/ld\+json">(.*?)<\/script>/gs,
+      ),
+    ].flatMap(([, raw]) => {
+      const data = JSON.parse(raw);
+      return data["@graph"] ?? [data];
+    });
+    if (
+      !graphs.some(
+        (node) =>
+          node["@type"] === "WebPage" &&
+          node.inLanguage === language &&
+          new URL(node.url).href === new URL(HOST + path).href,
+      )
+    )
+      fail(path, "missing localized WebPage structured data");
+  }
+}
+if (!read("fr.html").includes("Faites travailler vos agents de code"))
+  fail("/fr", "French content is not present in static HTML");
+if (!read("fr/enterprise.html").includes("Notre expertise."))
+  fail("/fr/enterprise", "French offer is not present in static HTML");
+for (const path of ["/fr", "/fr/enterprise"]) {
+  if (!read("llms.txt").includes(HOST + path))
+    fail("llms.txt", `missing ${path}`);
+}
+
+/* Every translated guide is also discoverable and complete for agents. */
+const frenchManifest = JSON.parse(
+  readFileSync("content/docs-manifest.fr.json", "utf8"),
+);
+const frenchIndex = read("fr/llms.txt");
+const frenchFull = read("fr/llms-full.txt");
+for (const doc of frenchManifest) {
+  const file = `fr/docs/${doc.slug || "index"}.md`;
+  const html = read(`fr/docs${doc.slug ? "/" + doc.slug : ""}.html`);
+  const markdown = read(file);
+  if (!frenchIndex.includes(`${HOST}/${file}`))
+    fail("fr/llms.txt", `missing ${file}`);
+  if (!markdown.startsWith(`# ${doc.title}\n`))
+    fail(file, "wrong French title");
+  if (!frenchFull.includes(markdown))
+    fail("fr/llms-full.txt", `missing ${file}`);
+  if (!html.includes(`type="text/markdown" href="${HOST}/${file}"`))
+    fail(file, "missing French Markdown alternate");
+  for (const [, target] of markdown.matchAll(
+    /\]\((https:\/\/usefiretower\.com[^)]+)\)/g,
+  )) {
+    const url = new URL(target);
+    if (
+      ![`${OUT}${url.pathname}`, `${OUT}${url.pathname}.html`].some(existsSync)
+    )
+      fail(file, `broken French Markdown link ${target}`);
+  }
+}
 
 done();
 

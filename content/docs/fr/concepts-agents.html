@@ -1,0 +1,115 @@
+<figure class="concept-figure">
+  <div class="concept-figure-title">De la configuration enregistrée à l’exécution</div>
+  <div class="profile-recipe">
+    <div class="recipe-header">
+      <span> Profil d’agent </span>
+      <strong> Relecteur de code </strong>
+    </div>
+    <div class="recipe-fields">
+      <div>
+        <small> Agent </small>
+        <strong> Codex </strong>
+      </div>
+      <div>
+        <small> Instructions </small>
+        <strong> Vérifier les modifications </strong>
+      </div>
+      <div>
+        <small> Compétence </small>
+        <strong> Liste de vérification du code </strong>
+      </div>
+    </div>
+  </div>
+  <div class="concept-connector">
+    <span aria-hidden="true"> ↓ </span>
+    <span> Démarrer avec un modèle et un compte </span>
+  </div>
+  <div class="concept-result">
+    <strong> Session du relecteur </strong>
+    <span> Examine les modifications et signale les problèmes. </span>
+  </div>
+  <figcaption>
+    Le profil est réutilisable. Chaque session correspond à une nouvelle exécution.
+  </figcaption>
+</figure>
+<h2 id="section-0">Agent, modèle et compte</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Agent / harness</dt>
+    <dd>
+      Le logiciel qui utilise un modèle et des outils pour réaliser des tâches, comme Claude Code ou Codex. Le harness gère la conversation et l’exécution des outils.
+    </dd>
+  </div>
+  <div>
+    <dt>Modèle</dt>
+    <dd>
+      Le modèle d’IA utilisé par l’agent. Les modèles et réglages disponibles dépendent de l’agent choisi.
+    </dd>
+  </div>
+  <div>
+    <dt>Compte d’agent</dt>
+    <dd>
+      L’abonnement ou l’identifiant API connecté qui autorise l’utilisation du service. Partager un compte revient à partager son quota.
+    </dd>
+  </div>
+</dl>
+<h2 id="section-1">Profil, compétence et équipe</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Profil d’agent</dt>
+    <dd>
+      Des instructions et des réglages enregistrés pour un rôle, par exemple relecteur de code. Le profil peut définir l’agent, le compte, les compétences et les paramètres d’exécution.
+    </dd>
+  </div>
+  <div>
+    <dt>Compétence</dt>
+    <dd>
+      Des instructions réutilisables et des fichiers utiles pour une tâche précise. Par exemple, plusieurs profils peuvent utiliser la même liste de vérification du code.
+    </dd>
+  </div>
+  <div>
+    <dt>Équipe d’agents</dt>
+    <dd>
+      Un responsable et les profils spécialisés auxquels il peut déléguer. Un Manager peut déléguer ; un Operator réalise le travail qui lui est confié.
+    </dd>
+  </div>
+</dl>
+<p>
+  Les profils et les compétences sont facultatifs. Un profil définit le rôle ; une compétence fournit une méthode réutilisable. Ils ne deviennent un agent actif qu’au lancement d’une tâche.
+</p>
+<details>
+  <summary>Les profils dans l’interface de Firetower</summary>
+  <figure>
+    <button
+      aria-label="Agrandir : profils d’agents enregistrés"
+      class="image-expand"
+      data-image="profiles"
+    >
+      <span class="themed-image">
+        <img
+          alt="Profils d’agents enregistrés"
+          class="image-light"
+          decoding="async"
+          loading="lazy"
+          src="/product/profiles-light.webp"
+         width="1920" height="1236" />
+        <img
+          alt="Profils d’agents enregistrés"
+          class="image-dark"
+          decoding="async"
+          loading="lazy"
+          src="/product/profiles-dark.webp"
+         width="1920" height="1236" />
+      </span>
+    </button>
+    <figcaption>
+      Profils d’agents enregistrés · prototype de la nouvelle interface, pas une capture de la version publiée
+    </figcaption>
+  </figure>
+</details>
+<div class="concept-next">
+  <span> Passer à la pratique </span>
+  <a href="/fr/docs/profiles"> Créer un profil </a>
+  <a href="/fr/docs/skills"> Importer une compétence </a>
+  <a href="/fr/docs/teams"> Créer une équipe d’agents </a>
+</div>

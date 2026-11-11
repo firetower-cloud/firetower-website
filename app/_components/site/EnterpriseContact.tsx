@@ -2,18 +2,22 @@
 
 import { useEffect, useId, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
+import { translator, type Locale } from "../../_lib/i18n";
 import { ENTERPRISE_BOOKING_URL } from "../../_lib/site";
 import "./enterprise-booking.css";
 
 function BookingDialog({
   url,
+  locale,
   onClose,
   trigger,
 }: {
   url: string;
+  locale: Locale;
   onClose: () => void;
   trigger: RefObject<HTMLAnchorElement | null>;
 }) {
+  const t = translator(locale);
   const dialog = useRef<HTMLDialogElement>(null);
   const id = useId();
   const [loaded, setLoaded] = useState(false);
@@ -62,12 +66,12 @@ function BookingDialog({
       <header className="enterprise-booking-header">
         <div>
           <p>Firetower Enterprise</p>
-          <h2 id={`${id}-title`}>Discuss your deployment</h2>
+          <h2 id={`${id}-title`}>{t("Discuss your deployment")}</h2>
         </div>
         <button
           type="button"
           className="enterprise-booking-close"
-          aria-label="Close booking"
+          aria-label={t("Close booking")}
           onClick={onClose}
         >
           <svg
@@ -87,24 +91,31 @@ function BookingDialog({
         {!loaded && (
           <p className="enterprise-booking-loading" role="status">
             {slow
-              ? "Taking longer than expected. You can open Calendly directly below."
-              : "Loading available times…"}
+              ? t(
+                  "Taking longer than expected. You can open Calendly directly below.",
+                )
+              : t("Loading available times…")}
           </p>
         )}
         <iframe
           src={url}
-          title="Book a Firetower Enterprise call with Kevin"
+          title={t("Book a Firetower Enterprise call with Kevin")}
           onLoad={() => setLoaded(true)}
         />
       </div>
       <footer className="enterprise-booking-footer">
-        <span>Scheduling with Calendly</span>
+        <span>{t("Scheduling with Calendly")}</span>
         <a
-          href={ENTERPRISE_BOOKING_URL}
+          href={
+            locale === "fr"
+              ? `${ENTERPRISE_BOOKING_URL}?locale=fr`
+              : ENTERPRISE_BOOKING_URL
+          }
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open in a new tab <span aria-hidden="true">↗</span>
+          {t("Open in a new tab")}
+          <span aria-hidden="true">↗</span>
         </a>
       </footer>
     </dialog>,
@@ -114,10 +125,13 @@ function BookingDialog({
 
 /** Links still work without JavaScript; normal clicks open an on-demand embed. */
 export function EnterpriseContact({
-  label = "Discuss your deployment",
+  label,
+  locale = "en",
 }: {
   label?: string;
+  locale?: Locale;
 }) {
+  const t = translator(locale);
   const trigger = useRef<HTMLAnchorElement>(null);
   const [url, setUrl] = useState<string | null>(null);
 
@@ -126,7 +140,11 @@ export function EnterpriseContact({
       <a
         ref={trigger}
         className="button"
-        href={ENTERPRISE_BOOKING_URL}
+        href={
+          locale === "fr"
+            ? `${ENTERPRISE_BOOKING_URL}?locale=fr`
+            : ENTERPRISE_BOOKING_URL
+        }
         target="_blank"
         rel="noopener noreferrer"
         aria-haspopup="dialog"
@@ -143,6 +161,7 @@ export function EnterpriseContact({
           const embed = new URL(ENTERPRISE_BOOKING_URL);
           embed.searchParams.set("embed_domain", window.location.host);
           embed.searchParams.set("embed_type", "Inline");
+          embed.searchParams.set("locale", locale);
           const dark = document.documentElement.dataset.theme === "dark";
           embed.searchParams.set(
             "background_color",
@@ -153,10 +172,11 @@ export function EnterpriseContact({
           setUrl(embed.toString());
         }}
       >
-        {label}
+        {label ?? t("Discuss your deployment")}
       </a>
       {url && (
         <BookingDialog
+          locale={locale}
           url={url}
           trigger={trigger}
           onClose={() => setUrl(null)}

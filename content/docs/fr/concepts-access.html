@@ -1,0 +1,95 @@
+<figure class="concept-figure">
+  <div class="concept-figure-title">Partager des ressources avec une équipe de l’entreprise</div>
+  <div class="access-example-team">
+    <span> Équipe de l’entreprise </span>
+    <strong> Développement </strong>
+    <small> Ada · Sam · Maya </small>
+  </div>
+  <div class="concept-connector">
+    <span aria-hidden="true"> ↓ </span>
+    <span> Droits de modification </span>
+  </div>
+  <div class="access-example-directory">
+    <span> Répertoire Firetower </span>
+    <strong> Ressources de développement </strong>
+    <div class="resource-pills">
+      <span> Machine d’exécution </span>
+      <span> Profil de relecteur </span>
+      <span> Compétence de revue de code </span>
+    </div>
+  </div>
+  <figcaption>
+    Cette autorisation donne à l’équipe accès aux ressources du répertoire. Les actions possibles dépendent du type de ressource.
+  </figcaption>
+</figure>
+<h2 id="section-0">Personnes, ressources et répertoires</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Personne / équipe de l’entreprise</dt>
+    <dd>
+      Chaque personne possède un compte Firetower. Une équipe regroupe des personnes pour leur attribuer des droits en une seule fois.
+    </dd>
+  </div>
+  <div>
+    <dt>Ressource</dt>
+    <dd>
+      Un élément partageable : machine, espace de travail, profil, compétence, livrable ou compte d’agent.
+    </dd>
+  </div>
+  <div>
+    <dt>Répertoire</dt>
+    <dd>
+      Un ensemble de ressources partagées dans Firetower. Il définit des droits d’accès ; ce n’est pas un dossier sur le disque d’un worker.
+    </dd>
+  </div>
+  <div>
+    <dt>Autorisation d’accès</dt>
+    <dd>
+      Un droit accordé à une personne ou à une équipe, directement sur une ressource ou par l’intermédiaire de son répertoire.
+    </dd>
+  </div>
+</dl>
+<h2 id="section-1">Niveaux d’accès</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Niveau</th>
+        <th>Rôle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Viewer (lecture)</td>
+        <td>Consulter la ressource et son activité visible.</td>
+      </tr>
+      <tr>
+        <td>Editor (modification)</td>
+        <td>
+          Utiliser la ressource ou travailler dessus. Pour un espace de travail, cela inclut l’accès au terminal.
+        </td>
+      </tr>
+      <tr>
+        <td>Directory Admin (administration du répertoire)</td>
+        <td>Gérer le répertoire, son contenu et ses droits d’accès.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="section-2">Propriété et partage</h2>
+<p>
+  Déplacer une ressource dans un répertoire transfère sa propriété à ce répertoire. Accorder directement des droits Viewer ou Editor conserve le propriétaire actuel.
+</p>
+<p>
+  Un administrateur de l’organisation gère l’installation et les utilisateurs. Ce rôle ne donne pas automatiquement accès aux ressources privées de chacun. La personne qui lance une session contrôle ses messages et ses autorisations. Les collègues disposant des droits nécessaires peuvent lancer leurs propres sessions dans le même espace de travail.
+</p>
+<h2 id="section-3">Secrets et droits d’exécution</h2>
+<p>
+  Le coffre-fort conserve les identifiants et les secrets. Partager une ressource enregistrée et autoriser une action d’agent sont deux décisions distinctes. Les outils des agents utilisent les droits du compte SSH du worker. Prévoyez une machine ou une VM distincte si les tâches doivent être isolées.
+</p>
+<div class="concept-next">
+  <span> Passer à la pratique </span>
+  <a href="/fr/docs/sharing"> Partager une ressource </a>
+  <a href="/fr/docs/permissions"> Vérifier les autorisations </a>
+  <a href="/fr/docs/people"> Gérer les personnes et les équipes </a>
+</div>

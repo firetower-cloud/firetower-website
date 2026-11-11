@@ -1,0 +1,126 @@
+<figure class="concept-figure">
+  <div class="concept-figure-title">
+    Un espace de travail peut accueillir plusieurs sessions
+  </div>
+  <div class="workspace-example">
+    <div class="workspace-example-title">
+      <span> Espace de travail </span>
+      <strong> Correction du paiement </strong>
+      <small> Exemple : un dépôt et une branche partagée </small>
+    </div>
+    <div class="session-pair">
+      <div>
+        <span aria-hidden="true" class="session-dot"> </span>
+        <strong> Session du responsable </strong>
+        <small> Coordonne la correction </small>
+      </div>
+      <div>
+        <span aria-hidden="true" class="session-dot"> </span>
+        <strong> Session du relecteur </strong>
+        <small> Consulte les mêmes fichiers </small>
+      </div>
+    </div>
+  </div>
+  <div class="subworkspace-example">
+    <div aria-hidden="true" class="subworkspace-stem">↳</div>
+    <div>
+      <span> Sous-espace de travail · emplacement distinct </span>
+      <strong> Tester la correction du paiement </strong>
+      <small> Session de test · fichiers de travail et branche distincts </small>
+    </div>
+  </div>
+  <figcaption>
+    Exemple avec un dépôt : le relecteur partage l’espace du responsable ; les tests s’exécutent dans un sous-espace.
+  </figcaption>
+</figure>
+<h2 id="section-0">Les quatre concepts</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Espace de travail</dt>
+    <dd>
+      Un dossier de travail sur une machine, avec ses fichiers et les sessions associées. Il peut contenir un dépôt ou des fichiers sans utiliser Git.
+    </dd>
+  </div>
+  <div>
+    <dt>Session</dt>
+    <dd>
+      Une conversation avec un agent et son contexte d’exécution. Elle peut comprendre plusieurs échanges, appels d’outils et demandes d’autorisation. Plusieurs sessions peuvent utiliser le même espace de travail.
+    </dd>
+  </div>
+  <div>
+    <dt>Sous-agent</dt>
+    <dd>
+      Une session d’agent lancée par un responsable pour traiter une partie de la tâche. Elle lui transmet son résultat.
+    </dd>
+  </div>
+  <div>
+    <dt>Sous-espace de travail</dt>
+    <dd>
+      Un espace distinct créé pour une tâche déléguée. Il apparaît sous le travail du responsable et possède ses propres fichiers ainsi que sa propre branche lorsqu’il utilise Git.
+    </dd>
+  </div>
+</dl>
+<h2 id="section-1">Deux emplacements pour le travail délégué</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Emplacement</th>
+        <th>Fonctionnement</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Même espace de travail</td>
+        <td>
+          Une session distincte utilise les fichiers et la branche du responsable. Les modifications sont immédiatement partagées.
+        </td>
+      </tr>
+      <tr>
+        <td>Espace de travail distinct</td>
+        <td>
+          Le travail délégué dispose de son propre espace. Ses modifications peuvent nécessiter une intégration.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  Un sous-agent ne crée pas systématiquement de sous-espace de travail. Un sous-espace n’est pas non plus un sous-dossier dans les fichiers du responsable.
+</p>
+<details>
+  <summary>Le travail délégué dans l’interface de Firetower</summary>
+  <figure>
+    <button
+      aria-label="Agrandir : responsable et tâches déléguées"
+      class="image-expand"
+      data-image="team"
+    >
+      <span class="themed-image">
+        <img
+          alt="Responsable et tâches déléguées"
+          class="image-light"
+          decoding="async"
+          loading="lazy"
+          src="/product/team-light.webp"
+         width="1920" height="1236" />
+        <img
+          alt="Responsable et tâches déléguées"
+          class="image-dark"
+          decoding="async"
+          loading="lazy"
+          src="/product/team-dark.webp"
+         width="1920" height="1236" />
+      </span>
+    </button>
+    <figcaption>
+      Responsable et tâches déléguées · prototype de la nouvelle interface, pas une capture de la version publiée
+    </figcaption>
+  </figure>
+</details>
+<div class="concept-next">
+  <span> Passer à la pratique </span>
+  <a href="/fr/docs/workspaces"> Créer un espace de travail </a>
+  <a href="/fr/docs/runs"> Suivre une exécution </a>
+  <a href="/fr/docs/teams"> Créer une équipe d’agents </a>
+</div>

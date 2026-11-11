@@ -23,11 +23,11 @@ The production files are in `out/`. `npm start` is not a server for a static exp
 
 | Path | Purpose |
 | --- | --- |
-| `app/page.tsx` | Homepage section order |
+| `app/_components/site/HomePage.tsx` | Shared homepage section order |
 | `app/_components/site/` | Current homepage and documentation components |
 | `app/globals.css` | Shared brand tokens, theme, typography and image viewer |
 | `app/_components/site/home.css` | Scoped homepage styles |
-| `app/docs/docs.css` | Scoped documentation styles |
+| `app/(en)/docs/docs.css` | Scoped documentation styles |
 | `content/docs/*.html` | Documentation article bodies, rendered into each page at build time |
 | `content/docs-manifest.json` | Titles, descriptions, navigation, audiences and section anchors |
 | `content/docs-review.json` | Internal source evidence and procedure validation still to perform |
@@ -35,7 +35,7 @@ The production files are in `out/`. `npm start` is not a server for a static exp
 | `app/_lib/site.ts` | Product copy, canonical origin and external links |
 | `firebase.json` | Hosting, cache headers, installer links and legacy documentation redirects |
 
-The previous ASCII website components remain in `app/_components/` for reference; the active homepage imports from `app/_components/site/`. Do not add new content to the old components.
+The previous ASCII website components remain in `app/_components/` for reference; the active homepage uses the shared components in `app/_components/site/`. Do not add new content to the old components.
 
 ## Documentation
 
@@ -88,3 +88,15 @@ Images and fonts are served locally. `image-sizes.json` reserves the correct ima
 The existing GitHub Actions workflow deploys pull requests to expiring Firebase preview channels. A merge to `main` or a manual workflow run publishes the production site. Firebase uses project `firetower-prod-506201`, target `prod`, and the mappings in `.firebaserc`.
 
 Run lint, unit tests, build, SEO and content checks before publishing. This implementation does not automatically deploy from a local development session.
+
+## Languages
+
+English is the default at `/` and `/enterprise`. French is available at `/fr` and `/fr/enterprise`. Both versions use the same components and are exported as complete HTML pages. Separate route-group layouts set the correct `html lang` at build time. The shared document lives in `app/_components/SiteDocument.tsx`; the global static 404 provides links to both homepages.
+
+French copy lives in `app/_lib/i18n/fr.json`, keyed by the English source text. Pass `locale` to shared marketing components and use `translator(locale)` for visible copy and accessibility labels. Missing French translations fail rendering instead of silently leaking English. Product names, source commands and the actual application screenshots remain unchanged. Documentation is still in English and is labelled as such in French navigation; there are no placeholder French documentation URLs.
+
+The EN/FR selector keeps the equivalent page, query and anchor, and remembers the explicit choice in `firetower-language` local storage. On English marketing pages, visitors whose preferred supported browser language is French see a dismissible French suggestion. An explicit saved language takes priority. No IP lookup, automatic redirect, cookie, translation API or server runtime is used. If storage is unavailable, the selector still navigates and the suggestion can still be dismissed.
+
+Each marketing language has its own canonical, localized social images and metadata, reciprocal English/French `hreflang` links and an English `x-default`. Sitemap alternates only include published translations. Social image handlers are statically exported at stable URLs outside the route groups. The booking modal passes the selected locale to Calendly; event names and custom event copy are managed in Calendly.
+
+Run `npm test`, `npm run build`, `npm run check:seo`, and `npm run check:content` after editing translations or routes. SEO checks assert document languages, reciprocal alternates, localized structured data, social cards and sitemap coverage. Language tests cover preference precedence, platform labels and keeping documentation links on their existing URLs.

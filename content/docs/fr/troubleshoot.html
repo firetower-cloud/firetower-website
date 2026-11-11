@@ -1,0 +1,74 @@
+<h2 id="section-0">Recueillir les informations de base</h2>
+<p>
+  Exécutez ces commandes sur le serveur du plan de contrôle. Utilisez le dossier choisi lors de l’installation.
+</p>
+<div class="code">
+  <div class="code-top">
+    <span> Sur le serveur du plan de contrôle </span>
+    <button class="copy" type="button">Copier</button>
+  </div>
+  <pre><code>firetower --dir /opt/firetower status
+firetower --dir /opt/firetower doctor
+firetower --dir /opt/firetower logs</code></pre>
+</div>
+<h2 id="section-1">Partir du symptôme</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Problème</th>
+        <th>À vérifier en premier</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>L’application ne joint pas le serveur</td>
+        <td>Ouvrez l’URL dans un navigateur ; vérifiez le VPN, le DNS et TLS</td>
+      </tr>
+      <tr>
+        <td>Le serveur est accessible, mais la connexion échoue</td>
+        <td>
+          L’état du compte, le mot de passe temporaire et la configuration du proxy de confiance
+        </td>
+      </tr>
+      <tr>
+        <td>Aucune machine ne peut lancer de tâche</td>
+        <td>
+          <a href="/fr/docs/machines"> La configuration du worker </a>
+          et
+          <a href="/fr/docs/machines#section-5"> son état de préparation </a>
+        </td>
+      </tr>
+      <tr>
+        <td>Un seul fournisseur est en échec</td>
+        <td>
+          <a href="/fr/docs/accounts"> Les identifiants de l’agent </a>
+          ou
+          <a href="/fr/docs/git"> les autorisations de la plateforme Git </a>
+        </td>
+      </tr>
+      <tr>
+        <td>Une exécution reste en attente sans raison apparente</td>
+        <td>Les demandes d’autorisation, le quota et la connexion au worker</td>
+      </tr>
+      <tr>
+        <td>Une mise à jour s’est arrêtée</td>
+        <td>
+          <a href="/fr/docs/updates"> L’étape concernée et l’erreur enregistrée </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="section-2">Préparer un signalement utile</h2>
+<ul>
+  <li>Indiquez l’heure, le composant concerné et les versions.</li>
+  <li>Décrivez le résultat attendu et l’erreur exacte.</li>
+  <li>Joignez les diagnostics utiles après avoir vérifié qu’ils ne contiennent pas de secrets.</li>
+  <li>Précisez si le problème touche tout le monde, une machine ou un compte.</li>
+</ul>
+<p>
+  N’incluez pas le fichier
+  <code> .env </code>
+  , de clés racines, de jetons de fournisseur ou de contenu de dépôt privé dans un signalement public.
+</p>

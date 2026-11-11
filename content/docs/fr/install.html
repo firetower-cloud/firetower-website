@@ -1,0 +1,210 @@
+<figure aria-labelledby="install-map-title" class="install-map">
+  <div class="install-map-head">
+    <strong id="install-map-title"> Votre installation en un coup d’œil </strong>
+    <span> Exemple avec Tailscale </span>
+  </div>
+  <div class="install-dns">
+    <div>
+      <span class="map-label"> Votre domaine · enregistrements DNS </span>
+      <strong> firetower.your-domain.com </strong>
+      <span class="map-wildcard">
+        *.firetower.your-domain.com
+        <span> pour les aperçus </span>
+      </span>
+    </div>
+    <div aria-hidden="true" class="map-dns-arrow">→</div>
+    <div>
+      <span class="map-label"> Les deux pointent vers </span>
+      <strong> L’adresse IP Tailscale du serveur </strong>
+      <span class="map-detail"> Utilisez l’adresse affichée par l’outil d’installation </span>
+    </div>
+  </div>
+  <div class="map-resolve">
+    <span aria-hidden="true"> ↓ </span>
+    <span> Un nom DNS public peut pointer vers une adresse privée. </span>
+  </div>
+  <div class="install-vpn">
+    <div class="vpn-heading">
+      <svg aria-hidden="true" viewbox="0 0 24 24">
+        <rect height="11" rx="2" width="14" x="5" y="10"></rect>
+        <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+      </svg>
+      <strong> Votre réseau privé Tailscale </strong>
+    </div>
+    <div class="vpn-flow">
+      <div class="map-device">
+        <svg aria-hidden="true" viewbox="0 0 40 32">
+          <rect height="21" rx="2" width="28" x="6" y="3"></rect>
+          <path d="M2 28h36M15 28h10"></path>
+        </svg>
+        <strong> Vos appareils </strong>
+        <span> Application de bureau ou mobile </span>
+        <span class="map-detail"> Accès via Tailscale </span>
+      </div>
+      <div class="map-https">
+        <span> HTTPS </span>
+        <div aria-hidden="true">↔</div>
+        <small> Connexion privée </small>
+      </div>
+      <div class="map-server">
+        <svg aria-hidden="true" viewbox="0 0 40 32">
+          <rect height="26" rx="3" width="32" x="4" y="3"></rect>
+          <path d="M4 16h32M10 10h2M10 22h2M19 10h11M19 22h11"></path>
+        </svg>
+        <strong> Plan de contrôle Firetower </strong>
+        <span> Votre serveur Linux </span>
+        <span class="map-detail"> Accès via Tailscale </span>
+      </div>
+    </div>
+    <div class="map-worker">
+      <span aria-hidden="true" class="map-worker-line"> ↓ </span>
+      <span>
+        <strong> Ensuite : ajouter une machine d’exécution </strong>
+        <small> Le plan de contrôle se connecte en SSH pour lancer vos agents. </small>
+      </span>
+    </div>
+  </div>
+  <figcaption>
+    Votre domaine donne une adresse à Firetower. Tailscale fournit l’accès privé. Les certificats HTTPS sont obtenus séparément, par validation DNS.
+  </figcaption>
+</figure>
+<h2 id="section-0">Avant de commencer</h2>
+<ul>
+  <li>Préparez un serveur Linux avec un accès SSH et les droits root ou sudo.</li>
+  <li>
+    Choisissez un nom de domaine, par exemple
+    <code> firetower.your-domain.com </code>
+    .
+  </li>
+  <li>Prévoyez l’accès aux enregistrements DNS et un jeton API de votre fournisseur DNS.</li>
+  <li>
+    Choisissez le mode d’accès de votre équipe au serveur : VPN maillé, réseau privé ou point d’accès public administré.
+  </li>
+</ul>
+<p>Consultez les <a href="/fr/docs/requirements">prérequis</a> avant de commencer.</p>
+<h2 id="section-1">1. Préparer l’accès privé</h2>
+<p>Connectez le serveur et votre ordinateur au même réseau privé. Pour Tailscale, exécutez :</p>
+<div class="code"><div class="code-top"><span>Sur le serveur du plan de contrôle</span><button class="copy" type="button">Copier</button></div><pre><code>curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up</code></pre></div>
+<p>Ouvrez l’URL de connexion affichée dans le terminal pour rejoindre le réseau Tailscale de l’entreprise. Installez Tailscale sur votre ordinateur et rejoignez le même réseau.</p>
+<p>Vérifiez que votre ordinateur peut joindre le serveur avant de poursuivre. Consultez le <a href="https://tailscale.com/docs/install/linux" target="_blank" rel="noopener">guide d’installation de Tailscale</a> pour en savoir plus.</p>
+<h2 id="section-2">2. Lancer l’installation</h2>
+<div class="code">
+  <div class="code-top">
+    <span> Sur le serveur du plan de contrôle </span>
+    <button class="copy" type="button">Copier</button>
+  </div>
+  <pre><code>curl -fsSL https://usefiretower.com/install.sh | sh</code></pre>
+</div>
+<p>
+  Le script vérifie les prérequis, installe Docker et Node.js si nécessaire, installe la CLI Firetower, puis lance l’assistant d’installation.
+</p>
+<h2 id="section-3">3. Suivre l’assistant</h2>
+<ol class="steps">
+  <li>
+    <strong> Choisissez le réseau. </strong>
+    Confirmez l’adresse VPN détectée ou choisissez Advanced pour saisir une autre adresse accessible.
+  </li>
+  <li>
+    <strong> Renseignez le domaine et les paramètres des certificats. </strong>
+    Sélectionnez votre fournisseur DNS et saisissez son jeton API lorsqu’il vous est demandé.
+  </li>
+  <li>
+    <strong> Créez les deux enregistrements DNS indiqués par l’assistant. </strong>
+    Le nom de domaine sert à accéder à Firetower ; l’enregistrement générique sert aux aperçus.
+  </li>
+  <li>
+    <strong> Choisissez le dossier d’installation et le nom de l’administrateur. </strong>
+    Notez le chemin du dossier pour les opérations de maintenance.
+  </li>
+  <li>
+    <strong> Vérifiez le récapitulatif et confirmez. </strong>
+    Attendez le démarrage du déploiement. La première compilation du proxy peut prendre plusieurs minutes.
+  </li>
+</ol>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Exemple d’enregistrement</th>
+        <th>Type</th>
+        <th>Valeur</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>firetower.your-domain.com</td>
+        <td>A</td>
+        <td>L’adresse utilisée pour accéder à ce serveur</td>
+      </tr>
+      <tr>
+        <td>*.firetower.your-domain.com</td>
+        <td>A</td>
+        <td>La même adresse</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  Utilisez les valeurs exactes affichées par l’outil d’installation. Derrière un NAT, l’adresse utilisée par les clients peut différer de l’adresse locale sur laquelle le proxy écoute.
+</p>
+<h2 id="section-4">4. Se connecter</h2>
+<ol class="steps">
+  <li>
+    <strong>
+      Connectez-vous avec les identifiants administrateur affichés par l’outil d’installation.
+    </strong>
+    Ouvrez l’URL Firetower pour vous connecter.
+  </li>
+  <li>
+    <strong> Sauvegardez la clé racine et la base de données. </strong>
+    Conservez la clé racine séparément de la sauvegarde de la base, en dehors de ce serveur. Consultez
+    <a href="/fr/docs/backups"> Sauvegarder Firetower </a>
+    .
+  </li>
+</ol>
+<aside class="callout">
+  <strong> Un serveur prêt ne signifie pas que les agents sont prêts </strong>
+  <p>
+    Une nouvelle installation ne contient aucune machine d’exécution. Téléchargez l’application de bureau, connectez-la à cette URL, puis
+    <a href="/fr/docs/machines"> ajoutez votre première machine </a>
+    .
+  </p>
+</aside>
+<h2 id="section-5">Si le DNS ou les certificats prennent du temps</h2>
+<p>
+  Les modifications DNS peuvent mettre du temps à se propager. L’obtention du certificat HTTPS peut aussi prendre plusieurs minutes, le temps que l’autorité de certification valide votre domaine.
+</p>
+<aside class="callout">
+  <strong> Laissez l’installation se poursuivre </strong>
+  <p>
+    N’arrêtez pas et ne relancez pas l’installation pendant l’attente du DNS ou des certificats. Les demandes de certificat sont réessayées automatiquement.
+  </p>
+</aside>
+<p>
+  Des demandes de certificat échouées à répétition peuvent déclencher les
+  <a
+    href="https://letsencrypt.org/docs/rate-limits/"
+    rel="noopener"
+    target="_blank"
+  >
+    limites de Let’s Encrypt
+  </a>
+  . Évitez de relancer l’installation pour forcer une nouvelle tentative. Si un délai est indiqué, attendez qu’il soit écoulé.
+</p>
+<p>
+  Si l’attente se prolonge,
+  <a href="https://discord.gg/Y2HYVEhSc" rel="noopener" target="_blank">
+    contactez-nous
+  </a>
+  en joignant le message affiché par l’outil d’installation. Nous vous aiderons à terminer la configuration.
+</p>
+<p>
+  Pour continuer :
+  <a href="/fr/docs/machines"> ajouter une machine d’exécution </a>
+  →
+  <a href="/fr/docs/accounts"> connecter un compte d’agent </a>
+  →
+  <a href="/fr/docs/first-run"> lancer une tâche </a>
+  .
+</p>

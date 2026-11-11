@@ -1,5 +1,12 @@
-import { DOCS, SECTION_ORDER } from "../docs/_lib/nav";
-import { NAME, SITE_URL, SUMMARY, REPO_URL, LICENSE, DISCORD_URL } from "../_lib/site";
+import { DOCS, SECTION_ORDER } from "../(en)/docs/_lib/nav";
+import {
+  NAME,
+  SITE_URL,
+  SUMMARY,
+  REPO_URL,
+  LICENSE,
+  DISCORD_URL,
+} from "../_lib/site";
 
 /** Generated from the same manifest as the documentation navigation. */
 export const dynamic = "force-static";
@@ -19,7 +26,15 @@ An agent profile saves instructions, skills and execution settings. A workspace 
 
 The Markdown guides below are generated from the published documentation on each build. Follow the relevant guide for exact steps and supported behavior. Product screenshots use sample data; they are not evidence that an installation, backup or upgrade has completed. The source is licensed under ${LICENSE}.
 
-${SECTION_ORDER.map((section) => `## ${section}\n\n${DOCS.filter((d) => d.section === section).map((d) => `- [${d.title}](${SITE_URL}/docs/${d.slug || "index"}.md): ${d.description}`).join("\n")}`).join("\n\n")}
+${SECTION_ORDER.map(
+  (section) =>
+    `## ${section}\n\n${DOCS.filter((d) => d.section === section)
+      .map(
+        (d) =>
+          `- [${d.title}](${SITE_URL}/docs/${d.slug || "index"}.md): ${d.description}`,
+      )
+      .join("\n")}`,
+).join("\n\n")}
 
 ## Enterprise services
 
@@ -28,6 +43,17 @@ Firetower remains free to self-host. Optional services cover deployment and onbo
 - [Enterprise offer](${SITE_URL}/enterprise.md): Scope, pilot deliverables and support options in Markdown.
 - [Enterprise page](${SITE_URL}/enterprise): Discuss a deployment with the Firetower team.
 
+## Languages
+
+English is the default. The homepage, Enterprise offer and all documentation guides are also available in French.
+
+- [French website](${SITE_URL}/fr): Présentation du produit et téléchargements.
+- [French Enterprise page](${SITE_URL}/fr/enterprise): Déploiement, workflows et assistance.
+
+- [French documentation](${SITE_URL}/fr/docs): Guides en français.
+- [French documentation index](${SITE_URL}/fr/llms.txt): Liens vers tous les guides en Markdown.
+- [Complete French documentation](${SITE_URL}/fr/llms-full.txt): Documentation complète en français.
+
 ## Optional
 
 - [Complete documentation](${SITE_URL}/llms-full.txt): All documentation in one Markdown file. Prefer individual guides for focused questions.
@@ -35,5 +61,7 @@ Firetower remains free to self-host. Optional services cover deployment and onbo
 - [Source repository](${REPO_URL}): Application source, issues and releases.
 - [Community support](${DISCORD_URL}): Firetower Discord.
 `;
-  return new Response(body, { headers: { "content-type": "text/plain; charset=utf-8" } });
+  return new Response(body, {
+    headers: { "content-type": "text/plain; charset=utf-8" },
+  });
 }

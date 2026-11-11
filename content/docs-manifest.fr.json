@@ -1,0 +1,913 @@
+[
+  {
+    "id": "start",
+    "slug": "",
+    "title": "Documentation Firetower",
+    "description": "Configurez votre espace de travail. Lancez votre première équipe d’agents. Assurez le bon fonctionnement de votre installation.",
+    "section": "Premiers pas",
+    "audience": "Tout le monde",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "De l’installation au premier résultat"
+      },
+      {
+        "id": "section-1",
+        "title": "Trouver le bon guide"
+      }
+    ]
+  },
+  {
+    "id": "join",
+    "slug": "join",
+    "title": "Télécharger l’application et se connecter",
+    "description": "Connectez l’application à une installation déjà mise en place par votre entreprise.",
+    "section": "Premiers pas",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "Se connecter depuis un ordinateur"
+      },
+      {
+        "id": "section-2",
+        "title": "En cas de problème de connexion"
+      }
+    ]
+  },
+  {
+    "id": "first-run",
+    "slug": "first-run",
+    "title": "Lancer votre première tâche",
+    "description": "Commencez par une petite modification dont vous pourrez vérifier le résultat.",
+    "section": "Premiers pas",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "Lancer la tâche"
+      },
+      {
+        "id": "section-2",
+        "title": "Vérifier le résultat"
+      }
+    ]
+  },
+  {
+    "id": "concepts",
+    "slug": "concepts",
+    "title": "Concepts clés",
+    "description": "Comprenez qui exécute les tâches, sur quelles machines et avec quels droits d’accès.",
+    "section": "Concepts clés",
+    "audience": "Tout le monde",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Comprendre le vocabulaire"
+      },
+      {
+        "id": "section-1",
+        "title": "Trois distinctions à retenir"
+      }
+    ],
+    "navTitle": "Vue d’ensemble"
+  },
+  {
+    "id": "concepts-agents",
+    "slug": "concepts-agents",
+    "title": "Agents, profils et compétences",
+    "description": "Choisissez un agent, attribuez-lui un rôle et donnez-lui les outils nécessaires.",
+    "section": "Concepts clés",
+    "audience": "Tout le monde",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Agent, modèle et compte"
+      },
+      {
+        "id": "section-1",
+        "title": "Profil, compétence et équipe"
+      }
+    ]
+  },
+  {
+    "id": "concepts-work",
+    "slug": "concepts-work",
+    "title": "Espaces de travail et sessions",
+    "description": "Un espace de travail contient des fichiers. Une session correspond à un agent qui les utilise.",
+    "section": "Concepts clés",
+    "audience": "Tout le monde",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Les quatre concepts"
+      },
+      {
+        "id": "section-1",
+        "title": "Deux emplacements pour le travail délégué"
+      }
+    ]
+  },
+  {
+    "id": "architecture",
+    "slug": "architecture",
+    "title": "Machines et infrastructure",
+    "description": "Vous pilotez le travail depuis l’application. Vos machines l’exécutent.",
+    "section": "Concepts clés",
+    "audience": "Tout le monde",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Les composants d’une installation"
+      },
+      {
+        "id": "section-1",
+        "title": "Que se passe-t-il en cas de déconnexion ?"
+      },
+      {
+        "id": "section-2",
+        "title": "Où se trouvent les données de travail"
+      }
+    ]
+  },
+  {
+    "id": "concepts-access",
+    "slug": "concepts-access",
+    "title": "Partage et autorisations",
+    "description": "Définissez qui peut consulter, utiliser et gérer chaque ressource.",
+    "section": "Concepts clés",
+    "audience": "Tout le monde",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Personnes, ressources et répertoires"
+      },
+      {
+        "id": "section-1",
+        "title": "Niveaux d’accès"
+      },
+      {
+        "id": "section-2",
+        "title": "Propriété et partage"
+      },
+      {
+        "id": "section-3",
+        "title": "Secrets et droits d’exécution"
+      }
+    ]
+  },
+  {
+    "id": "concepts-results",
+    "slug": "concepts-results",
+    "title": "Tâches et résultats",
+    "description": "Une tâche décrit l’objectif. Elle peut produire du code, un document ou un aperçu de l’application en cours d’exécution.",
+    "section": "Concepts clés",
+    "audience": "Tout le monde",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "De la demande au code"
+      },
+      {
+        "id": "section-1",
+        "title": "Livrable ou aperçu ?"
+      }
+    ]
+  },
+  {
+    "id": "requirements",
+    "slug": "requirements",
+    "title": "Prérequis",
+    "description": "Préparez séparément le serveur, le réseau et les machines d’exécution.",
+    "section": "Déployer Firetower",
+    "audience": "Administrateur",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Serveur du plan de contrôle"
+      },
+      {
+        "id": "section-1",
+        "title": "Machines d’exécution"
+      },
+      {
+        "id": "section-2",
+        "title": "Utilisateurs et appareils"
+      }
+    ]
+  },
+  {
+    "id": "install",
+    "slug": "install-firetower",
+    "title": "Installer Firetower",
+    "description": "Installez le plan de contrôle sur un serveur Linux, puis connectez votre premier worker.",
+    "section": "Déployer Firetower",
+    "audience": "Administrateur",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Préparer l’accès privé"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Lancer l’installation"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Suivre l’assistant"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Se connecter"
+      },
+      {
+        "id": "section-5",
+        "title": "Si le DNS ou les certificats prennent du temps"
+      }
+    ]
+  },
+  {
+    "id": "machines",
+    "slug": "machines",
+    "title": "Ajouter une machine d’exécution",
+    "description": "Connectez une machine sur laquelle Firetower pourra lancer vos agents.",
+    "section": "Déployer Firetower",
+    "audience": "Propriétaire de la machine",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "open-machines",
+        "title": "1. Ouvrir Machines"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Renseigner la machine"
+      },
+      {
+        "id": "section-2",
+        "title": "3. Autoriser la clé SSH de Firetower"
+      },
+      {
+        "id": "section-3",
+        "title": "4. Installer le worker"
+      },
+      {
+        "id": "section-4",
+        "title": "5. Installer vos agents"
+      },
+      {
+        "id": "section-5",
+        "title": "6. Vérifier que la machine est prête"
+      }
+    ]
+  },
+  {
+    "id": "accounts",
+    "slug": "accounts",
+    "title": "Connecter un compte d’agent",
+    "description": "Utilisez un abonnement d’agent ou un identifiant API compatible pour vos tâches.",
+    "section": "Connecter vos outils",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Choisir votre agent"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Se connecter à votre abonnement"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Choisir le compte par défaut"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Vérifier la connexion enregistrée"
+      }
+    ]
+  },
+  {
+    "id": "fallback",
+    "slug": "fallback",
+    "title": "Configurer le basculement entre comptes",
+    "description": "Choisissez les comptes à utiliser lorsqu’une exécution épuise son quota actuel.",
+    "section": "Connecter vos outils",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Ouvrir les paramètres de basculement"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Définir l’ordre des comptes"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Enregistrer la liste"
+      },
+      {
+        "id": "section-4",
+        "title": "Lorsque la limite est atteinte"
+      }
+    ]
+  },
+  {
+    "id": "git",
+    "slug": "git",
+    "title": "Connecter une plateforme Git",
+    "description": "Connectez votre compte personnel à GitHub, GitLab, Gitea ou Forgejo.",
+    "section": "Connecter vos outils",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Choisir votre plateforme Git"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Autoriser la connexion"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Vérifier votre identité"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Retrouver votre dépôt"
+      },
+      {
+        "id": "section-5",
+        "title": "Autres méthodes de connexion"
+      }
+    ]
+  },
+  {
+    "id": "git-admin",
+    "slug": "git-admin",
+    "title": "Configurer les plateformes Git de l’entreprise",
+    "description": "Ajoutez les instances utilisées par votre organisation.",
+    "section": "Connecter vos outils",
+    "audience": "Administrateur",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Choisir le fournisseur"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Définir l’adresse et la méthode de connexion"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Ajouter la plateforme"
+      }
+    ]
+  },
+  {
+    "id": "trackers",
+    "slug": "trackers",
+    "title": "Connecter les tâches et les tickets",
+    "description": "Importez un ticket dans un espace de travail avec son contexte d’origine.",
+    "section": "Connecter vos outils",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Connecter l’outil de suivi"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Vérifier la connexion"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Choisir un ticket"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Vérifier et lancer la tâche"
+      }
+    ]
+  },
+  {
+    "id": "repo-setup",
+    "slug": "repo-setup",
+    "title": "Configurer un dépôt",
+    "description": "Préparez un dépôt pour retrouver le même environnement sur un worker.",
+    "section": "Connecter vos outils",
+    "audience": "Responsable du dépôt",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Avant de commencer"
+      },
+      {
+        "id": "section-1",
+        "title": "1. Ouvrir le dépôt"
+      },
+      {
+        "id": "section-2",
+        "title": "2. Enregistrer la commande de préparation"
+      },
+      {
+        "id": "section-3",
+        "title": "3. Ajouter les variables d’environnement"
+      },
+      {
+        "id": "section-4",
+        "title": "4. Vérifier la configuration enregistrée"
+      }
+    ]
+  },
+  {
+    "id": "workspaces",
+    "slug": "workspaces",
+    "title": "Espaces de travail et dépôts",
+    "description": "Choisissez où conserver les fichiers et comment isoler les modifications.",
+    "section": "Travailler avec les agents",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Choisir d’utiliser ou non un dépôt"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Commencer sans dépôt"
+      },
+      {
+        "id": "add-repository-later",
+        "title": "3. Ajouter un dépôt après le début du travail"
+      },
+      {
+        "id": "section-2",
+        "title": "Partager l’espace, garder sa conversation"
+      }
+    ]
+  },
+  {
+    "id": "profiles",
+    "slug": "profiles",
+    "title": "Créer un profil d’agent",
+    "description": "Enregistrez les instructions et les réglages d’un rôle pour le réutiliser.",
+    "section": "Travailler avec les agents",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Demander à une IA de créer un profil"
+      },
+      {
+        "id": "profile-settings",
+        "title": "2. Définir son rôle et son espace de travail"
+      },
+      {
+        "id": "profile-runtime",
+        "title": "3. Choisir ses paramètres d’exécution"
+      },
+      {
+        "id": "profile-skills",
+        "title": "4. Choisir ses compétences"
+      },
+      {
+        "id": "section-1",
+        "title": "5. Vérifier les instructions et enregistrer"
+      }
+    ]
+  },
+  {
+    "id": "teams",
+    "slug": "teams",
+    "title": "Créer une équipe d’agents",
+    "description": "Donnez au responsable un objectif précis et des agents spécialisés auxquels déléguer.",
+    "section": "Travailler avec les agents",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Créer les profils spécialisés"
+      },
+      {
+        "id": "section-1",
+        "title": "Créer le profil responsable"
+      },
+      {
+        "id": "section-2",
+        "title": "Vérifier les résultats de l’équipe"
+      }
+    ]
+  },
+  {
+    "id": "skills",
+    "slug": "skills",
+    "title": "Importer et partager des compétences",
+    "description": "Fournissez aux agents des instructions réutilisables et les fichiers associés.",
+    "section": "Travailler avec les agents",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "create-with-ai",
+        "title": "1. Créer une compétence avec l’IA"
+      },
+      {
+        "id": "section-0",
+        "title": "2. Importer une compétence existante"
+      },
+      {
+        "id": "review-import",
+        "title": "3. Vérifier avant d’importer"
+      },
+      {
+        "id": "find-imported",
+        "title": "4. Retrouver la compétence dans votre bibliothèque"
+      },
+      {
+        "id": "section-1",
+        "title": "Mettre à jour une compétence"
+      },
+      {
+        "id": "section-2",
+        "title": "Partager une compétence"
+      },
+      {
+        "id": "section-3",
+        "title": "Vérifier les compétences chargées par l’agent"
+      }
+    ]
+  },
+  {
+    "id": "runs",
+    "slug": "runs",
+    "title": "Suivre une exécution",
+    "description": "Suivez l’avancement, répondez aux demandes et faites progresser le travail.",
+    "section": "Travailler avec les agents",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Suivre la conversation du responsable"
+      },
+      {
+        "id": "follow-sub-workspaces",
+        "title": "2. Ouvrir un agent ou un sous-espace de travail"
+      },
+      {
+        "id": "return-to-lead",
+        "title": "3. Revenir au responsable"
+      },
+      {
+        "id": "section-1",
+        "title": "Poursuivre depuis un autre appareil"
+      },
+      {
+        "id": "section-2",
+        "title": "Changer de compte"
+      },
+      {
+        "id": "section-3",
+        "title": "Terminer le travail"
+      }
+    ]
+  },
+  {
+    "id": "review",
+    "slug": "review",
+    "title": "Relire et publier les modifications",
+    "description": "Préparez le travail d’un agent pour que votre équipe puisse le valider.",
+    "section": "Travailler avec les agents",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Relire le travail"
+      },
+      {
+        "id": "section-1",
+        "title": "Publier sur votre plateforme Git"
+      },
+      {
+        "id": "section-2",
+        "title": "En cas d’échec de la publication"
+      }
+    ]
+  },
+  {
+    "id": "artifacts",
+    "slug": "artifacts",
+    "title": "Examiner les livrables",
+    "description": "Ouvrez un résultat visuel et annotez précisément les éléments à modifier.",
+    "section": "Travailler avec les agents",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Ouvrir un livrable"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Sélectionner un élément et rédiger une note"
+      },
+      {
+        "id": "send-feedback",
+        "title": "3. Envoyer les commentaires à un agent"
+      },
+      {
+        "id": "section-2",
+        "title": "Partager le livrable"
+      }
+    ]
+  },
+  {
+    "id": "previews",
+    "slug": "previews",
+    "title": "Lancer et partager un aperçu",
+    "description": "Ouvrez le service développé par un agent et faites vos retours.",
+    "section": "Travailler avec les agents",
+    "audience": "Membre de l’équipe",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Ouvrir l’application en cours d’exécution"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Annoter la page"
+      },
+      {
+        "id": "send-preview-notes",
+        "title": "3. Envoyer les notes et vérifier le résultat"
+      },
+      {
+        "id": "section-2",
+        "title": "Partager l’accès"
+      },
+      {
+        "id": "section-3",
+        "title": "Si l’aperçu s’arrête"
+      }
+    ]
+  },
+  {
+    "id": "people",
+    "slug": "people",
+    "title": "Personnes et équipes de l’entreprise",
+    "description": "Créez un compte par personne et regroupez les accès selon les responsabilités.",
+    "section": "Gérer votre organisation",
+    "audience": "Administrateur",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Ajouter une personne"
+      },
+      {
+        "id": "section-1",
+        "title": "Créer une équipe de l’entreprise"
+      },
+      {
+        "id": "section-2",
+        "title": "Réinitialiser un mot de passe"
+      }
+    ]
+  },
+  {
+    "id": "sharing",
+    "slug": "sharing",
+    "title": "Partager des ressources",
+    "description": "Donnez à une équipe de l’entreprise accès aux machines, compétences, profils et espaces de travail.",
+    "section": "Gérer votre organisation",
+    "audience": "Propriétaire de la ressource",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Ouvrir la fenêtre des autorisations"
+      },
+      {
+        "id": "share-with-person",
+        "title": "2. Partager avec une personne"
+      },
+      {
+        "id": "section-1",
+        "title": "3. Ou déplacer la ressource dans un répertoire partagé"
+      },
+      {
+        "id": "section-2",
+        "title": "Qu’est-ce qui change ?"
+      },
+      {
+        "id": "share-subscription",
+        "title": "Partager un abonnement de la même façon"
+      }
+    ]
+  },
+  {
+    "id": "permissions",
+    "slug": "permissions",
+    "title": "Niveaux d’autorisation",
+    "description": "Comprenez ce qu’une personne peut consulter, utiliser et administrer.",
+    "section": "Gérer votre organisation",
+    "audience": "Tout le monde",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Accès aux répertoires et aux ressources"
+      },
+      {
+        "id": "section-1",
+        "title": "Les rôles dans l’entreprise sont distincts"
+      },
+      {
+        "id": "section-2",
+        "title": "L’accès à l’espace ne donne pas le contrôle des conversations"
+      },
+      {
+        "id": "section-3",
+        "title": "Vérifier les accès"
+      }
+    ]
+  },
+  {
+    "id": "shared-accounts",
+    "slug": "shared-accounts",
+    "title": "Partager des abonnements d’agents",
+    "description": "Permettez à une équipe d’utiliser un compte connecté en contrôlant les accès.",
+    "section": "Gérer votre organisation",
+    "audience": "Propriétaire du compte",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Partager la connexion"
+      },
+      {
+        "id": "section-1",
+        "title": "Comprendre le quota"
+      },
+      {
+        "id": "section-2",
+        "title": "Gérer le compte dans la durée"
+      }
+    ]
+  },
+  {
+    "id": "data",
+    "slug": "data",
+    "title": "Données, secrets et conservation",
+    "description": "Comprenez où vont les données de l’entreprise et ce que leur suppression implique.",
+    "section": "Gérer votre organisation",
+    "audience": "Responsable de la sécurité",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Où sont conservées les informations"
+      },
+      {
+        "id": "section-1",
+        "title": "Protéger les identifiants"
+      },
+      {
+        "id": "section-2",
+        "title": "Vérifier la télémétrie"
+      },
+      {
+        "id": "section-3",
+        "title": "Exporter avant de supprimer"
+      }
+    ]
+  },
+  {
+    "id": "updates",
+    "slug": "updates",
+    "title": "Mettre à jour Firetower",
+    "description": "Vérifiez l’impact, créez une sauvegarde et mettez à jour les composants compatibles.",
+    "section": "Administrer Firetower",
+    "audience": "Administrateur",
+    "headings": [
+      {
+        "id": "check-for-updates",
+        "title": "Rechercher les mises à jour"
+      },
+      {
+        "id": "section-0",
+        "title": "1. Mettre à jour le plan de contrôle"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Mettre à jour les workers"
+      },
+      {
+        "id": "section-2",
+        "title": "3. Mettre à jour l’application"
+      }
+    ]
+  },
+  {
+    "id": "backups",
+    "slug": "backups",
+    "title": "Sauvegarder Firetower",
+    "description": "Protégez la base de données, les identifiants et les fichiers nécessaires à une restauration.",
+    "section": "Administrer Firetower",
+    "audience": "Administrateur",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "1. Créer une sauvegarde"
+      },
+      {
+        "id": "section-1",
+        "title": "2. Vérifier son achèvement"
+      },
+      {
+        "id": "section-2",
+        "title": "3. Conserver les autres éléments de restauration"
+      },
+      {
+        "id": "section-3",
+        "title": "Tester la restauration"
+      }
+    ]
+  },
+  {
+    "id": "troubleshoot",
+    "slug": "troubleshoot",
+    "title": "Diagnostiquer une installation",
+    "description": "Repérez le composant en défaut avant de modifier la configuration.",
+    "section": "Administrer Firetower",
+    "audience": "Administrateur",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Recueillir les informations de base"
+      },
+      {
+        "id": "section-1",
+        "title": "Partir du symptôme"
+      },
+      {
+        "id": "section-2",
+        "title": "Préparer un signalement utile"
+      }
+    ]
+  },
+  {
+    "id": "restore",
+    "slug": "restore",
+    "title": "Restaurer une installation",
+    "description": "Restaurez une installation avec sa base de données et la clé racine correspondante.",
+    "section": "Administrer Firetower",
+    "audience": "Administrateur",
+    "headings": [
+      {
+        "id": "section-0",
+        "title": "Conserver tous les éléments de restauration"
+      },
+      {
+        "id": "section-1",
+        "title": "Préparer un environnement isolé"
+      },
+      {
+        "id": "section-2",
+        "title": "Se faire accompagner pour la restauration"
+      },
+      {
+        "id": "section-3",
+        "title": "Vérifier avant de reconnecter"
+      }
+    ]
+  }
+]

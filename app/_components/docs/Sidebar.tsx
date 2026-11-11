@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { DOCS, SECTION_ORDER, href } from "../../docs/_lib/nav";
-import type { Heading } from "../../docs/_lib/toc";
+import { DOCS, SECTION_ORDER, href } from "../../(en)/docs/_lib/nav";
+import type { Heading } from "../../(en)/docs/_lib/toc";
 
 /**
  * Which section you are in, so the list says where you are rather than only

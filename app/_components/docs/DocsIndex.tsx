@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DOCS, SECTION_ORDER, href } from "../../docs/_lib/nav";
+import { DOCS, SECTION_ORDER, href } from "../../(en)/docs/_lib/nav";
 
 /**
  * The docs index, grouped the way the sidebar groups them.

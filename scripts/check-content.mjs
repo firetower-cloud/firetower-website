@@ -10,10 +10,14 @@ const redirects = new Map(
 const routes = new Map([
   ["/", "out/index.html"],
   ["/enterprise", "out/enterprise.html"],
-  ...manifest.map((d) => [
-    d.slug ? "/docs/" + d.slug : "/docs",
-    "out/docs" + (d.slug ? "/" + d.slug : "") + ".html",
-  ]),
+  ["/fr", "out/fr.html"],
+  ["/fr/enterprise", "out/fr/enterprise.html"],
+  ...manifest.flatMap((d) =>
+    ["", "/fr"].map((prefix) => [
+      prefix + (d.slug ? "/docs/" + d.slug : "/docs"),
+      "out" + prefix + "/docs" + (d.slug ? "/" + d.slug : "") + ".html",
+    ]),
+  ),
 ]);
 const errors = [];
 for (const [route, file] of routes) {

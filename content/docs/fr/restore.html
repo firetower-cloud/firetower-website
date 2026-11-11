@@ -1,0 +1,40 @@
+<h2 id="section-0">Conserver tous les éléments de restauration</h2>
+<p>
+  Notez les versions de Firetower et de la CLI pour chaque sauvegarde. Vous aurez besoin de la sauvegarde de la base, de sa clé racine, de la configuration du déploiement et des fichiers des workers à récupérer.
+</p>
+<p>
+  Une sauvegarde de la base seule ne permet pas de déchiffrer les identifiants. La CLI d’installation ne propose pas de commande de restauration.
+</p>
+<h2 id="section-1">Préparer un environnement isolé</h2>
+<ul>
+  <li>Gardez la sauvegarde d’origine intacte. Travaillez sur une copie.</li>
+  <li>Utilisez un serveur isolé qui ne peut pas joindre les workers de production.</li>
+  <li>
+    Conservez les versions et la configuration d’origine avant d’envisager une mise à jour.
+  </li>
+  <li>
+    Prévoyez aussi la récupération des fichiers stockés séparément et des volumes persistants.
+  </li>
+</ul>
+<h2 id="section-2">Se faire accompagner pour la restauration</h2>
+<p>
+  <a href="https://discord.gg/Y2HYVEhSc"> Contactez-nous </a>
+  en indiquant vos versions, la méthode de sauvegarde et l’erreur à l’origine de la restauration. N’envoyez pas de clés racines, de mots de passe ou de sauvegardes de base par messagerie.
+</p>
+<p>
+  Les étapes d’importation et de récupération des volumes dépendent de votre déploiement. Testez-les dans l’environnement isolé avant de remplacer la production.
+</p>
+<h2 id="section-3">Vérifier avant de reconnecter</h2>
+<ul>
+  <li>Connectez-vous et vérifiez la présence des personnes et des ressources attendues.</li>
+  <li>Vérifiez que les identifiants enregistrés peuvent être déchiffrés.</li>
+  <li>Reconnectez un premier worker et lancez une petite tâche.</li>
+  <li>
+    Vérifiez les accès aux dépôts et les fichiers restaurés avant de reconnecter les autres machines.
+  </li>
+</ul>
+<p>
+  À vérifier en premier
+  <a href="/fr/docs/backups"> Sauvegarder Firetower </a>
+  pour préparer vos éléments de restauration.
+</p>
