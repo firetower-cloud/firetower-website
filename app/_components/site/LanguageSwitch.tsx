@@ -38,8 +38,13 @@ export function LanguageSwitch({ locale }: { locale: Locale }) {
     serverPreference,
   );
   const english = pathname === "/fr" ? "/" : pathname.replace(/^\/fr\//, "/");
-  // Do not imply the English-only documentation has a French counterpart.
-  if (english !== "/" && english !== "/enterprise") return null;
+  if (
+    english !== "/" &&
+    english !== "/enterprise" &&
+    english !== "/docs" &&
+    !english.startsWith("/docs/")
+  )
+    return null;
   const french = english === "/" ? "/fr" : `/fr${english}`;
   return (
     <>

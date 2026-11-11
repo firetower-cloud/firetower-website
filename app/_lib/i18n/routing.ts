@@ -1,11 +1,12 @@
 type Locale = "en" | "fr";
 
-/** Only published translations are linked; documentation stays on its English URL. */
+/** Link published pages and their Markdown versions in the selected language. */
 export function localizedHref(path: string, locale: Locale): string {
   if (locale === "en") return path;
   if (path === "/" || path.startsWith("/#")) return `/fr${path.slice(1)}`;
   if (path === "/enterprise" || path.startsWith("/enterprise#"))
     return `/fr${path}`;
+  if (/^\/docs(?:[/?#]|$)/.test(path)) return `/fr${path}`;
   return path;
 }
 

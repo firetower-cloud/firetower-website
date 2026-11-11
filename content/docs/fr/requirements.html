@@ -1,0 +1,42 @@
+<h2 id="section-0">Serveur du plan de contrôle</h2>
+<div class="table-wrap"><table><thead><tr><th>Configuration</th><th>Processeur</th><th>Mémoire</th><th>Stockage</th></tr></thead><tbody><tr><th scope="row">Minimum</th><td>2 vCPU</td><td>2 Go</td><td>20 Go</td></tr><tr><th scope="row">Recommandée</th><td>2 vCPU</td><td>4 Go</td><td>40 Go</td></tr></tbody></table></div>
+<ul>
+  <li>
+    Un serveur Linux que vous administrez, avec un accès SSH et les droits root ou sudo pour l’installation.
+  </li>
+  <li>
+    Docker avec le plugin Compose. Node.js 20 ou version ultérieure pour l’outil d’installation en ligne de commande. Le script d’installation peut installer ces prérequis.
+  </li>
+  <li>
+    Un domaine, l’accès à ses enregistrements DNS et un jeton API du fournisseur DNS pour obtenir les certificats.
+  </li>
+  <li>
+    Un accès réseau permettant de télécharger les fichiers de déploiement, les images de conteneurs et les composants nécessaires aux certificats.
+  </li>
+</ul>
+<h2 id="section-1">Machines d’exécution</h2>
+<p>Firetower exécute les agents directement, sans conteneur par agent. Les besoins en processeur et en mémoire dépendent des agents, des tâches et du nombre d’exécutions simultanées.</p>
+<p>Un Mac mini avec 16 Go de mémoire constitue un bon point de départ. Un VPS de 8 Go ou moins peut suffire pour des tâches légères. Les compilations, les tests et les gros dépôts peuvent demander davantage de ressources.</p>
+<aside class="callout"><strong>Séparez les workers du plan de contrôle</strong><p>N’exécutez pas vos agents sur le même VPS que le plan de contrôle. Utilisez une machine distincte pour leur travail.</p></aside>
+<p>
+  Les workers fonctionnent sur macOS et Linux, avec les architectures arm64 et x86_64. Sous Windows, installez le worker dans WSL2.
+</p>
+<ul>
+  <li>
+    Un accès SSH depuis le plan de contrôle, avec un compte dédié au travail des agents.
+  </li>
+  <li>Git, tmux, un shell POSIX, curl et tar.</li>
+  <li>Les agents de développement et les outils nécessaires à vos projets.</li>
+  <li>Un accès à vos plateformes Git, aux fournisseurs des agents et aux dépendances des projets.</li>
+</ul>
+<aside class="callout">
+  <strong> Des prérequis distincts </strong>
+  <p>
+    Le worker Firetower ne nécessite ni Node.js ni Docker pour fonctionner. En revanche, un agent ou votre projet peut en avoir besoin.
+  </p>
+</aside>
+<h2 id="section-2">Utilisateurs et appareils</h2>
+<p>
+  Fournissez une URL HTTPS accessible et un compte Firetower à chaque personne. Installez le VPN de l’entreprise sur les appareils qui ont besoin d’un accès privé.
+</p>
+<p>Pour continuer : <a href="/fr/docs/install-firetower">installer Firetower</a>.</p>

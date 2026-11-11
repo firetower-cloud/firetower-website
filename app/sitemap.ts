@@ -23,11 +23,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
   return [
     ...marketing,
-    ...DOCS.map((d) => ({
-      url: `${SITE_URL}${href(d.slug)}`,
-      changeFrequency: "monthly" as const,
-      priority:
-        d.slug === "" ? 0.9 : d.slug === "install-firetower" ? 0.8 : 0.7,
-    })),
+    ...DOCS.flatMap((d) =>
+      (["en", "fr"] as const).map((locale) => ({
+        url: `${SITE_URL}${href(d.slug, locale)}`,
+        alternates: {
+          languages: {
+            en: SITE_URL + href(d.slug),
+            fr: SITE_URL + href(d.slug, "fr"),
+            "x-default": SITE_URL + href(d.slug),
+          },
+        },
+        changeFrequency: "monthly" as const,
+        priority:
+          d.slug === "" ? 0.9 : d.slug === "install-firetower" ? 0.8 : 0.7,
+      })),
+    ),
   ];
 }

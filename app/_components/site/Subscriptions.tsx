@@ -1,5 +1,9 @@
 "use client";
-import { translator, type LocalizedProps } from "../../_lib/i18n";
+import {
+  translator,
+  localizedHref,
+  type LocalizedProps,
+} from "../../_lib/i18n";
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRight, Pause, Play, RotateCcw, Route, Check } from "lucide-react";
@@ -122,7 +126,10 @@ export function Subscriptions({ locale = "en" }: LocalizedProps) {
               )}
             </p>
           </div>
-          <Link className="text-link" href="/docs/fallback">
+          <Link
+            className="text-link"
+            href={localizedHref("/docs/fallback", locale)}
+          >
             {t("Configure subscription routing")}
           </Link>
         </div>

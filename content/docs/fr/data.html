@@ -1,0 +1,40 @@
+<h2 id="section-0">Où sont conservées les informations</h2>
+<ul>
+  <li>
+    <strong> Plan de contrôle : </strong>
+    état partagé, historique des conversations et identifiants chiffrés.
+  </li>
+  <li>
+    <strong> Machines d’exécution : </strong>
+    miroirs des dépôts, fichiers de travail, journaux d’événements locaux et agents actifs.
+  </li>
+  <li>
+    <strong> Fournisseurs des agents : </strong>
+    requêtes envoyées par l’agent avec le compte sélectionné.
+  </li>
+  <li>
+    <strong> Plateformes Git : </strong>
+    opérations sur les dépôts et modifications que vous publiez.
+  </li>
+</ul>
+<p>
+  L’auto-hébergement vous permet de choisir où Firetower s’exécute. Il ne rend pas local un modèle hébergé dans le cloud. Consultez la politique de données de chaque fournisseur et les outils accessibles à l’agent.
+</p>
+<h2 id="section-1">Protéger les identifiants</h2>
+<p>
+  Conservez la clé racine séparément des sauvegardes de la base. Limitez l’accès au serveur du plan de contrôle et aux comptes SSH des workers. Un worker utilise les droits d’accès aux fichiers et au réseau de son compte.
+</p>
+<p>
+  Utilisez
+  <a href="/fr/docs/sharing"> le partage des ressources </a>
+  pour contrôler qui peut utiliser un compte. Renouvelez ou révoquez les identifiants chez le fournisseur lorsqu’un accès doit prendre fin.
+</p>
+<h2 id="section-2">Vérifier la télémétrie</h2>
+<p>
+  Ouvrez Settings sur le site d’administration pour consulter Telemetry. Le panneau affiche son état actuel et un aperçu des données transmises. Un administrateur peut l’activer ou la désactiver pour l’organisation.
+</p>
+<h2 id="section-3">Exporter avant de supprimer</h2>
+<p>
+  Enregistrez les fichiers nécessaires et publiez les modifications avant de terminer un espace de travail. Sa suppression peut effacer son dossier et l’historique des conversations. N’utilisez pas cet historique comme archive à long terme.
+</p>
+<p>Consultez les <a href="/fr/docs/backups">Sauvegarder Firetower</a> pour protéger les données de l’installation.</p>

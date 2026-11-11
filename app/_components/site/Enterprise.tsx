@@ -1,4 +1,8 @@
-import { translator, type LocalizedProps } from "../../_lib/i18n";
+import {
+  translator,
+  localizedHref,
+  type LocalizedProps,
+} from "../../_lib/i18n";
 import Link from "next/link";
 import {
   Building2,
@@ -125,7 +129,10 @@ export function Enterprise({ locale = "en" }: LocalizedProps) {
               "Need an exception? Give a person Viewer or Editor access to a single resource.",
             )}
           </p>
-          <Link className="text-link" href="/docs/sharing">
+          <Link
+            className="text-link"
+            href={localizedHref("/docs/sharing", locale)}
+          >
             {t("How sharing and permissions work")}
           </Link>
         </div>

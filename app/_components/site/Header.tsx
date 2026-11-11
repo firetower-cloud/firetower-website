@@ -48,7 +48,7 @@ export function Header({
           >
             {t("Enterprise")}
           </Link>
-          <Link href="/docs">{t("Docs")}</Link>
+          <Link href={localizedHref("/docs", locale)}>{t("Docs")}</Link>
           <div className="nav-community">
             <a
               className="community-link github-link"

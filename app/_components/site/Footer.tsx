@@ -13,9 +13,7 @@ export function Footer({ locale = "en" }: LocalizedProps) {
         <Link href={localizedHref("/enterprise", locale)}>
           {t("Enterprise")}
         </Link>
-        <Link href="/docs">
-          {locale === "fr" ? "Documentation (EN)" : t("Documentation")}
-        </Link>
+        <Link href={localizedHref("/docs", locale)}>{t("Documentation")}</Link>
         <a href="https://github.com/firetower-cloud/firetower">GitHub</a>
         <a href="https://discord.gg/Y2HYVEhSc">{t("Contact us")}</a>
         <a href="https://github.com/firetower-cloud/firetower/blob/main/LICENSE">

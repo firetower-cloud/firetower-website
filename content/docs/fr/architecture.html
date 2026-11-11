@@ -1,0 +1,88 @@
+<h2 id="section-0">Les composants d’une installation</h2>
+<dl class="concept-definitions">
+  <div>
+    <dt>Machine</dt>
+    <dd>
+      Un ordinateur physique ou virtuel sur lequel vos agents travaillent. Une machine peut héberger plusieurs espaces de travail.
+    </dd>
+  </div>
+  <div>
+    <dt>Worker</dt>
+    <dd>
+      Le programme Firetower installé sur une machine. Il lance les agents et gère leurs fichiers de travail.
+    </dd>
+  </div>
+  <div>
+    <dt>Plan de contrôle</dt>
+    <dd>
+      Le serveur qui coordonne le travail et gère les comptes, les identifiants et les accès.
+    </dd>
+  </div>
+  <div>
+    <dt>Application cliente</dt>
+    <dd>L’application de bureau ou mobile utilisée pour lancer les tâches et consulter les résultats.</dd>
+  </div>
+</dl>
+<div class="architecture">
+  <div>
+    <small> Vos appareils </small>
+    <strong> Ordinateur et mobile </strong>
+    <span> Lancer, vérifier et reprendre le travail </span>
+  </div>
+  <span class="connector"> ↕ </span>
+  <div>
+    <small> Votre infrastructure </small>
+    <strong> Plan de contrôle </strong>
+    <span> Comptes, accès et coordination </span>
+  </div>
+  <span class="connector"> ↕ SSH </span>
+  <div>
+    <small> Vos machines d’exécution </small>
+    <strong> Workers → processus des agents </strong>
+    <span> Dépôts, outils et exécution </span>
+  </div>
+</div>
+<h2 id="section-1">Que se passe-t-il en cas de déconnexion ?</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Événement</th>
+        <th>Ce qui continue</th>
+        <th>Ce qui devient temporairement indisponible</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Vous fermez l’application</td>
+        <td>Les agents déjà lancés sur un worker</td>
+        <td>Le suivi en direct, jusqu’à votre reconnexion</td>
+      </tr>
+      <tr>
+        <td>Le plan de contrôle redémarre</td>
+        <td>Les processus des agents déjà lancés sur les autres machines</td>
+        <td>La coordination, les nouveaux lancements et les actions côté serveur</td>
+      </tr>
+      <tr>
+        <td>Une machine d’exécution s’arrête</td>
+        <td>Le travail sur les autres machines</td>
+        <td>Tous les processus de la machine arrêtée</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  Les agents s’exécutent sous tmux et peuvent continuer après la perte de connexion au plan de contrôle. Le travail d’une machine indisponible n’est pas transféré automatiquement vers une autre.
+</p>
+<h2 id="section-2">Où se trouvent les données de travail</h2>
+<p>
+  Le plan de contrôle conserve l’état partagé et les identifiants. Chaque worker garde les fichiers de travail et exécute les outils avec les droits de son compte SSH. Utilisez une VM distincte si les tâches ne doivent pas partager l’accès à la machine hôte.
+</p>
+<aside class="callout">
+  <strong> Une nouvelle installation est vide </strong>
+  <p>
+    L’installation du plan de contrôle ne crée pas de worker.
+    <a href="/fr/docs/machines"> Ajoutez une machine </a>
+    avant de lancer votre première tâche.
+  </p>
+</aside>

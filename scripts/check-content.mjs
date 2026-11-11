@@ -12,10 +12,12 @@ const routes = new Map([
   ["/enterprise", "out/enterprise.html"],
   ["/fr", "out/fr.html"],
   ["/fr/enterprise", "out/fr/enterprise.html"],
-  ...manifest.map((d) => [
-    d.slug ? "/docs/" + d.slug : "/docs",
-    "out/docs" + (d.slug ? "/" + d.slug : "") + ".html",
-  ]),
+  ...manifest.flatMap((d) =>
+    ["", "/fr"].map((prefix) => [
+      prefix + (d.slug ? "/docs/" + d.slug : "/docs"),
+      "out" + prefix + "/docs" + (d.slug ? "/" + d.slug : "") + ".html",
+    ]),
+  ),
 ]);
 const errors = [];
 for (const [route, file] of routes) {

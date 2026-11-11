@@ -1,5 +1,9 @@
 /* Approved website design, implemented as React components. */
-import { translator, type LocalizedProps } from "../../_lib/i18n";
+import {
+  translator,
+  localizedHref,
+  type LocalizedProps,
+} from "../../_lib/i18n";
 import Link from "next/link";
 import { DownloadButton } from "./DownloadButton";
 import { ProductImage } from "./ProductImage";
@@ -19,7 +23,7 @@ export function Hero({ locale = "en" }: LocalizedProps) {
           <DownloadButton locale={locale} />
           <Link
             className="button outline features-link"
-            href="/docs/install-firetower"
+            href={localizedHref("/docs/install-firetower", locale)}
           >
             {t("Self-host in 5 min")}
           </Link>

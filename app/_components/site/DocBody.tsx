@@ -2,7 +2,14 @@
 import { useRef, useState } from "react";
 import { ProductImage } from "./ProductImage";
 // HTML is authored in content/docs and rendered at build time; no user HTML is accepted.
-export function DocBody({ html }: { html: string }) {
+import type { Locale } from "../../_lib/i18n";
+export function DocBody({
+  html,
+  locale = "en",
+}: {
+  html: string;
+  locale?: Locale;
+}) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [image, setImage] = useState({ name: "home", title: "" });
   const [notice, setNotice] = useState("");
@@ -19,9 +26,9 @@ export function DocBody({ html }: { html: string }) {
             if (!code) return;
             try {
               await navigator.clipboard.writeText(code.textContent || "");
-              copy.textContent = "Copied";
+              copy.textContent = locale === "fr" ? "Copié" : "Copied";
               setTimeout(() => {
-                copy.textContent = "Copy";
+                copy.textContent = locale === "fr" ? "Copier" : "Copy";
               }, 1800);
             } catch {
               const selection = window.getSelection();
@@ -29,7 +36,11 @@ export function DocBody({ html }: { html: string }) {
               range.selectNodeContents(code);
               selection?.removeAllRanges();
               selection?.addRange(range);
-              setNotice("Command selected. Copy it with your keyboard.");
+              setNotice(
+                locale === "fr"
+                  ? "Texte sélectionné. Copiez-le avec votre clavier."
+                  : "Command selected. Copy it with your keyboard.",
+              );
             }
             return;
           }
@@ -40,7 +51,9 @@ export function DocBody({ html }: { html: string }) {
               title:
                 button.dataset.imageTitle ||
                 button.querySelector("img")?.alt ||
-                "Product screenshot",
+                (locale === "fr"
+                  ? "Capture de l’application"
+                  : "Product screenshot"),
             });
             dialog.current?.showModal();
           }
@@ -52,20 +65,27 @@ export function DocBody({ html }: { html: string }) {
       <dialog
         ref={dialog}
         className="image-lightbox"
-        aria-label={image.title || "Product screenshot"}
+        aria-label={
+          image.title ||
+          (locale === "fr" ? "Capture de l’application" : "Product screenshot")
+        }
         onClick={(e) => {
           if (e.target === e.currentTarget) dialog.current?.close();
         }}
       >
         <div className="lightbox-header">
           <h2>{image.title}</h2>
-          <button onClick={() => dialog.current?.close()}>Close</button>
+          <button onClick={() => dialog.current?.close()}>
+            {locale === "fr" ? "Fermer" : "Close"}
+          </button>
         </div>
         <ProductImage name={image.name} alt={image.title} />
         <p>
-          {image.name.startsWith("setup-")
-            ? "Desktop app · sample data"
-            : "Product interface · example content"}
+          {locale === "fr"
+            ? "Application · données d’exemple"
+            : image.name.startsWith("setup-")
+              ? "Desktop app · sample data"
+              : "Product interface · example content"}
         </p>
       </dialog>
     </>

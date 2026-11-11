@@ -5,11 +5,22 @@ import { findDoc, neighbours, href } from "../../(en)/docs/_lib/nav";
 import { DocBody } from "./DocBody";
 import { JsonLd } from "../JsonLd";
 import { docLd } from "../../_lib/structured-data";
-export function DocPage({ slug }: { slug: string }) {
-  const doc = findDoc(slug);
-  const { prev, next } = neighbours(slug);
+import type { Locale } from "../../_lib/i18n";
+export function DocPage({
+  slug,
+  locale = "en",
+}: {
+  slug: string;
+  locale?: Locale;
+}) {
+  const doc = findDoc(slug, locale);
+  const { prev, next } = neighbours(slug, locale);
   const body = readFileSync(
-    join(process.cwd(), "content/docs", doc.id + ".html"),
+    join(
+      process.cwd(),
+      locale === "fr" ? "content/docs/fr" : "content/docs",
+      doc.id + ".html",
+    ),
     "utf8",
   );
   const toc = (
@@ -23,11 +34,11 @@ export function DocPage({ slug }: { slug: string }) {
   );
   return (
     <>
-      <JsonLd data={docLd(slug)} />
+      <JsonLd data={docLd(slug, locale)} />
       <main id="main-content" className="content-grid">
         <article className="document">
           <div className="breadcrumb">
-            <Link href="/docs">Documentation</Link>
+            <Link href={href("", locale)}>Documentation</Link>
             <span>/</span>
             <span>{doc.section}</span>
           </div>
@@ -38,36 +49,51 @@ export function DocPage({ slug }: { slug: string }) {
           </header>
           {doc.headings.length > 2 && (
             <details className="toc-mobile">
-              <summary>On this page</summary>
+              <summary>
+                {locale === "fr" ? "Sur cette page" : "On this page"}
+              </summary>
               <nav>{toc}</nav>
             </details>
           )}
-          <DocBody html={body} />
-          <nav className="pager" aria-label="Adjacent pages">
+          <DocBody html={body} locale={locale} />
+          <nav
+            className="pager"
+            aria-label={
+              locale === "fr"
+                ? "Pages précédente et suivante"
+                : "Adjacent pages"
+            }
+          >
             <div>
               {prev && (
-                <Link href={href(prev.slug)}>
-                  <small>Previous</small>
+                <Link href={href(prev.slug, locale)}>
+                  <small>{locale === "fr" ? "Précédent" : "Previous"}</small>
                   {prev.title}
                 </Link>
               )}
             </div>
             <div>
               {next && (
-                <Link href={href(next.slug)}>
-                  <small>Next</small>
+                <Link href={href(next.slug, locale)}>
+                  <small>{locale === "fr" ? "Suivant" : "Next"}</small>
                   {next.title}
                 </Link>
               )}
             </div>
           </nav>
           <p className="page-foot">
-            Need help?{" "}
-            <a href="https://discord.gg/Y2HYVEhSc">Contact us</a>.
+            {locale === "fr" ? "Besoin d’aide ? " : "Need help? "}
+            <a href="https://discord.gg/Y2HYVEhSc">
+              {locale === "fr" ? "Contactez-nous" : "Contact us"}
+            </a>
+            .
           </p>
         </article>
-        <aside className="toc" aria-label="On this page">
-          <h2>On this page</h2>
+        <aside
+          className="toc"
+          aria-label={locale === "fr" ? "Sur cette page" : "On this page"}
+        >
+          <h2>{locale === "fr" ? "Sur cette page" : "On this page"}</h2>
           {toc}
         </aside>
       </main>

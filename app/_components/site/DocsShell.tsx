@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { DOCS, SECTION_ORDER, href } from "../../(en)/docs/_lib/nav";
+import { docsFor, href } from "../../(en)/docs/_lib/nav";
 import { ThemeButton } from "./ThemeButton";
+import { LanguageSwitch } from "./LanguageSwitch";
+import { localizedHref, type Locale } from "../../_lib/i18n";
+import { docsTranslator } from "../../_lib/i18n/docs";
 type SearchEntry = {
   href: string;
   title: string;
@@ -12,7 +15,16 @@ type SearchEntry = {
   section: string;
   text: string;
 };
-export function DocsShell({ children }: { children: React.ReactNode }) {
+export function DocsShell({
+  children,
+  locale = "en",
+}: {
+  children: React.ReactNode;
+  locale?: Locale;
+}) {
+  const t = docsTranslator(locale);
+  const docs = docsFor(locale);
+  const sections = [...new Set(docs.map((d) => d.section))];
   const path = usePathname();
   const [menu, setMenu] = useState(false);
   const [query, setQuery] = useState("");
@@ -28,7 +40,9 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
     input.current?.focus();
     if (entries.length) return;
     try {
-      const res = await fetch("/docs-search.json");
+      const res = await fetch(
+        locale === "fr" ? "/fr/docs-search.json" : "/docs-search.json",
+      );
       if (!res.ok) throw Error("Search unavailable");
       setEntries(await res.json());
       setError(false);
@@ -49,19 +63,22 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
     document.addEventListener("keydown", keyboard);
     return () => document.removeEventListener("keydown", keyboard);
   });
-  const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  const normalize = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  const words = normalize(query).trim().split(/\s+/).filter(Boolean);
   const results = entries
     .filter((d) =>
       words.every((w) =>
-        (d.title + " " + d.description + " " + d.text)
-          .toLowerCase()
-          .includes(w),
+        normalize(d.title + " " + d.description + " " + d.text).includes(w),
       ),
     )
     .sort(
       (a, b) =>
-        Number(b.title.toLowerCase().includes(query.toLowerCase())) -
-        Number(a.title.toLowerCase().includes(query.toLowerCase())),
+        Number(normalize(b.title).includes(normalize(query))) -
+        Number(normalize(a.title).includes(normalize(query))),
     )
     .slice(0, 18);
   const navigate = () => {
@@ -71,10 +88,14 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
   return (
     <div className={"docs-site" + (menu ? " menu-open" : "")}>
       <a className="skip" href="#main-content">
-        Skip to content
+        {t("Skip to content")}
       </a>
       <header className="header">
-        <Link href="/" className="brand" aria-label="Firetower home">
+        <Link
+          href={localizedHref("/", locale)}
+          className="brand"
+          aria-label={t("Firetower home")}
+        >
           <img
             className="wordmark"
             src="/brand/wordmark.svg"
@@ -85,26 +106,24 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
         </Link>
         <span className="header-divider" />
         <nav className="header-tabs" aria-label="Section">
-          <Link href="/docs" aria-current="page">
+          <Link href={href("", locale)} aria-current="page">
             Documentation
           </Link>
         </nav>
         <div className="header-end">
-          <a
-            className="support-link"
-            href="https://discord.gg/Y2HYVEhSc"
-          >
-            Contact us
+          <a className="support-link" href="https://discord.gg/Y2HYVEhSc">
+            {t("Contact us")}
           </a>
-          <ThemeButton />
+          <LanguageSwitch locale={locale} />
+          <ThemeButton locale={locale} />
           <button
             id="menu"
             className="icon-button"
             ref={menuButton}
             aria-label={
               menu
-                ? "Close documentation navigation"
-                : "Open documentation navigation"
+                ? t("Close documentation navigation")
+                : t("Open documentation navigation")
             }
             aria-expanded={menu}
             aria-controls="docs-navigation"
@@ -118,34 +137,43 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
       </header>
       <div className="layout">
         <aside className="sidebar" id="docs-navigation">
-          <button className="search-button" onClick={() => void openSearch()}>
+          <button
+            className="search-button"
+            aria-label={t("Search documentation")}
+            onClick={() => void openSearch()}
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="10" cy="10" r="6" />
               <path d="m15 15 5 5" />
             </svg>
-            Search documentation<kbd>⌘ K</kbd>
+            {locale === "fr" ? "Rechercher…" : t("Search documentation")}
+            <kbd>⌘ K</kbd>
           </button>
           <nav aria-label="Documentation">
-            {SECTION_ORDER.map((section) => (
+            {sections.map((section) => (
               <section className="nav-group" key={section}>
                 <h2>{section}</h2>
-                {DOCS.filter((d) => d.section === section).map((d) => (
-                  <Link
-                    key={d.id}
-                    href={href(d.slug)}
-                    aria-current={path === href(d.slug) ? "page" : undefined}
-                    onClick={navigate}
-                  >
-                    {d.navTitle || d.title}
-                  </Link>
-                ))}
+                {docs
+                  .filter((d) => d.section === section)
+                  .map((d) => (
+                    <Link
+                      key={d.id}
+                      href={href(d.slug, locale)}
+                      aria-current={
+                        path === href(d.slug, locale) ? "page" : undefined
+                      }
+                      onClick={navigate}
+                    >
+                      {d.navTitle || d.title}
+                    </Link>
+                  ))}
               </section>
             ))}
           </nav>
         </aside>
         <button
           className="mobile-shade"
-          aria-label="Close documentation navigation"
+          aria-label={t("Close documentation navigation")}
           hidden={!menu}
           onClick={() => {
             setMenu(false);
@@ -163,22 +191,22 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
         }}
       >
         <div className="dialog-top">
-          <h2 id="search-title">Search documentation</h2>
+          <h2 id="search-title">{t("Search documentation")}</h2>
           <button
             onClick={() => search.current?.close()}
-            aria-label="Close search"
+            aria-label={t("Close search")}
           >
-            Esc
+            {t("Esc")}
           </button>
         </div>
         <label className="sr-only" htmlFor="search-input">
-          Search documentation
+          {t("Search documentation")}
         </label>
         <input
           ref={input}
           id="search-input"
           value={query}
-          placeholder="Find a guide or concept…"
+          placeholder={t("Find a guide or concept\u2026")}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
@@ -191,10 +219,12 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
         />
         <p id="search-count" role="status">
           {error
-            ? "Search is unavailable. Use the navigation to find a guide."
+            ? t("Search is unavailable. Use the navigation to find a guide.")
             : entries.length
-              ? `${results.length} matching pages`
-              : "Loading search…"}
+              ? locale === "fr"
+                ? `${results.length} page${results.length === 1 ? "" : "s"} trouvée${results.length === 1 ? "" : "s"}`
+                : `${results.length} matching pages`
+              : t("Loading search…")}
         </p>
         <div id="search-results">
           {results.map((d) => (
@@ -206,7 +236,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
           ))}
           {entries.length > 0 && results.length === 0 && (
             <p className="no-results">
-              No results. Try “install”, “account” or “worker”.
+              {t("No results. Try “install”, “account” or “worker”.")}
             </p>
           )}
         </div>
