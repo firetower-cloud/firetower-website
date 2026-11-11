@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import Link from "next/link";
 import { findDoc, neighbours, href } from "../../(en)/docs/_lib/nav";
+import { DocsSupportLinks } from "./DocsSupportLinks";
 import { DocBody } from "./DocBody";
 import { JsonLd } from "../JsonLd";
 import { docLd } from "../../_lib/structured-data";
@@ -81,13 +82,9 @@ export function DocPage({
               )}
             </div>
           </nav>
-          <p className="page-foot">
-            {locale === "fr" ? "Besoin d’aide ? " : "Need help? "}
-            <a href="https://discord.gg/Y2HYVEhSc">
-              {locale === "fr" ? "Contactez-nous" : "Contact us"}
-            </a>
-            .
-          </p>
+          <div className="page-foot">
+            <DocsSupportLinks locale={locale} />
+          </div>
         </article>
         <aside
           className="toc"

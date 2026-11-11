@@ -340,7 +340,7 @@ for (const [english, french] of [
       fail(path, "missing localized WebPage structured data");
   }
 }
-if (!read("fr.html").includes("Faites travailler vos équipes"))
+if (!read("fr.html").includes("Faites travailler vos agents de code"))
   fail("/fr", "French content is not present in static HTML");
 if (!read("fr/enterprise.html").includes("Notre expertise."))
   fail("/fr/enterprise", "French offer is not present in static HTML");

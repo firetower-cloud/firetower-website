@@ -2,7 +2,6 @@ import type { Locale } from "./index";
 const french: Record<string, string> = {
   "Skip to content": "Aller au contenu",
   "Firetower home": "Accueil Firetower",
-  "Contact us": "Contactez-nous",
   "Close documentation navigation": "Fermer le menu de la documentation",
   "Open documentation navigation": "Ouvrir le menu de la documentation",
   "Search documentation": "Rechercher dans la documentation",

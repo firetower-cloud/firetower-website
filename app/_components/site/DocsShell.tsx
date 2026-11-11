@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { docsFor, href } from "../../(en)/docs/_lib/nav";
+import { DocsSupportLinks } from "./DocsSupportLinks";
 import { ThemeButton } from "./ThemeButton";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { localizedHref, type Locale } from "../../_lib/i18n";
@@ -111,9 +112,7 @@ export function DocsShell({
           </Link>
         </nav>
         <div className="header-end">
-          <a className="support-link" href="https://discord.gg/Y2HYVEhSc">
-            {t("Contact us")}
-          </a>
+          <DocsSupportLinks locale={locale} />
           <LanguageSwitch locale={locale} />
           <ThemeButton locale={locale} />
           <button
@@ -170,6 +169,9 @@ export function DocsShell({
               </section>
             ))}
           </nav>
+          <div className="sidebar-support">
+            <DocsSupportLinks locale={locale} />
+          </div>
         </aside>
         <button
           className="mobile-shade"

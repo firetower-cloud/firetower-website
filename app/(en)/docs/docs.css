@@ -2190,9 +2190,38 @@ html[data-theme="dark"] .docs-site {
 .docs-site .toc > a:hover {
   color: var(--ink);
 }
-.docs-site .support-link {
+.docs-site .docs-support-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
   font-size: 12px;
+}
+.docs-site .docs-support-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   text-decoration: none;
+}
+.docs-site .docs-support-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.docs-site .docs-support-links svg {
+  flex-shrink: 0;
+}
+.docs-site .sidebar-support {
+  display: none;
+}
+@media (max-width: 960px) {
+  .docs-site .header-end > .docs-support-links {
+    display: none;
+  }
+  .docs-site .sidebar-support {
+    display: block;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
 }
 .docs-site .mobile-shade {
   border: 0;
@@ -2265,9 +2294,6 @@ html[data-theme="dark"] .docs-site .image-lightbox .image-light {
   }
 }
 @media (max-width: 520px) {
-  .docs-site .support-link {
-    display: none;
-  }
   .docs-site .brand .wordmark {
     width: 117px;
     height: 24px;
