@@ -6,17 +6,17 @@ const response = await fetch(RELEASE_FEED, {
 });
 if (!response.ok) throw Error(`GitHub release feed: ${response.status}`);
 const downloads = downloadsFromReleases(await response.json());
-// `linux` is deliberately not in this list yet. No `desktop-v*` release
-// carries an `.AppImage` — firetower-cloud/firetower#324 is what starts
-// producing one — so requiring it here would refuse every run until that
-// release is cut and freeze the snapshot for the four platforms that do
-// ship. Add "linux" on the first release that carries an AppImage: from then
-// on a missing row means the Linux leg failed, which is worth stopping for.
-// Until then the checked-in snapshot has no Linux row on purpose, because the
-// URL it would carry does not resolve, and that file is the first paint for
-// every visitor rather than only the offline fallback.
+// `downloads.json` is the first paint for every visitor, not only the offline
+// fallback: the download menu seeds its state from this file and renders it
+// before the release feed answers. A row carrying a URL that does not resolve
+// would be the first thing everybody sees, which is worse than no row at all,
+// so this guard throws instead of writing a snapshot that is missing a
+// platform and the previous one keeps serving.
+// `linux` joined the list on desktop-v0.30.0, the first release to carry an
+// `.AppImage`. From then on a missing Linux row means that release's Linux leg
+// failed rather than that Linux has no build yet, which is worth stopping for.
 if (
-  !["mac", "windows", "android", "ios"].every((os) =>
+  !["mac", "windows", "linux", "android", "ios"].every((os) =>
     downloads.some((d) => d.os === os),
   )
 )
