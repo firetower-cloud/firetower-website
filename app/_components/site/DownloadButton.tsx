@@ -11,6 +11,7 @@ import snapshot from "../../_lib/downloads.json";
 import {
   detectPlatform,
   downloadsFromReleases,
+  LINUX_NOTES_URL,
   RELEASE_FEED,
   RELEASES_URL,
   type Download,
@@ -87,6 +88,31 @@ export function DownloadButton({ locale = "en" }: LocalizedProps) {
     return () => document.removeEventListener("pointerdown", outside);
   }, [open]);
   const preferred = downloads.find((d) => d.os === os);
+  // Three notes, not two. A Linux visitor with a Linux row to download needs
+  // to know where to keep the file, because the app updates itself by
+  // replacing it. A Linux visitor with no row — a release whose Linux leg did
+  // not run, or a snapshot taken before the first AppImage — still needs the
+  // old sentence, which names the release rather than the platform now that
+  // Linux is a platform the desktop app supports. Everybody else gets the
+  // wayfinding line, and the trailing link follows the sentence it belongs to.
+  const note =
+    os !== "linux"
+      ? {
+          text: "Choose the device you want to use.",
+          link: "All releases",
+          href: RELEASES_URL,
+        }
+      : downloads.some((d) => d.os === "linux")
+        ? {
+            text: "Keep the AppImage somewhere you can write to. It updates itself by replacing that file.",
+            link: "What’s missing on Linux",
+            href: LINUX_NOTES_URL,
+          }
+        : {
+            text: "This release has no Linux build. Workers support Linux.",
+            link: "All releases",
+            href: RELEASES_URL,
+          };
   function expand() {
     setOpen(true);
     requestAnimationFrame(() =>
@@ -204,13 +230,9 @@ export function DownloadButton({ locale = "en" }: LocalizedProps) {
           </a>
         ))}
         <p className="download-platform-note">
-          {os === "linux"
-            ? t(
-                "A Linux desktop build is not available. Workers support Linux.",
-              )
-            : t("Choose the device you want to use.")}{" "}
-          <a href={RELEASES_URL} target="_blank" rel="noopener noreferrer">
-            {t("All releases")}
+          {t(note.text)}{" "}
+          <a href={note.href} target="_blank" rel="noopener noreferrer">
+            {t(note.link)}
           </a>
         </p>
       </div>

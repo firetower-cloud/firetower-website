@@ -22,6 +22,8 @@ export type Release = {
 };
 export const RELEASES_URL =
   "https://github.com/firetower-cloud/firetower/releases";
+export const LINUX_NOTES_URL =
+  "https://github.com/firetower-cloud/firetower/blob/main/docs/linux.md";
 export const RELEASE_FEED =
   "https://api.github.com/repos/firetower-cloud/firetower/releases?per_page=100";
 export function detectPlatform(
@@ -97,6 +99,17 @@ export function downloadsFromReleases(releases: Release[]): Download[] {
       "64-bit package · .msi",
       "Download Windows MSI",
       asset(desktop, /_x64.*\.msi$/i),
+      desktop,
+    ],
+    [
+      "linux",
+      "Linux",
+      "AppImage · x86_64",
+      "Download for Linux x86_64",
+      // Anchored at the end of the name so the updater's
+      // `_amd64.AppImage.tar.gz` and its `.sig`, which sit on the same
+      // release, can never stand in for the AppImage itself.
+      asset(desktop, /_amd64\.AppImage$/i),
       desktop,
     ],
     [

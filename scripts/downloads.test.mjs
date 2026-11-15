@@ -41,6 +41,45 @@ test("missing and untrusted assets are never fabricated into download links", ()
   );
   assert.equal(downloadsFromReleases([])[0].os, "ios");
 });
+test("the Linux row takes the AppImage itself, never the updater archive beside it", () => {
+  const results = downloadsFromReleases([
+    release("desktop-v0.30.0", [
+      "Firetower_0.30.0_macos.dmg",
+      "Firetower_0.30.0_x64-setup.exe",
+      "Firetower_0.30.0_x64_en-US.msi",
+      // Listed before the AppImage itself: `find` takes the first match, so
+      // this is the order that proves the pattern and not the upload order.
+      "Firetower_0.30.0_amd64.AppImage.tar.gz",
+      "Firetower_0.30.0_amd64.AppImage.tar.gz.sig",
+      "Firetower_0.30.0_amd64.AppImage.sig",
+      "Firetower_0.30.0_amd64.AppImage",
+    ]),
+  ]);
+  const linux = results.find((d) => d.os === "linux");
+  assert.equal(
+    linux.url,
+    `${RELEASES_URL}/download/desktop-v0.30.0/Firetower_0.30.0_amd64.AppImage`,
+  );
+  assert.equal(linux.version, "0.30.0");
+  assert.deepEqual(
+    results.map((d) => d.os),
+    ["mac", "windows", "windows-msi", "linux", "ios"],
+  );
+});
+test("a release without an AppImage offers no Linux download at all", () => {
+  const results = downloadsFromReleases([
+    release("desktop-v0.29.1", [
+      "Firetower_0.29.1_macos.dmg",
+      "Firetower_0.29.1_x64-setup.exe",
+      "Firetower_0.29.1_x64_en-US.msi",
+      "Firetower_universal.app.tar.gz",
+    ]),
+  ]);
+  assert.equal(
+    results.some((d) => d.os === "linux"),
+    false,
+  );
+});
 test("device detection distinguishes iPad desktop mode, Android, Windows, Mac and Linux", () => {
   assert.equal(detectPlatform("Mozilla Macintosh", "MacIntel", 5), "ios");
   assert.equal(detectPlatform("Mozilla Macintosh", "MacIntel", 0), "mac");
