@@ -71,7 +71,7 @@ export function softwareApplicationLd() {
     url: SITE_URL,
     applicationCategory: "DeveloperApplication",
     applicationSubCategory: "Developer tooling",
-    operatingSystem: "macOS, Windows, iOS, Android; Linux server",
+    operatingSystem: "macOS, Windows, Linux, iOS, Android",
     license: "https://spdx.org/licenses/AGPL-3.0-only.html",
     isAccessibleForFree: true,
     sameAs: REPO_URL,
