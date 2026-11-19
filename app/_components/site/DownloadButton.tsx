@@ -9,14 +9,21 @@ import {
 } from "react";
 import snapshot from "../../_lib/downloads.json";
 import {
+  CHANNELS_URL,
   detectPlatform,
   downloadsFromReleases,
+  isComplete,
   RELEASE_FEED,
   RELEASES_URL,
   type Download,
   type Platform,
 } from "../../_lib/downloads";
 let request: Promise<Download[]> | undefined;
+const json = async (url: string) => {
+  const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
+  if (!response.ok) throw Error(`Unavailable: ${url}`);
+  return response.json();
+};
 function currentDownloads() {
   return (request ??= (async () => {
     try {
@@ -24,23 +31,33 @@ function currentDownloads() {
         localStorage.getItem("firetower-downloads") || "null",
       );
       if (cached?.expires > Date.now() && Array.isArray(cached.releases)) {
-        const parsed = downloadsFromReleases(cached.releases);
-        if (parsed.length > 1) return parsed;
+        const parsed = downloadsFromReleases(cached.releases, cached.channels);
+        if (isComplete(parsed)) return parsed;
       }
     } catch {}
     try {
-      const response = await fetch(RELEASE_FEED, {
-        signal: AbortSignal.timeout(5000),
-      });
-      if (!response.ok) throw Error("Release feed unavailable");
-      const releases = await response.json();
+      // Desktop resolution needs the channel manifest to know which build is
+      // general rather than beta, and GitHub serves release assets without
+      // CORS headers, so this fetch is blocked in a browser today. Whenever
+      // the manifest cannot be read the resolved set comes back without its
+      // desktop rows, and the snapshot — capped at build time by
+      // sync-downloads.mjs — is kept instead. A stale stable build is fine
+      // here; serving everyone the beta build is not.
+      const [releases, channels] = await Promise.all([
+        json(RELEASE_FEED),
+        json(CHANNELS_URL),
+      ]);
       if (!Array.isArray(releases)) throw Error("Invalid release feed");
-      const downloads = downloadsFromReleases(releases);
-      if (downloads.length < 2) throw Error("No release assets");
+      const downloads = downloadsFromReleases(releases, channels);
+      if (!isComplete(downloads)) throw Error("Incomplete release feed");
       try {
         localStorage.setItem(
           "firetower-downloads",
-          JSON.stringify({ expires: Date.now() + 6 * 3600000, releases }),
+          JSON.stringify({
+            expires: Date.now() + 6 * 3600000,
+            releases,
+            channels,
+          }),
         );
       } catch {}
       return downloads;
@@ -206,7 +223,7 @@ export function DownloadButton({ locale = "en" }: LocalizedProps) {
         <p className="download-platform-note">
           {os === "linux"
             ? t(
-                "A Linux desktop build is not available. Workers support Linux.",
+                "The Linux desktop build ships as an AppImage. Make it executable, then run it.",
               )
             : t("Choose the device you want to use.")}{" "}
           <a href={RELEASES_URL} target="_blank" rel="noopener noreferrer">

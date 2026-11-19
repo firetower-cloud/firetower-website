@@ -4,32 +4,40 @@
     "name": "macOS",
     "detail": "Universal · Apple silicon and Intel",
     "label": "Download for macOS",
-    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.28.1/Firetower_0.28.1_macos.dmg",
-    "version": "0.28.1"
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.31.0/Firetower_0.31.0_macos.dmg",
+    "version": "0.31.0"
   },
   {
     "os": "windows",
     "name": "Windows",
     "detail": "64-bit installer · .exe",
     "label": "Download for Windows",
-    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.28.1/Firetower_0.28.1_x64-setup.exe",
-    "version": "0.28.1"
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.31.0/Firetower_0.31.0_x64-setup.exe",
+    "version": "0.31.0"
   },
   {
     "os": "windows-msi",
     "name": "Windows MSI",
     "detail": "64-bit package · .msi",
     "label": "Download Windows MSI",
-    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.28.1/Firetower_0.28.1_x64_en-US.msi",
-    "version": "0.28.1"
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.31.0/Firetower_0.31.0_x64_en-US.msi",
+    "version": "0.31.0"
+  },
+  {
+    "os": "linux",
+    "name": "Linux",
+    "detail": "AppImage · 64-bit Intel and AMD",
+    "label": "Download for Linux",
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/desktop-v0.31.0/Firetower_0.31.0_amd64.AppImage",
+    "version": "0.31.0"
   },
   {
     "os": "android",
     "name": "Android",
     "detail": "Android app · .apk",
     "label": "Download for Android",
-    "url": "https://github.com/firetower-cloud/firetower/releases/download/mobile-v0.14.0/firetower-0.14.0.apk",
-    "version": "0.14.0"
+    "url": "https://github.com/firetower-cloud/firetower/releases/download/mobile-v0.18.0/firetower-0.18.0.apk",
+    "version": "0.18.0"
   },
   {
     "os": "ios",
