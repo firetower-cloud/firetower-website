@@ -17,8 +17,16 @@ const json = async (url, headers = {}) => {
 // A browser cannot read the channel manifest — GitHub serves release assets
 // without CORS headers — so the cap is applied here, at build time, and the
 // committed snapshot is what visitors actually get.
+const token = process.env.GITHUB_TOKEN;
 const [releases, channels] = await Promise.all([
-  json(RELEASE_FEED, { Accept: "application/vnd.github+json" }),
+  json(RELEASE_FEED, {
+    Accept: "application/vnd.github+json",
+    // Unauthenticated API calls are rationed per IP, and CI runners share
+    // theirs, so a scheduled run gets 403ed without a token. Optional: a local
+    // run works fine without one. Deliberately not sent to the asset host,
+    // which is a different origin reached through a signed redirect.
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  }),
   json(CHANNELS_URL),
 ]);
 const downloads = downloadsFromReleases(releases, channels);

@@ -1,0 +1,78 @@
+name: refresh downloads
+
+# Releases are cut in the firetower repo, which never triggers a build here,
+# and a browser cannot read the channel manifest cross-origin — GitHub serves
+# release assets without CORS headers — so the committed snapshot is what
+# visitors actually get. Without this job it stays frozen at whatever version
+# someone last synced by hand, which is how it previously rotted to 0.28.1.
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+# The repository default is read-only; this elevates it just for this workflow.
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: refresh-downloads
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: refresh the download snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: install
+        run: npm ci
+
+      # sync-downloads.mjs throws on an incomplete feed on purpose: a partial
+      # upstream release, or a rate-limited API, must leave the last good
+      # snapshot in place. That is a quiet no-op here, not a failed run — the
+      # next scheduled attempt picks it up once upstream finishes publishing.
+      - name: refresh the snapshot
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run sync:downloads
+
+      - name: commit the snapshot if it moved
+        id: commit
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- app/_lib/downloads.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Snapshot already current; nothing to do." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/_lib/downloads.json
+          git commit -m "chore(downloads): refresh the download snapshot"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Download snapshot refreshed"
+            echo
+            echo '```json'
+            cat app/_lib/downloads.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # A push authenticated with GITHUB_TOKEN deliberately does not start
+      # another workflow run, so deploy.yml would never see the commit above
+      # and the refreshed snapshot would sit unpublished. deploy.yml accepts
+      # workflow_dispatch, so start it by hand.
+      - name: deploy the refreshed snapshot
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml --ref main
